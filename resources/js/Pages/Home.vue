@@ -331,7 +331,7 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
         <div v-if="portfolio?.length" class="mt-12">
           <p class="font-mono text-[10px] uppercase tracking-[0.2em] mb-4" style="color:#9fc2ff;">also live right now</p>
           <ul class="space-y-5">
-            <li v-for="proj in portfolio.slice(0, 4)" :key="proj.slug" class="font-mono text-sm leading-snug relative" style="color:#fff7ec; padding-left: 1.4rem;">
+            <li v-for="proj in portfolio.slice(0, 5)" :key="proj.slug" class="font-mono text-sm leading-snug relative" style="color:#fff7ec; padding-left: 1.4rem;">
               <span class="absolute left-0 top-[7px] inline-block w-2 h-2 rounded-full" :style="{ background: proj.live ? '#00f0ff' : 'rgba(255,247,236,0.3)' }"></span>
               <div class="font-bold">{{ proj.client }}</div>
               <div class="mt-1" style="opacity:0.8;">{{ proj.summary }}</div>
