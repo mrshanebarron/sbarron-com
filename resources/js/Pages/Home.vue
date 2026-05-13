@@ -293,8 +293,7 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
 
         <h2 class="display max-w-[14ch] mb-10" style="font-size:clamp(3rem, 8vw, 9rem);">
           We built it<br>
-          <span style="color:#00f0ff;">in</span>
-          <span style="color:#fcc419; font-style:italic; font-weight:400;">the time</span><br>
+          <span style="color:#00f0ff;">in</span>&nbsp;<span style="color:#fcc419; font-style:italic; font-weight:400;">the time</span><br>
           they take to <span class="stroke" style="--ax-stage-1:#ff5a3c;">quote</span> it.
         </h2>
 
