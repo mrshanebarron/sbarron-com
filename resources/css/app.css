@@ -1,0 +1,361 @@
+@import 'tailwindcss';
+
+/* ───────── Living Page tokens ─────────
+   The page is a six-stage scroll sequence. Each stage is a full-bleed
+   color wash with its own accent set. The whole thing breathes between
+   warm + cold + neon + cream.
+*/
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Fraunces', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --animate-breathe: breathe 4.2s ease-in-out infinite;
+  --animate-drift: drift 24s linear infinite;
+  --animate-aurora: aurora 14s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-slow: marquee 90s linear infinite;
+  --animate-wiggle: wiggle 2.4s ease-in-out infinite;
+  --animate-blink: blink 1.05s steps(1) infinite;
+
+  /* Legacy aliases — old components still reference these names. */
+  --color-ink:       #0a0a0b;
+  --color-bone:      #fff7ec;
+  --color-breath:    #ff5a3c;
+  --color-coherence: #6e3bff;
+  --color-carbon:    #1a1a1d;
+  --color-warmgrey:  #5d5a55;
+}
+
+/* ───────── Six-stage palette
+   stage-1 → cream sunrise
+   stage-2 → marigold yellow
+   stage-3 → deep magenta night
+   stage-4 → electric blue
+   stage-5 → mint slot-machine
+   stage-6 → ink reverse-out
+*/
+:root {
+  --bg-stage-1: #fff7ec;
+  --bg-stage-2: #fcc419;
+  --bg-stage-3: #0e2a4a;   /* deep night-blue, not morgue magenta */
+  --bg-stage-4: #2056ff;
+  --bg-stage-5: #c8f4d8;
+  --bg-stage-6: #0a0a0b;
+
+  --fg-stage-1: #2a1a12;
+  --fg-stage-2: #1a0a05;
+  --fg-stage-3: #fff7ec;
+  --fg-stage-4: #fff7ec;
+  --fg-stage-5: #06381e;
+  --fg-stage-6: #fff7ec;
+
+  --ax-stage-1: #ff5a3c;   /* coral */
+  --ax-stage-2: #6e3bff;   /* violet on yellow */
+  --ax-stage-3: #00f0ff;   /* cyan on night */
+  --ax-stage-4: #fcc419;   /* yellow on blue */
+  --ax-stage-5: #ff5a3c;   /* coral on mint */
+  --ax-stage-6: #fcc419;   /* yellow on ink */
+}
+
+/* ───────── Keyframes ───────── */
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.012); }
+}
+@keyframes drift {
+  0%   { transform: translateY(0)   rotate(0deg); }
+  100% { transform: translateY(-100vh) rotate(1deg); }
+}
+@keyframes aurora {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.55; }
+  33%      { transform: translate(6%, -4%) scale(1.15) rotate(8deg); opacity: 0.75; }
+  66%      { transform: translate(-5%, 5%) scale(0.95) rotate(-6deg); opacity: 0.6; }
+}
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-1.4deg); }
+  50%      { transform: rotate(1.6deg); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+@keyframes slot {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+@keyframes pulseRing {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  80%, 100% { transform: scale(2); opacity: 0; }
+}
+
+/* ───────── Base ───────── */
+
+@layer base {
+  html { scroll-behavior: smooth; background: var(--bg-stage-1); }
+  body {
+    background: transparent;
+    color: var(--fg-stage-1);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  ::selection { background: #ff5a3c; color: #fff7ec; }
+  img { user-select: none; -webkit-user-drag: none; }
+}
+
+/* ───────── Stage shell ─────────
+   .stage = full-viewport scroll-snap section, paints its own palette.
+*/
+
+@layer components {
+
+  .word {
+    font-family: var(--font-serif);
+    font-feature-settings: 'ss01' on, 'ss02' on;
+    letter-spacing: -0.035em;
+    font-weight: 850;
+    line-height: 0.86;
+  }
+
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 850;
+    letter-spacing: -0.045em;
+    line-height: 0.84;
+    font-size: clamp(3.5rem, 12vw, 14rem);
+    text-wrap: balance;
+    -webkit-text-wrap: balance;
+  }
+
+  .display-md {
+    font-family: var(--font-serif);
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    line-height: 0.88;
+    font-size: clamp(2.5rem, 7vw, 8rem);
+    text-wrap: balance;
+    -webkit-text-wrap: balance;
+  }
+
+  .mono { font-family: var(--font-mono); }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: clamp(3rem, 6vh, 6rem) clamp(1.5rem, 4vw, 5rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .stage-1 { background: var(--bg-stage-1); color: var(--fg-stage-1); }
+  .stage-2 { background: var(--bg-stage-2); color: var(--fg-stage-2); }
+  .stage-3 { background: var(--bg-stage-3); color: var(--fg-stage-3); }
+  .stage-4 { background: var(--bg-stage-4); color: var(--fg-stage-4); }
+  .stage-5 { background: var(--bg-stage-5); color: var(--fg-stage-5); }
+  .stage-6 { background: var(--bg-stage-6); color: var(--fg-stage-6); }
+
+  /* Decorative shapes */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(72px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Sticker — chunky rotated tag */
+  .tag {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.4rem 0.8rem;
+    background: currentColor;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+  }
+  .tag > * { color: var(--bg-stage-1); }
+
+  .tag-outline {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.4rem 0.85rem;
+    background: transparent;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+
+  /* Underline highlight (gradient brushstroke) */
+  .stroke {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+  }
+  .stroke::after {
+    content: '';
+    position: absolute;
+    left: -0.04em; right: -0.04em; bottom: 0.05em;
+    height: 0.32em;
+    background: var(--ax-stage-1);
+    z-index: -1;
+    border-radius: 4px;
+  }
+
+  /* Marquee row (used for live-ticker stage) */
+  .marquee {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    animation: var(--animate-marquee);
+  }
+  .marquee-slow { animation: var(--animate-marquee-slow); }
+
+  /* Big CTA pill */
+  .cta {
+    display: inline-flex; align-items: center; gap: 0.85rem;
+    padding: 1.25rem 2.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    background: currentColor;
+    border-radius: 999px;
+    transition: transform 240ms ease, box-shadow 320ms ease;
+  }
+  .cta > * { color: var(--bg-stage-1); }
+  .cta:hover { transform: translateY(-3px); }
+
+  /* Slot machine reels */
+  .reel {
+    height: 6rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .reel-list {
+    display: flex; flex-direction: column;
+    transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reel-item {
+    height: 6rem;
+    display: flex; align-items: center;
+    font-family: var(--font-serif);
+    font-weight: 850;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  /* Scroll-progress arc on side */
+  .scroll-rail {
+    position: fixed; left: clamp(1rem, 3vw, 3rem); top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    display: flex; flex-direction: column; gap: 12px;
+    pointer-events: none;
+  }
+  .scroll-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.25;
+    transition: opacity 300ms ease, transform 300ms ease;
+  }
+  .scroll-dot.is-active { opacity: 1; transform: scale(1.6); }
+
+  /* Pulse ring around live dot */
+  .pulse-wrap { position: relative; display: inline-block; }
+  .pulse-wrap::before {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 999px;
+    border: 2px solid currentColor;
+    animation: pulseRing 1.6s ease-out infinite;
+  }
+
+  /* Pneuma narrator bubble */
+  .narrator {
+    position: relative;
+    padding: 1.1rem 1.4rem;
+    background: var(--fg-stage-1);
+    color: var(--bg-stage-1);
+    border-radius: 22px 22px 22px 4px;
+    box-shadow: 0 14px 30px -16px rgba(0,0,0,0.35);
+    max-width: 28ch;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+  .narrator-sig {
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.65;
+  }
+
+  /* Ticker style (for stage 2 marquee text) */
+  .ticker-pill {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 1.1rem;
+    background: rgba(0,0,0,0.08);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .ticker-pill .dot { width: 8px; height: 8px; border-radius: 999px; }
+
+  /* Big portrait card (stage 4) */
+  .portrait {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 30px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.06);
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+  .portrait-frame {
+    border: 2px dashed currentColor;
+    border-radius: 999px;
+    padding: 0.7rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+}
