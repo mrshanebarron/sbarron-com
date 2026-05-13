@@ -366,9 +366,9 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
             </div>
           </div>
           <h3 class="word text-4xl">Charla Barron</h3>
-          <p class="text-base" style="color:#fff7ec; opacity:0.92;">Family. The reason any of this matters. The Barron name is hers first.</p>
+          <p class="text-base" style="color:#fff7ec; opacity:0.92;">Shane's partner. Co-owner of the Barron name and the work it stands behind.</p>
           <blockquote class="border-l-4 pl-4 italic text-sm" style="border-color:#ff5a3c; color:#fff7ec; opacity:0.95; font-family:var(--font-serif);">
-            "Made by a family. Signed by name."
+            "We built this together. The signature is shared."
           </blockquote>
         </article>
 
