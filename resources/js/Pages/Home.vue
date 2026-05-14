@@ -18,7 +18,7 @@ const STAGES = ['hero', 'pulse', 'proof', 'studio', 'portfolio', 'substrate', 't
 /* ─── Portfolio filter state ─── */
 const portfolioFilter = ref('all')
 const filterTags = [
-  { key: 'all',       label: 'All' },
+  { key: 'all',       label: 'All work' },
   { key: 'ai',        label: 'AI Products' },
   { key: 'saas',      label: 'SaaS' },
   { key: 'services',  label: 'Services' },
@@ -26,9 +26,41 @@ const filterTags = [
   { key: 'editorial', label: 'Editorial' },
   { key: 'ecom',      label: 'eCommerce' },
 ]
-const filteredMvps = computed(() => {
-  if (portfolioFilter.value === 'all') return props.mvps
-  return props.mvps.filter(m => m.category === portfolioFilter.value)
+/**
+ * Unified portfolio — clients + MVPs in one list. Clients carry
+ * `featured: true` so their card gets a subtle highlight, but the
+ * shape and visual weight is identical to every other live site.
+ * We intentionally don't surface counts; the work is the proof.
+ */
+const allWork = computed(() => {
+  const clientItems = (props.clients || []).map(c => ({
+    slug: c.slug,
+    name: c.name,
+    kind: c.kind,
+    summary: c.summary,
+    url: c.url,
+    image: c.image,
+    category: c.category || 'live',
+    featured: true,
+  }))
+  const mvpItems = (props.mvps || []).map(m => ({
+    ...m,
+    featured: false,
+  }))
+  // Interleave featured clients across the grid rather than front-load
+  // them. Order: client, 3 mvps, client, 3 mvps, ... falls back to
+  // straight concat once one list runs out.
+  const out = []
+  let ci = 0, mi = 0
+  while (ci < clientItems.length || mi < mvpItems.length) {
+    if (ci < clientItems.length) out.push(clientItems[ci++])
+    for (let k = 0; k < 3 && mi < mvpItems.length; k++) out.push(mvpItems[mi++])
+  }
+  return out
+})
+const filteredWork = computed(() => {
+  if (portfolioFilter.value === 'all') return allWork.value
+  return allWork.value.filter(w => w.category === portfolioFilter.value)
 })
 
 const activeStage = ref(0)
@@ -451,7 +483,7 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
       <div class="flex items-center justify-between flex-wrap gap-4 mb-12">
         <span class="tag-outline" style="border-color:#1a1a1a; color:#1a1a1a;">Portfolio · the work, on the open web</span>
         <span class="font-mono text-xs uppercase tracking-widest" style="color:#1a1a1a; opacity:0.7;">
-          {{ (clients?.length || 0) + (mvps?.length || 0) }} sites · all live · click anything
+          every link opens the real thing
         </span>
       </div>
 
@@ -459,68 +491,41 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
         Look at the <span class="stroke" style="--ax-stage-1:#ff5a3c;">work</span>. Then click any of it.
       </h2>
 
-      <p class="max-w-3xl text-lg leading-relaxed mb-14" style="font-family:var(--font-serif); color:#1a1a1a; opacity:0.85;">
-        Five paying clients in production. Twenty hand-picked MVPs on the demo server — each one a working site built in a single sitting.
-        Every domain below resolves; every link opens the real thing. We don't show mockups.
+      <p class="max-w-3xl text-lg leading-relaxed mb-10" style="font-family:var(--font-serif); color:#1a1a1a; opacity:0.85;">
+        These are sites we built — end-to-end, in production, on the open web. Some are clients running revenue through them right now. Some are showcases we shipped in a single sitting. They share one thing: you can click any of them, this minute, and the real site loads.
       </p>
 
-      <!-- ── Featured live clients (paying, in production) ── -->
-      <div v-if="clients?.length" class="mb-20">
-        <p class="font-mono text-[10px] uppercase tracking-[0.25em] mb-6" style="color:#ff5a3c;">In production · paying clients</p>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <a v-for="c in clients" :key="c.slug" :href="c.url" target="_blank" rel="noopener"
-             class="port-card port-card-client group">
-            <div class="port-card-shot">
-              <img :src="c.image" :alt="c.name" loading="lazy" />
-              <span class="port-card-live">● live</span>
-            </div>
-            <div class="port-card-body">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color:#ff5a3c;">{{ c.kind }}</span>
-                <span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.5;">↗</span>
-              </div>
-              <h3 class="text-xl font-bold mb-2" style="color:#1a1a1a; font-family:var(--font-serif);">{{ c.name }}</h3>
-              <p class="text-sm leading-relaxed mb-3" style="color:#1a1a1a; opacity:0.78;">{{ c.summary }}</p>
-              <p class="font-mono text-[10px] uppercase tracking-wider" style="color:#1a1a1a; opacity:0.5;">{{ c.stack }}</p>
-            </div>
-          </a>
-        </div>
+      <!-- ── Filter row ── -->
+      <div class="flex flex-wrap gap-1.5 mb-8">
+        <button v-for="t in filterTags" :key="t.key" @click="portfolioFilter = t.key"
+                class="port-filter-pill"
+                :class="{ 'port-filter-active': portfolioFilter === t.key }">
+          {{ t.label }}
+        </button>
       </div>
 
-      <!-- ── MVP grid — filterable ── -->
-      <div v-if="mvps?.length">
-        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
-          <p class="font-mono text-[10px] uppercase tracking-[0.25em]" style="color:#1a1a1a;">MVP showcase · built end-to-end · live on the demo server</p>
-          <div class="flex flex-wrap gap-1.5">
-            <button v-for="t in filterTags" :key="t.key" @click="portfolioFilter = t.key"
-                    class="port-filter-pill"
-                    :class="{ 'port-filter-active': portfolioFilter === t.key }">
-              {{ t.label }}
-            </button>
+      <!-- ── Unified work grid — clients + MVPs in the same shape ── -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <a v-for="w in filteredWork" :key="w.slug" :href="w.url" target="_blank" rel="noopener"
+           class="port-card group" :class="{ 'port-card-featured': w.featured }">
+          <div class="port-card-shot">
+            <img :src="w.image" :alt="w.name" loading="lazy" />
+            <span class="port-card-live">● live</span>
           </div>
-        </div>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <a v-for="m in filteredMvps" :key="m.slug" :href="m.url" target="_blank" rel="noopener"
-             class="port-card port-card-mvp group">
-            <div class="port-card-shot">
-              <img :src="m.image" :alt="m.name" loading="lazy" />
+          <div class="port-card-body">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.55;">{{ w.kind }}</span>
+              <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.4;">↗</span>
             </div>
-            <div class="port-card-body">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.5;">{{ m.kind }}</span>
-                <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.4;">↗</span>
-              </div>
-              <h4 class="text-base font-bold mb-1.5" style="color:#1a1a1a; font-family:var(--font-serif);">{{ m.name }}</h4>
-              <p class="text-xs leading-snug" style="color:#1a1a1a; opacity:0.72;">{{ m.summary }}</p>
-            </div>
-          </a>
-        </div>
-
-        <p v-if="!filteredMvps.length" class="text-center py-12 font-mono text-sm" style="color:#1a1a1a; opacity:0.5;">
-          No projects in this category yet.
-        </p>
+            <h4 class="text-base font-bold mb-1.5" style="color:#1a1a1a; font-family:var(--font-serif);">{{ w.name }}</h4>
+            <p class="text-xs leading-snug" style="color:#1a1a1a; opacity:0.72;">{{ w.summary }}</p>
+          </div>
+        </a>
       </div>
+
+      <p v-if="!filteredWork.length" class="text-center py-12 font-mono text-sm" style="color:#1a1a1a; opacity:0.5;">
+        No projects in this category yet.
+      </p>
     </div>
   </section>
 

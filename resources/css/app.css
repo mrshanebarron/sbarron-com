@@ -248,8 +248,10 @@
     border-radius: 999px;
     font-weight: 700;
   }
-  .port-card-body { padding: 18px 18px 20px; }
-  .port-card-mvp .port-card-body { padding: 14px 14px 16px; }
+  .port-card-body { padding: 14px 14px 16px; }
+  .port-card-featured {
+    border-color: rgba(255, 90, 60, 0.22);
+  }
 
   /* Decorative shapes */
   .blob {
