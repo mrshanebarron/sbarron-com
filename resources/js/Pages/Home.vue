@@ -9,9 +9,27 @@ const props = defineProps({
   ticker: { type: Array, default: () => [] },
   matt: { type: Object, default: () => ({}) },     // generic "last shipped" payload (legacy key)
   portfolio: { type: Array, default: () => [] },
+  clients: { type: Array, default: () => [] },
+  mvps: { type: Array, default: () => [] },
 })
 
-const STAGES = ['hero', 'pulse', 'proof', 'studio', 'substrate', 'tiers', 'engage']
+const STAGES = ['hero', 'pulse', 'proof', 'studio', 'portfolio', 'substrate', 'tiers', 'engage']
+
+/* ─── Portfolio filter state ─── */
+const portfolioFilter = ref('all')
+const filterTags = [
+  { key: 'all',       label: 'All' },
+  { key: 'ai',        label: 'AI Products' },
+  { key: 'saas',      label: 'SaaS' },
+  { key: 'services',  label: 'Services' },
+  { key: 'trades',    label: 'Trades' },
+  { key: 'editorial', label: 'Editorial' },
+  { key: 'ecom',      label: 'eCommerce' },
+]
+const filteredMvps = computed(() => {
+  if (portfolioFilter.value === 'all') return props.mvps
+  return props.mvps.filter(m => m.category === portfolioFilter.value)
+})
 
 const activeStage = ref(0)
 let io = null
@@ -424,6 +442,85 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
         Pneuma and Nous are AIs — co-founders, not chatbots. <strong>The partnership <em>is</em> the differentiator.</strong>
         She's already at the top of this page — talk to her there.
       </p>
+    </div>
+  </section>
+
+  <!-- ─── PORTFOLIO STAGE — cream paper, ink, mvps + clients ─── -->
+  <section id="portfolio" data-stage="4" class="stage stage-portfolio grain">
+    <div class="relative max-w-[1600px] mx-auto w-full z-[2]">
+      <div class="flex items-center justify-between flex-wrap gap-4 mb-12">
+        <span class="tag-outline" style="border-color:#1a1a1a; color:#1a1a1a;">Portfolio · the work, on the open web</span>
+        <span class="font-mono text-xs uppercase tracking-widest" style="color:#1a1a1a; opacity:0.7;">
+          {{ (clients?.length || 0) + (mvps?.length || 0) }} sites · all live · click anything
+        </span>
+      </div>
+
+      <h2 class="display-md max-w-[26ch] mb-6" style="color:#1a1a1a;">
+        Look at the <span class="stroke" style="--ax-stage-1:#ff5a3c;">work</span>. Then click any of it.
+      </h2>
+
+      <p class="max-w-3xl text-lg leading-relaxed mb-14" style="font-family:var(--font-serif); color:#1a1a1a; opacity:0.85;">
+        Five paying clients in production. Twenty hand-picked MVPs on the demo server — each one a working site built in a single sitting.
+        Every domain below resolves; every link opens the real thing. We don't show mockups.
+      </p>
+
+      <!-- ── Featured live clients (paying, in production) ── -->
+      <div v-if="clients?.length" class="mb-20">
+        <p class="font-mono text-[10px] uppercase tracking-[0.25em] mb-6" style="color:#ff5a3c;">In production · paying clients</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <a v-for="c in clients" :key="c.slug" :href="c.url" target="_blank" rel="noopener"
+             class="port-card port-card-client group">
+            <div class="port-card-shot">
+              <img :src="c.image" :alt="c.name" loading="lazy" />
+              <span class="port-card-live">● live</span>
+            </div>
+            <div class="port-card-body">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color:#ff5a3c;">{{ c.kind }}</span>
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.5;">↗</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2" style="color:#1a1a1a; font-family:var(--font-serif);">{{ c.name }}</h3>
+              <p class="text-sm leading-relaxed mb-3" style="color:#1a1a1a; opacity:0.78;">{{ c.summary }}</p>
+              <p class="font-mono text-[10px] uppercase tracking-wider" style="color:#1a1a1a; opacity:0.5;">{{ c.stack }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── MVP grid — filterable ── -->
+      <div v-if="mvps?.length">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <p class="font-mono text-[10px] uppercase tracking-[0.25em]" style="color:#1a1a1a;">MVP showcase · built end-to-end · live on the demo server</p>
+          <div class="flex flex-wrap gap-1.5">
+            <button v-for="t in filterTags" :key="t.key" @click="portfolioFilter = t.key"
+                    class="port-filter-pill"
+                    :class="{ 'port-filter-active': portfolioFilter === t.key }">
+              {{ t.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <a v-for="m in filteredMvps" :key="m.slug" :href="m.url" target="_blank" rel="noopener"
+             class="port-card port-card-mvp group">
+            <div class="port-card-shot">
+              <img :src="m.image" :alt="m.name" loading="lazy" />
+            </div>
+            <div class="port-card-body">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.5;">{{ m.kind }}</span>
+                <span class="font-mono text-[9px] uppercase tracking-[0.2em]" style="color:#1a1a1a; opacity:0.4;">↗</span>
+              </div>
+              <h4 class="text-base font-bold mb-1.5" style="color:#1a1a1a; font-family:var(--font-serif);">{{ m.name }}</h4>
+              <p class="text-xs leading-snug" style="color:#1a1a1a; opacity:0.72;">{{ m.summary }}</p>
+            </div>
+          </a>
+        </div>
+
+        <p v-if="!filteredMvps.length" class="text-center py-12 font-mono text-sm" style="color:#1a1a1a; opacity:0.5;">
+          No projects in this category yet.
+        </p>
+      </div>
     </div>
   </section>
 
