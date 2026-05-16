@@ -156,10 +156,10 @@ const panelStyle = computed(() => ({
           </div>
         </template>
         <template v-else>
-          <div class="bubble bubble-user" :style="{ background: accent }">
-            <div class="bubble-text" :style="{ color: bg }">{{ m.text }}</div>
+          <div class="bubble bubble-user" :style="{ color: accent }">
+            <div class="bubble-text">{{ m.text }}</div>
           </div>
-          <div class="avatar avatar-user" :style="{ background: accent, color: bg }">
+          <div class="avatar avatar-user" :style="{ borderColor: accent, color: accent }">
             {{ visitorInitial }}
           </div>
         </template>
@@ -263,13 +263,17 @@ const panelStyle = computed(() => ({
   width: 100%;
   height: 100%;
   min-height: 460px;
-  border-radius: 24px;
-  border: 1.5px solid;
+  /* Square corners + no own border/shadow — the channel-frame wrapper in
+     Home.vue owns those, so the chat sits flush inside it without the
+     pill-in-a-box look. */
+  border-radius: 0;
+  border: none;
   font-family: var(--font-sans);
   font-size: 0.95rem;
   line-height: 1.5;
   overflow: hidden;
-  box-shadow: 0 28px 60px -32px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Header ── */
@@ -277,7 +281,6 @@ const panelStyle = computed(() => ({
   display: flex; align-items: center; justify-content: space-between;
   padding: 0.85rem 1.1rem;
   background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .head-avatar {
   position: relative;
@@ -339,33 +342,44 @@ const panelStyle = computed(() => ({
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
+.avatar.avatar-user {
+  border-radius: 0;
+  border: none;
+  background: rgba(255, 154, 60, 0.18);
+  color: #ff9a3c;
+}
 .avatar-pneuma { background: rgba(255,255,255,0.08); }
 .avatar-pneuma img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 .avatar-user {
-  font-family: var(--font-serif);
-  font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-/* ── Bubbles ── */
+/* ── Bubbles (Section 9 — square HUD panels) ── */
 .bubble {
   max-width: 78%;
   padding: 0.7rem 0.95rem;
-  border-radius: 18px;
+  border-radius: 0;
   word-wrap: break-word;
   line-height: 1.5;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
 }
 .bubble-assistant {
-  background: #fff7ec;
-  color: #2a1a12;
-  border-bottom-left-radius: 6px;
-  box-shadow: 0 6px 14px -10px rgba(0,0,0,0.4);
+  background: rgba(20, 24, 31, 0.55);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  color: #f3ead9;
+  border: none;
 }
 .bubble-user {
-  border-bottom-right-radius: 6px;
-  box-shadow: 0 6px 14px -10px rgba(255, 90, 60, 0.55);
+  background: rgba(255, 154, 60, 0.12);
+  border: none;
 }
+.bubble-user .bubble-text { color: #ff9a3c; }
 .bubble-text { white-space: pre-wrap; }
 
 .greeting .b-line { margin: 0 0 0.5rem; }
@@ -382,7 +396,7 @@ const panelStyle = computed(() => ({
 .bubble.typing {
   display: inline-flex; gap: 5px; align-items: center;
   padding: 0.85rem 1rem;
-  background: #fff7ec;
+  background: rgba(255, 154, 60, 0.08);
 }
 .bubble.typing .dot {
   width: 7px; height: 7px;
@@ -399,39 +413,41 @@ const panelStyle = computed(() => ({
 .chat-input {
   display: flex; align-items: center; gap: 0.5rem;
   padding: 0.85rem 0.85rem;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.02);
+  background: rgba(20, 24, 31, 0.30);
 }
 .name-input {
-  width: 64px;
+  width: 72px;
   padding: 0.55rem 0.7rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 999px;
+  background: rgba(255, 154, 60, 0.10);
+  border: none;
+  border-radius: 0;
   outline: none;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: inherit;
   text-align: center;
-  text-transform: lowercase;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 .name-input::placeholder { opacity: 0.45; }
 .msg-input {
   flex: 1;
   padding: 0.7rem 0.95rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 999px;
+  background: rgba(255, 154, 60, 0.08);
+  border: none;
+  border-radius: 0;
   outline: none;
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
 }
+.msg-input:focus { background: rgba(255,154,60,0.16); }
 .msg-input::placeholder { opacity: 0.45; }
 .send-btn {
   width: 40px; height: 40px;
-  border-radius: 999px;
+  border-radius: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   border: none;
   cursor: pointer;
