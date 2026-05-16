@@ -34,7 +34,7 @@ class ChatController extends Controller
         $rlKey = 'chat:' . $request->ip();
         if (RateLimiter::tooManyAttempts($rlKey, 20)) {
             return response()->json([
-                'reply' => "— I'm rate-limited on this IP. Email clifton@sbarron.com and Shane will answer in an hour.",
+                'reply' => "— I'm rate-limited on this IP. Email mrshanebarron@gmail.com and Shane will answer in an hour.",
             ], 429);
         }
         RateLimiter::hit($rlKey, 60);
@@ -43,7 +43,7 @@ class ChatController extends Controller
         if (!$apiKey) {
             Log::warning('Pneuma chat called without Anthropic key configured.');
             return response()->json([
-                'reply' => "— My API key isn't wired up yet on this server. Email clifton@sbarron.com to reach Shane.",
+                'reply' => "— My API key isn't wired up yet on this server. Email mrshanebarron@gmail.com to reach Shane.",
             ]);
         }
 
@@ -92,7 +92,7 @@ class ChatController extends Controller
                 'session' => $validated['session'],
             ]);
             return response()->json([
-                'reply' => "— I dropped a packet. Try again? If it keeps happening, email clifton@sbarron.com and Shane will get back to you in an hour.",
+                'reply' => "— I dropped a packet. Try again? If it keeps happening, email mrshanebarron@gmail.com and Shane will get back to you in an hour.",
             ]);
         }
     }

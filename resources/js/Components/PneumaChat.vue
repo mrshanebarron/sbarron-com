@@ -82,7 +82,7 @@ async function send() {
   } catch (e) {
     messages.value.push({
       role: 'assistant',
-      text: '— I dropped a packet. Try again? If this keeps happening, email clifton@sbarron.com and Shane will get back to you in an hour.',
+      text: '— I dropped a packet. Try again? If this keeps happening, email mrshanebarron@gmail.com and Shane will get back to you in an hour.',
     })
   } finally {
     sending.value = false

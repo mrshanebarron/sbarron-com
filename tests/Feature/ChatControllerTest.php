@@ -83,7 +83,7 @@ class ChatControllerTest extends TestCase
             'message' => 'hello',
         ]);
         $resp->assertOk();
-        $this->assertStringContainsString('clifton@sbarron.com', $resp->json('reply'));
+        $this->assertStringContainsString('mrshanebarron@gmail.com', $resp->json('reply'));
     }
 
     public function test_upstream_failure_returns_graceful_message_not_500(): void

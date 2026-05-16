@@ -4,6 +4,7 @@ import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import PneumaChat from '@/Components/PneumaChat.vue'
 import CountUp from '@/Components/CountUp.vue'
 import TelemetryCanvas from '@/Components/TelemetryCanvas.vue'
+import ContactForm from '@/Components/ContactForm.vue'
 
 const props = defineProps({
   ticker: { type: Array, default: () => [] },
@@ -829,13 +830,16 @@ const fmtClock = (d) => d.toTimeString().slice(0, 8)
         Based in <strong style="color:var(--color-amber);">Tampa</strong> — local clients get Shane in the room. Coffee, whiteboard, real conversation. Everyone else, same studio over email and the chat above.
       </p>
 
+      <div class="mb-12">
+        <ContactForm />
+      </div>
+
       <div class="flex flex-wrap items-center gap-5 mb-16">
-        <a href="mailto:clifton@sbarron.com?subject=Engage" class="cta" style="color: var(--color-amber);">
-          <span style="color:#050608;">INITIATE</span>
-          <span style="color:#050608;">→</span>
-        </a>
         <a href="#hero" class="font-mono text-[10px] uppercase tracking-[0.24em] hover:underline" style="color:var(--color-magenta);">
           ↑ OPEN CHANNEL // ASK PNEUMA
+        </a>
+        <a href="mailto:mrshanebarron@gmail.com?subject=Engage" class="font-mono text-[10px] uppercase tracking-[0.24em] hover:underline" style="color:var(--color-amber);">
+          OR EMAIL DIRECT // mrshanebarron@gmail.com
         </a>
       </div>
 
