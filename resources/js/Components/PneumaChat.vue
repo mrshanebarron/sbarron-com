@@ -7,7 +7,7 @@
 // conversation. POSTed to /api/chat which proxies Anthropic with the
 // Pneuma system prompt.
 
-import { ref, computed, nextTick, onMounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 
 const props = defineProps({
@@ -40,7 +40,28 @@ onMounted(() => {
   } catch (e) {
     session.value = cryptoId()
   }
+  // Notify backend when visitor closes the tab — triggers transcript email.
+  // Uses sendBeacon so the request fires even as the page unloads.
+  window.addEventListener('pagehide', endSession)
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pagehide', endSession)
+})
+
+function endSession() {
+  if (!session.value || !messages.value.length) return
+  try {
+    const payload = JSON.stringify({ session: session.value })
+    const blob = new Blob([payload], { type: 'application/json' })
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/chat/end', blob)
+    } else {
+      // Fallback: best-effort fetch with keepalive
+      fetch('/api/chat/end', { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})
+    }
+  } catch (_) { /* unload races are silent */ }
+}
 
 function cryptoId() {
   return 'sess_' + (crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2))
