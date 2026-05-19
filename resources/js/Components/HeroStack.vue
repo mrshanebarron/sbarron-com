@@ -26,6 +26,8 @@ const panels = [
   {
     img: '/hero/01-build.jpg',
     fallback: '/hero/workshop.jpg',
+    // Face is upper-right (~62% across, ~25% down). Anchor cover crop there.
+    position: '62% 25%',
     preTitle: 'Build',
     headline: 'Software',
     accent: 'shipped.',
@@ -36,6 +38,7 @@ const panels = [
   {
     img: '/hero/02-run.jpg',
     fallback: '/hero/keyboard.jpg',
+    position: '62% 32%',
     preTitle: 'Run',
     headline: 'Hosting that',
     accent: "doesn't get cute.",
@@ -46,6 +49,7 @@ const panels = [
   {
     img: '/hero/03-substrate.jpg',
     fallback: '/hero/circuit.jpg',
+    position: '70% 35%',
     preTitle: 'Substrate',
     headline: 'The substrate is the',
     accent: 'body.',
@@ -56,6 +60,7 @@ const panels = [
   {
     img: '/hero/04-workshop.jpg',
     fallback: '/hero/workshop.jpg',
+    position: '50% 38%',
     preTitle: 'Workshop',
     headline: 'Two LLMs and two',
     accent: 'humans.',
@@ -122,7 +127,10 @@ const pad2 = (n) => String(n).padStart(2, '0')
         :key="i"
         class="slide-bg-img"
         :class="bgState(i)"
-        :style="{ backgroundImage: `url('${resolved[i]}')` }"
+        :style="{
+          backgroundImage: `url('${resolved[i]}')`,
+          backgroundPosition: panel.position || 'center'
+        }"
       ></div>
       <div class="overlay-gradient-color"></div>
     </div>
@@ -199,7 +207,7 @@ const pad2 = (n) => String(n).padStart(2, '0')
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
+  /* background-position set inline per panel */
   filter: saturate(1.05) contrast(1.05);
   opacity: 0;
   transform: translateX(8%) scale(1.04);
