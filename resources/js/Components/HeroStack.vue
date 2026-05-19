@@ -199,7 +199,7 @@ function panelTextState(i) {
 <style scoped>
 .hero {
   position: relative;
-  min-height: clamp(420px, 56vh, 580px);
+  min-height: clamp(440px, 52vh, 540px);
   width: 100%;
   overflow: hidden;
   background: var(--ink);
@@ -257,9 +257,9 @@ function panelTextState(i) {
   grid-template-columns: 1fr;
   gap: 1.5rem;
   align-items: center;
-  min-height: clamp(420px, 56vh, 580px);
-  padding-top: 64px;
-  padding-bottom: 40px;
+  min-height: clamp(440px, 52vh, 540px);
+  padding-top: 96px;
+  padding-bottom: 32px;
 }
 @media (min-width: 1000px) {
   .hero-grid {
@@ -270,7 +270,7 @@ function panelTextState(i) {
 
 .hero-text-stack {
   position: relative;
-  min-height: 28vh;
+  min-height: 22vh;
 }
 .hero-text {
   position: absolute;
@@ -329,10 +329,23 @@ function panelTextState(i) {
   position: relative;
   z-index: 2;
   width: 100%;
+  max-height: clamp(280px, 40vh, 380px);
   display: flex;
   align-items: center;
 }
-.hero-chat-wrap :deep(.chat-embedded) { width: 100%; }
+.hero-chat-wrap :deep(.chat-embedded) {
+  width: 100%;
+  max-height: clamp(280px, 40vh, 380px);
+  display: flex;
+  flex-direction: column;
+}
+.hero-chat-wrap :deep(.chat-embedded .chat-messages),
+.hero-chat-wrap :deep(.chat-embedded .messages),
+.hero-chat-wrap :deep(.chat-embedded .chat-log) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 
 /* Dots */
 .hero-dots {
