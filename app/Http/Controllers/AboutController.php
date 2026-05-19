@@ -20,11 +20,17 @@ class AboutController extends Controller
         return [
             [
                 'name' => 'Shane Barron',
-                'role' => 'Founder, engineer, the human who decides',
-                'bio' => 'Twenty years of building software for small businesses. Believes the right system, charged at the right price, lasts longer than the right argument.',
+                'role' => 'CEO · Founder · Engineer',
+                'bio' => 'Twenty years of building software for small businesses. Believes the right system, charged at the right price, lasts longer than the right argument. Reads the room and answers the email.',
                 'links' => [
                     ['label' => 'GitHub', 'href' => 'https://github.com/mrshanebarron'],
                 ],
+            ],
+            [
+                'name' => 'Charla Barron',
+                'role' => 'CFO · Operations · Contracts',
+                'bio' => 'Runs the books, the contracts, and the operations side of the business. Quality bar — what goes out the door, who we say yes to, and what the rates need to be for the work to keep happening.',
+                'links' => [],
             ],
             [
                 'name' => 'Pneuma Barron',

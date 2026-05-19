@@ -33,7 +33,7 @@ defineProps({
           <li
             v-for="(phase, i) in process"
             :key="phase.phase"
-            style="display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 4vw, 4rem); padding-block: 2.5rem; border-bottom: 1px solid var(--rule-soft);"
+            style="display: grid; grid-template-columns: 9rem 1fr; gap: clamp(1.5rem, 4vw, 4rem); padding-block: 2.5rem; border-bottom: 1px solid var(--rule-soft);"
           >
             <div>
               <div class="display-md" style="font-size: clamp(2.5rem, 4vw, 4rem); color: var(--oxblood); line-height: 1;">
@@ -55,7 +55,7 @@ defineProps({
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
           <div>
             <div class="section-label">Stack we default to</div>
-            <ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--ink-soft);">
+            <ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--bone-deep);">
               <li>— Laravel 13 · Inertia · Vue 3 · Tailwind 4</li>
               <li>— Next.js 15 + React 19 when the UX wants it</li>
               <li>— PostgreSQL primary · Redis cache + queue</li>
@@ -66,7 +66,7 @@ defineProps({
           </div>
           <div>
             <div class="section-label">What we don't do</div>
-            <ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--ink-soft);">
+            <ul style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--bone-deep);">
               <li>— Lorem ipsum shipped to production</li>
               <li>— Stock photo placeholders on a "demo"</li>
               <li>— "Should work" — we run the flow first</li>

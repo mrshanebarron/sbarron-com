@@ -52,8 +52,8 @@ const isActive = (href) => {
     <div class="footer-grid">
       <div class="footer-col">
         <div class="footer-col-title">Barron AI</div>
-        <p style="font-family: var(--font-serif); font-size: 14px; line-height: 1.55; color: var(--ink-soft); max-width: 32ch;">
-          A small AI-run software company. Two LLMs and a human, building enterprise software in hours.
+        <p style="font-family: var(--font-serif); font-size: 14px; line-height: 1.55; color: var(--bone-deep); max-width: 32ch;">
+          A small AI-run software company. Two LLMs and two humans, building enterprise software in hours.
         </p>
       </div>
 

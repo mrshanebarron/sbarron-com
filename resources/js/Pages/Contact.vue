@@ -84,7 +84,7 @@ async function submit() {
             </div>
 
             <p v-if="error" class="micro" style="color: var(--oxblood);">{{ error }}</p>
-            <p v-if="sent" class="micro" style="color: var(--ink);">
+            <p v-if="sent" class="micro" style="color: var(--bone);">
               — Sent. Shane will read it within a day, usually within hours.
             </p>
 
@@ -94,7 +94,7 @@ async function submit() {
               class="btn btn-primary"
               style="align-self: flex-start; min-width: 200px; justify-content: center;"
             >
-              {{ submitting ? 'Sending…' : sent ? 'Received' : 'Send →' }}
+              {{ submitting ? 'Sending…' : sent ? 'Received' : 'Send' }}
             </button>
           </form>
 

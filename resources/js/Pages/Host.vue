@@ -95,8 +95,8 @@ defineProps({
       <div class="container-wide">
         <h2 class="display-md" style="margin-bottom: 1rem;">Want a domain with that?</h2>
         <p class="lede" style="max-width: 52ch; margin-bottom: 2rem;">
-          We resell name.com domains at $3 over wholesale.
-          The .com you want is probably $16 a year all in.
+          We resell name.com domains at near-wholesale.
+          The .com you want is probably $16 a year all in. No upsells, no surprise renewals.
         </p>
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
           <Link href="/domains" class="btn btn-primary">Search domains →</Link>

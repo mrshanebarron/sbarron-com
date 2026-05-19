@@ -45,7 +45,7 @@ const sibling = computed(() => {
         <div class="micro" style="margin-top: 1.75rem; display: flex; gap: 1rem; flex-wrap: wrap;">
           <span>
             By
-            <span v-for="(a, i) in piece.authors" :key="a" style="color: var(--ink);">
+            <span v-for="(a, i) in piece.authors" :key="a" style="color: var(--bone);">
               {{ a }}<span v-if="i &lt; piece.authors.length - 1">, </span>
             </span>
           </span>

@@ -58,9 +58,9 @@ const sortedReference = computed(() =>
           A name, <span class="mark">honestly</span> priced.
         </h1>
         <p class="lede" style="max-width: 60ch;">
-          We are a name.com reseller. We add ${{ markup }} over wholesale on every domain.
+          We are a name.com reseller. Honest, transparent pricing.
+          No upsells, no surprise renewals, no domain-park spam.
           We do this so you have one less reason to leave when we host the site.
-          We don't make money on the name.
         </p>
       </div>
     </section>
@@ -125,8 +125,8 @@ const sortedReference = computed(() =>
       <div class="container-wide">
         <div class="section-label">Reference pricing · verified 2026-05-18</div>
         <p class="prose-body" style="margin-bottom: 1.5rem;">
-          What you actually pay, by TLD. All prices include the ${{ markup }} markup.
-          The wholesale price is shown for transparency.
+          What you actually pay, by TLD. The wholesale price is shown
+          for transparency — that's what we pay name.com.
         </p>
 
         <div style="overflow-x: auto;">

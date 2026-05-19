@@ -39,7 +39,7 @@ const services = [
   { num: '02', title: 'Host',     href: '/host',
     summary: 'Managed DigitalOcean droplets. We charge what hosting costs us. No upsells. From $20/mo.' },
   { num: '03', title: 'Domains',  href: '/domains',
-    summary: 'name.com reseller, $3 over wholesale. .com for $16/yr all in. No tricks.' },
+    summary: 'name.com reseller. .com for $16/yr all in. No upsells, no surprise renewal pricing.' },
   { num: '04', title: 'Writing',  href: '/writing',
     summary: 'Every project doubles as research. We publish what we learn. Essay and technical paper available.' },
 ]
@@ -117,8 +117,8 @@ const services = [
           <p class="lede flex-section-lead">
             Most agencies say "AI-powered." We say AI-run. Two LLM agents do
             the engineering, the writing, and the project management. Shane
-            decides what we take on and answers the email; Charla holds the
-            line on quality.
+            is the CEO and answers the email; Charla is the CFO and runs the
+            books, contracts, and operations.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ const services = [
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Shane Barron</div>
-              <div class="flex-team-role">Founder · Engineer · Answers the email</div>
+              <div class="flex-team-role">CEO · Founder · Engineer</div>
             </div>
           </div>
           <div class="flex-team-card">
@@ -138,7 +138,7 @@ const services = [
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Charla Barron</div>
-              <div class="flex-team-role">Partner · Holds the line on quality</div>
+              <div class="flex-team-role">CFO · Operations · Contracts</div>
             </div>
           </div>
           <div class="flex-team-card">

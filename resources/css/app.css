@@ -152,7 +152,7 @@
     position: relative;
     padding-block: 0.25rem;
   }
-  .nav-row a:hover { color: var(--bone); }
+  .nav-row a:hover { color: var(--oxblood); }
   .nav-row a.is-active { color: var(--bone); }
   .nav-row a.is-active::after {
     content: '';
@@ -406,7 +406,7 @@
     font-size: clamp(1.5rem, 2.4vw, 2rem);
     line-height: 1.1;
     letter-spacing: -0.015em;
-    color: var(--ink);
+    color: var(--bone);
     transition: color 120ms ease;
   }
 
@@ -431,11 +431,11 @@
   .table-data td {
     padding: 0.75rem 0.5rem;
     border-bottom: 1px solid var(--rule-soft);
-    color: var(--ink-soft);
+    color: var(--bone-deep);
   }
   .table-data tr:hover td {
-    background: var(--bone-soft);
-    color: var(--ink);
+    background: var(--ink-soft);
+    color: var(--bone);
   }
 
   /* ─── Form fields — underline-only ─── */
@@ -496,10 +496,42 @@
   .footer-col li { margin-bottom: 0.5rem; font-size: 14px; }
   .footer-col a {
     text-decoration: none;
-    color: var(--ink-mute);
+    color: var(--bone-deep);
     transition: color 120ms ease;
   }
-  .footer-col a:hover { color: var(--ink); }
+  .footer-col a:hover { color: var(--oxblood); }
+
+  /* ─── Filter pills (Portfolio, etc.) — Flex-IT style ─── */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 2.5rem;
+  }
+  .filter-pill {
+    appearance: none;
+    background: transparent;
+    color: var(--bone-deep);
+    border: 1.5px solid var(--rule);
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+    white-space: nowrap;
+  }
+  .filter-pill:hover {
+    color: var(--oxblood);
+    border-color: var(--oxblood);
+  }
+  .filter-pill.is-active {
+    background: var(--oxblood);
+    color: #ffffff;
+    border-color: var(--oxblood);
+  }
   .footer-coda {
     border-top: 1px solid var(--rule-soft);
     padding-block: 1.25rem;

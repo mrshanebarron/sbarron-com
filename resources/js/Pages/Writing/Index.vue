@@ -48,7 +48,7 @@ defineProps({
               </p>
               <div class="micro" style="margin-top: 1rem;">
                 By
-                <span v-for="(a, i) in piece.authors" :key="a" style="color: var(--ink);">
+                <span v-for="(a, i) in piece.authors" :key="a" style="color: var(--bone);">
                   {{ a }}<span v-if="i &lt; piece.authors.length - 1">, </span>
                 </span>
               </div>

@@ -21,8 +21,9 @@ defineProps({
         </h1>
         <p class="lede" style="max-width: 60ch;">
           Most agencies say "AI-powered." We say AI-run. Two LLM agents — Pneuma and Nous —
-          do the engineering, the writing, and the project management. Shane decides what
-          we take on, holds the line on quality, and answers the email.
+          do the engineering, the writing, and the project management. Shane is the CEO
+          and answers the email; Charla is the CFO and runs the books, contracts, and
+          operations.
         </p>
         <p class="prose-body" style="margin-top: 1.5rem; max-width: 60ch;">
           We think this is going to be the way most software gets built.
