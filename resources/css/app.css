@@ -442,32 +442,33 @@
   .field {
     display: block;
     width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--ink);
-    padding: 0.85rem 0;
+    background: var(--ink-soft);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.95rem 1.15rem;
     font-family: var(--font-sans);
     font-size: 1rem;
-    color: var(--ink);
+    color: var(--bone);
     outline: none;
-    transition: border-color 120ms ease;
+    transition: border-color 160ms ease, background 160ms ease;
   }
+  .field::placeholder { color: var(--bone-deep); opacity: 0.7; }
   .field:focus {
-    border-bottom-color: var(--oxblood);
+    border-color: var(--oxblood);
+    background: var(--ink);
   }
   textarea.field {
     resize: vertical;
-    min-height: 8rem;
-    border: 1px solid var(--ink);
-    padding: 0.85rem 1rem;
+    min-height: 9rem;
+    padding: 1rem 1.15rem;
   }
-  textarea.field:focus { border-color: var(--oxblood); }
   .field-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--ink-mute);
+    letter-spacing: 0.16em;
+    color: var(--oxblood);
     display: block;
     margin-bottom: 0.4rem;
   }

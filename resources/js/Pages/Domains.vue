@@ -73,7 +73,7 @@ const sortedReference = computed(() =>
             v-model="keyword"
             type="text"
             placeholder="yourbusiness"
-            style="background: var(--bone); border: none; padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 1rem; color: var(--ink); outline: none;"
+            style="background: var(--ink-soft); border: none; padding: 1.25rem 1.5rem; font-family: var(--font-sans); font-size: 1rem; color: var(--bone); outline: none;"
             autocomplete="off"
             spellcheck="false"
           />
@@ -91,7 +91,7 @@ const sortedReference = computed(() =>
 
         <div v-if="results.length" style="margin-top: 2.5rem;">
           <div class="micro" style="margin-bottom: 1rem;">
-            Available for <span style="color: var(--ink);">{{ keyword }}</span>
+            Available for <span style="color: var(--bone);">{{ keyword }}</span>
           </div>
           <table class="table-data">
             <thead>
@@ -103,7 +103,7 @@ const sortedReference = computed(() =>
             </thead>
             <tbody>
               <tr v-for="r in results" :key="r.domain">
-                <td style="color: var(--ink); font-size: 15px;">{{ r.domain }}</td>
+                <td style="color: var(--bone); font-size: 15px; font-weight: 600;">{{ r.domain }}</td>
                 <td style="text-align: right; color: var(--oxblood); font-size: 15px;">${{ r.first_year.toFixed(2) }}</td>
                 <td style="text-align: right;">${{ r.renewal.toFixed(2) }} / yr</td>
               </tr>
@@ -141,7 +141,7 @@ const sortedReference = computed(() =>
             </thead>
             <tbody>
               <tr v-for="row in sortedReference" :key="row.tld">
-                <td style="color: var(--ink);">.{{ row.tld }}</td>
+                <td style="color: var(--bone);">.{{ row.tld }}</td>
                 <td style="text-align: right; color: var(--oxblood);">${{ row.first_year.toFixed(2) }}</td>
                 <td style="text-align: right;">${{ row.renewal.toFixed(2) }} / yr</td>
                 <td style="text-align: right; opacity: 0.6;">${{ row.wholesale_first.toFixed(2) }}</td>
