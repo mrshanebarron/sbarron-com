@@ -99,8 +99,26 @@ function onPointerLeave() { paused = false }
 onMounted(() => { startTimer() })
 onBeforeUnmount(() => { stopTimer() })
 
-function panelOpacity(i) {
-  return i === activeIndex.value ? 1 : 0
+// Track previous index so we know which panels are "behind" and
+// should slide left, vs ahead and waiting off-screen right.
+const previousIndex = ref(0)
+watch(activeIndex, (n, o) => { previousIndex.value = o })
+
+// Image position class — three states:
+//   active  → centered, opacity 1
+//   exiting → slid -8% left, fading
+//   waiting → off to the right, opacity 0, ready to slide in
+function panelImageState(i) {
+  if (i === activeIndex.value) return 'is-in'
+  if (i === previousIndex.value && i !== activeIndex.value) return 'is-out'
+  return 'is-wait'
+}
+
+// Text gets a fresh "is-in" each time the active panel changes —
+// driven by a key on the wrapper so Vue re-mounts the content for
+// CSS keyframe animation to replay.
+function panelTextState(i) {
+  return i === activeIndex.value ? 'is-in' : 'is-hidden'
 }
 </script>
 
@@ -111,16 +129,14 @@ function panelOpacity(i) {
     @pointerleave="onPointerLeave"
   >
 
-    <!-- BACKGROUND — full-bleed portrait, cross-fades per panel -->
+    <!-- BACKGROUND — slides L→R when panel changes -->
     <div class="hero-bg-stack" aria-hidden="true">
       <div
         v-for="(panel, i) in panels"
         :key="i"
         class="hero-bg"
-        :style="{
-          backgroundImage: `url('${resolved[i]}')`,
-          opacity: panelOpacity(i),
-        }"
+        :class="panelImageState(i)"
+        :style="{ backgroundImage: `url('${resolved[i]}')` }"
       ></div>
       <div class="hero-bg-overlay"></div>
     </div>
@@ -131,21 +147,21 @@ function panelOpacity(i) {
       <div class="hero-text-stack">
         <div
           v-for="(panel, i) in panels"
-          :key="i"
+          :key="`${i}-${activeIndex === i ? activeIndex : 'idle'}`"
           class="hero-text"
+          :class="panelTextState(i)"
           :style="{
-            opacity: panelOpacity(i),
-            zIndex: i === activeIndex ? 3 : 2,
+            zIndex: i === activeIndex ? 3 : 1,
             pointerEvents: i === activeIndex ? 'auto' : 'none',
           }"
         >
-          <div class="micro-flex">{{ panel.label }}</div>
-          <h1 class="display hero-display">
+          <div class="micro-flex hero-anim hero-anim-1">{{ panel.label }}</div>
+          <h1 class="display hero-display hero-anim hero-anim-2">
             {{ panel.headline }}<br>
             <span class="mark">{{ panel.accent }}</span>
           </h1>
-          <p class="lede hero-lede">{{ panel.sub }}</p>
-          <div class="hero-ctas">
+          <p class="lede hero-lede hero-anim hero-anim-3">{{ panel.sub }}</p>
+          <div class="hero-ctas hero-anim hero-anim-4">
             <a :href="panel.cta_primary.href" class="btn btn-primary">{{ panel.cta_primary.label }}</a>
             <a :href="panel.cta_secondary.href" class="btn btn-secondary">{{ panel.cta_secondary.label }}</a>
           </div>
@@ -201,9 +217,27 @@ function panelOpacity(i) {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1);
   filter: saturate(1.05) contrast(1.05);
-  will-change: opacity;
+  will-change: opacity, transform;
+  transition:
+    opacity 900ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Default: wait off to the right, ready to slide in */
+  opacity: 0;
+  transform: translateX(8%) scale(1.04);
+}
+.hero-bg.is-in {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+.hero-bg.is-out {
+  opacity: 0;
+  transform: translateX(-8%) scale(1.04);
+}
+.hero-bg.is-wait {
+  opacity: 0;
+  transform: translateX(8%) scale(1.04);
+  transition: opacity 200ms ease;
 }
 .hero-bg-overlay {
   position: absolute;
@@ -244,7 +278,32 @@ function panelOpacity(i) {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+.hero-text.is-in { opacity: 1; }
+.hero-text.is-hidden { opacity: 0; }
+
+/* Staggered enter — only when the panel is active. Each line slides
+   up + fades in, with a small delay cascade. */
+.hero-text.is-in .hero-anim {
+  animation: hero-text-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-text.is-in .hero-anim-1 { animation-delay: 80ms; }
+.hero-text.is-in .hero-anim-2 { animation-delay: 200ms; }
+.hero-text.is-in .hero-anim-3 { animation-delay: 360ms; }
+.hero-text.is-in .hero-anim-4 { animation-delay: 480ms; }
+
+@keyframes hero-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 .hero-display {
