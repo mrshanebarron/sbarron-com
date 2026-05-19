@@ -242,20 +242,10 @@ function panelTextState(i) {
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Three bands at fullscreen:
-     0–32%   solid navy   (chat surface)
-     32–48%  navy → clear (soft seam into the photo)
-     48–66%  clear        (the photo breathes)
-     66–100% clear → 0.55 navy (soft wash to support text-column legibility) */
+  /* Full-bleed photo stays visible across the entire hero.
+     Soft uniform navy wash for headline legibility on busy zones. */
   background:
-    linear-gradient(90deg,
-      var(--ink) 0%,
-      var(--ink) 32%,
-      rgba(14, 15, 30, 0.85) 38%,
-      rgba(14, 15, 30, 0.0) 48%,
-      rgba(14, 15, 30, 0.0) 66%,
-      rgba(14, 15, 30, 0.55) 88%,
-      rgba(14, 15, 30, 0.75) 100%);
+    linear-gradient(180deg, rgba(14, 15, 30, 0.35) 0%, rgba(14, 15, 30, 0.55) 100%);
   pointer-events: none;
 }
 
@@ -339,24 +329,10 @@ function panelTextState(i) {
   position: relative;
   z-index: 2;
   width: 100%;
-  min-height: 0;
-  max-height: clamp(280px, 38vh, 360px);
   display: flex;
-  align-items: stretch;
+  align-items: center;
 }
-.hero-chat-wrap :deep(.chat-embedded) {
-  width: 100%;
-  max-height: clamp(280px, 38vh, 360px);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.hero-chat-wrap :deep(.chat-embedded .chat-messages),
-.hero-chat-wrap :deep(.chat-embedded .messages) {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-}
+.hero-chat-wrap :deep(.chat-embedded) { width: 100%; }
 
 /* Dots */
 .hero-dots {
