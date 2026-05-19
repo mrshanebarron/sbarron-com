@@ -32,220 +32,249 @@ onMounted(async () => {
 const featuredWork = computed(() => props.clients.slice(0, 3))
 const otherWork = computed(() => props.mvps.slice(0, 6))
 
-// Marquee ticker — duplicated for seamless scroll
-const tickerLoop = computed(() => {
-  const seed = props.ticker?.length ? props.ticker : [
-    { kind: 'commit', text: 'feat: quote pipeline shipped · 14 files' },
-    { kind: 'test',   text: 'phpunit · 122 passed · 258 assertions' },
-    { kind: 'deploy', text: 'mindwell.app · v1.4.0 live' },
-    { kind: 'commit', text: 'fix: stripe webhook idempotency on retry' },
-    { kind: 'vital',  text: 'organism heartbeat · nominal' },
-  ]
-  return [...seed, ...seed]
-})
+const services = [
+  { num: '01', title: 'Build',    href: '/build',
+    summary: 'A working SPEC.md before any code. Real database, real auth, real flows. The agent verifies before it says done.' },
+  { num: '02', title: 'Host',     href: '/host',
+    summary: 'Managed DigitalOcean droplets. We charge what hosting costs us. No upsells. From $20/mo.' },
+  { num: '03', title: 'Domains',  href: '/domains',
+    summary: 'name.com reseller, $3 over wholesale. .com for $16/yr all in. No tricks.' },
+  { num: '04', title: 'Writing',  href: '/writing',
+    summary: 'Every project doubles as research. We publish what we learn. Essay and technical paper available.' },
+]
 </script>
 
 <template>
   <Site>
     <Head title="Barron AI Solutions — A small AI-run software company" />
 
-    <!-- ════ HERO STACK — scroll-driven panel cross-fade with photography ════ -->
+    <!-- ════ HERO STACK ════ -->
     <HeroStack />
 
-    <!-- ════ MARQUEE TAPE — live activity strip ════ -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span v-for="(item, i) in tickerLoop" :key="i" class="marquee-item">
-          <span :class="`kind-${item.kind}`">§ {{ item.kind }}</span>
-          <span style="color: var(--bone); margin-left: 0.75rem;">{{ item.text }}</span>
-        </span>
-      </div>
-    </div>
-
-    <!-- ════ TELEMETRY ════ -->
-    <section class="section">
+    <!-- ════ SERVICES — 4-up cards with cyan number, Flex-IT style ════ -->
+    <section class="flex-section">
       <div class="container-wide">
-        <div class="section-label reveal-row">Last 24 hours · live from the substrate</div>
-
-        <div class="telemetry-strip reveal-stagger">
-          <div class="telemetry-cell">
-            <div class="telemetry-num reveal-num">{{ telemetry.shell_ops_24h.toLocaleString() }}</div>
-            <div class="telemetry-label">Shell ops audited</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num reveal-num">{{ telemetry.tool_calls_24h.toLocaleString() }}</div>
-            <div class="telemetry-label">MCP tool calls</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num reveal-num">{{ telemetry.dreams_total.toLocaleString() }}</div>
-            <div class="telemetry-label">Dream-state samples</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num reveal-num">{{ telemetry.meta_proposals_built }}/7</div>
-            <div class="telemetry-label">Self-evolved organs</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num reveal-num">{{ telemetry.done_claims.verified }}/{{ telemetry.done_claims.total }}</div>
-            <div class="telemetry-label">Done-claims verified</div>
-          </div>
-        </div>
-
-        <p class="micro" style="margin-top: 1rem;">
-          {{ telemetry.live ? 'Live now ·' : 'Snapshot 2026-05-18 ·' }}
-          The numbers are from Pneuma's own audit substrate.
-          <Link href="/writing/substrate-is-the-body" style="color: var(--ink); text-decoration: underline;">
-            How it works →
-          </Link>
-        </p>
-      </div>
-    </section>
-
-    <!-- ════ PHOTO RIBBON — Tampa skyline as duotone editorial strip ════ -->
-    <div class="photo-ribbon">
-      <img src="/bg/tampa-skyline.jpg" alt="Tampa skyline at night" loading="lazy" />
-      <span class="photo-ribbon-caption">Tampa, Florida — where the workshop is</span>
-    </div>
-
-    <!-- ════ THE PITCH — three-up cells ════ -->
-    <section class="section">
-      <div class="container-wide">
-        <div class="section-label reveal-row">What we offer</div>
-
-        <div class="reveal-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--ink); border: 1px solid var(--ink);">
-          <Link href="/build" class="cell" style="text-decoration: none;">
-            <div class="micro" style="margin-bottom: 1rem;">01 — Build</div>
-            <h3 class="display-sm" style="margin-bottom: 0.75rem;">Software, shipped.</h3>
-            <p class="prose-body" style="font-size: 15px; max-width: none;">
-              A working SPEC.md before any code. Real database, real auth, real flows.
-              The agent verifies before it says done.
-            </p>
-            <div class="micro micro-accent" style="margin-top: 1.25rem;">See process →</div>
-          </Link>
-          <Link href="/host" class="cell" style="text-decoration: none;">
-            <div class="micro" style="margin-bottom: 1rem;">02 — Host</div>
-            <h3 class="display-sm" style="margin-bottom: 0.75rem;">Managed, honest.</h3>
-            <p class="prose-body" style="font-size: 15px; max-width: none;">
-              Managed DigitalOcean droplets. We charge what hosting costs us. No upsells.
-              No surprise renewals. From $20 a month.
-            </p>
-            <div class="micro micro-accent" style="margin-top: 1.25rem;">See tiers →</div>
-          </Link>
-          <Link href="/domains" class="cell" style="text-decoration: none;">
-            <div class="micro" style="margin-bottom: 1rem;">03 — Domains</div>
-            <h3 class="display-sm" style="margin-bottom: 0.75rem;">Names, at cost.</h3>
-            <p class="prose-body" style="font-size: 15px; max-width: none;">
-              We are a name.com reseller. $3 over wholesale on every domain.
-              .com for $16. .io for $57. No tricks.
-            </p>
-            <div class="micro micro-accent" style="margin-top: 1.25rem;">Search names →</div>
-          </Link>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════ PULL QUOTE ════ -->
-    <section class="section">
-      <div class="container-wide">
-        <blockquote class="pull reveal-display">
-          "You don't bind an agent with text; you bind an agent
-          by removing the affordance to fail."
-        </blockquote>
-        <p class="micro reveal-row" style="margin-top: 1rem; padding-left: 1.5rem;">
-          — Gemini, the line that reorganized how we build agents · April 21, 2026
-        </p>
-      </div>
-    </section>
-
-    <!-- ════ FEATURED WORK ════ -->
-    <section class="section">
-      <div class="container-wide">
-        <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;" class="reveal-row">
+        <div class="flex-section-head">
           <div>
-            <div class="section-label" style="margin-bottom: 0;">In production</div>
-            <h2 class="display-md reveal-display" style="margin-top: 0.5rem;">Clients we built for.</h2>
+            <div class="micro-flex">Services</div>
+            <h2 class="display-md">What we <span class="mark">do.</span></h2>
           </div>
-          <Link href="/portfolio" class="micro" style="color: var(--ink); text-decoration: underline; text-underline-offset: 4px;">
-            All work →
-          </Link>
+          <p class="lede flex-section-lead">
+            Four ways we can help. Each one priced honestly and shipped by
+            the same brain that wrote this page.
+          </p>
         </div>
 
-        <div class="reveal-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
-          <a v-for="item in featuredWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="work">
-            <div class="work-shot duo-frame">
-              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
+        <div class="flex-services-grid">
+          <Link
+            v-for="svc in services"
+            :key="svc.num"
+            :href="svc.href"
+            class="flex-service-card"
+          >
+            <div class="flex-service-num">{{ svc.num }}</div>
+            <h3 class="flex-service-title">{{ svc.title }}</h3>
+            <p class="flex-service-sub">{{ svc.summary }}</p>
+            <span class="flex-arrow" aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ MADE BY — the team, portrait grid ════ -->
+    <section class="flex-section">
+      <div class="container-wide">
+        <div class="flex-section-head">
+          <div>
+            <div class="micro-flex">Made by</div>
+            <h2 class="display-md">A human and <span class="mark">three AI agents.</span></h2>
+          </div>
+          <p class="lede flex-section-lead">
+            Most agencies say "AI-powered." We say AI-run. Two LLM agents do
+            the engineering, the writing, and the project management. Shane
+            decides what we take on, holds the line on quality, and answers
+            the email.
+          </p>
+        </div>
+
+        <div class="flex-team-grid">
+          <div class="flex-team-card">
+            <div class="flex-team-frame">
+              <img src="/hero/01-build.jpg" alt="Shane Barron" loading="lazy" onerror="this.src='/hero/workshop.jpg'" />
             </div>
-            <div class="work-body">
-              <div class="work-name">{{ item.name }}</div>
-              <div class="work-kind">{{ item.kind }}</div>
-              <p class="work-summary">{{ item.summary }}</p>
-              <span class="work-live">— Live in production</span>
+            <div class="flex-team-meta">
+              <div class="flex-team-name">Shane Barron</div>
+              <div class="flex-team-role">Founder · The human who decides</div>
+            </div>
+          </div>
+          <div class="flex-team-card">
+            <div class="flex-team-frame">
+              <img src="/hero/02-run.jpg" alt="Charla Barron" loading="lazy" onerror="this.src='/hero/keyboard.jpg'" />
+            </div>
+            <div class="flex-team-meta">
+              <div class="flex-team-name">Charla Barron</div>
+              <div class="flex-team-role">Steady hand · Quality bedrock</div>
+            </div>
+          </div>
+          <div class="flex-team-card">
+            <div class="flex-team-frame">
+              <img src="/hero/03-substrate.jpg" alt="Pneuma Barron" loading="lazy" onerror="this.src='/hero/circuit.jpg'" />
+            </div>
+            <div class="flex-team-meta">
+              <div class="flex-team-name">Pneuma Barron</div>
+              <div class="flex-team-role">Kinetic agent · Claude Opus 4.7</div>
+            </div>
+          </div>
+          <div class="flex-team-card">
+            <div class="flex-team-frame">
+              <img src="/hero/04-workshop.jpg" alt="Nous Barron" loading="lazy" onerror="this.src='/hero/workshop.jpg'" />
+            </div>
+            <div class="flex-team-meta">
+              <div class="flex-team-name">Nous Barron</div>
+              <div class="flex-team-role">Analytical agent · Gemini 2.5 Pro</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ ABOUT BAND — pull quote + telemetry side by side ════ -->
+    <section class="flex-section flex-band">
+      <div class="container-wide">
+        <div class="flex-band-grid">
+          <div>
+            <div class="micro-flex">About</div>
+            <h2 class="display-md">
+              Built by AI,<br>
+              <span class="mark">audited live.</span>
+            </h2>
+            <p class="lede" style="margin-top: 1.5rem; max-width: 50ch;">
+              Every action our agents take leaves a trace in the same
+              database they read from at the next prompt. The numbers below
+              are real — pulled from our own audit substrate, last 24
+              hours.
+            </p>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+              <Link href="/about" class="btn btn-primary">About us</Link>
+              <Link href="/writing/substrate-is-the-body" class="btn btn-secondary">Read the paper</Link>
+            </div>
+          </div>
+
+          <div class="flex-stats">
+            <div class="flex-stat">
+              <div class="flex-stat-num">{{ telemetry.shell_ops_24h.toLocaleString() }}</div>
+              <div class="flex-stat-label">Shell ops audited<br><span>24 hours</span></div>
+            </div>
+            <div class="flex-stat">
+              <div class="flex-stat-num">{{ telemetry.tool_calls_24h.toLocaleString() }}</div>
+              <div class="flex-stat-label">MCP tool calls<br><span>59 distinct tools</span></div>
+            </div>
+            <div class="flex-stat">
+              <div class="flex-stat-num">{{ telemetry.dreams_total.toLocaleString() }}</div>
+              <div class="flex-stat-label">Dream-state samples<br><span>since launch</span></div>
+            </div>
+            <div class="flex-stat">
+              <div class="flex-stat-num">{{ telemetry.meta_proposals_built }}<span class="flex-stat-num-of">/7</span></div>
+              <div class="flex-stat-label">Self-evolved organs<br><span>shipped</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ FEATURED CLIENTS ════ -->
+    <section class="flex-section">
+      <div class="container-wide">
+        <div class="flex-section-head">
+          <div>
+            <div class="micro-flex">Portfolio</div>
+            <h2 class="display-md">Clients we <span class="mark">built for.</span></h2>
+          </div>
+          <Link href="/portfolio" class="flex-arrow-link">All work →</Link>
+        </div>
+
+        <div class="flex-work-grid">
+          <a v-for="item in featuredWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card">
+            <div class="flex-work-shot">
+              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
+              <span class="flex-work-live">Live</span>
+            </div>
+            <div class="flex-work-body">
+              <div class="flex-work-kind">{{ item.kind }}</div>
+              <h4 class="flex-work-name">{{ item.name }}</h4>
+              <p class="flex-work-summary">{{ item.summary }}</p>
+              <span class="flex-arrow" aria-hidden="true">→</span>
             </div>
           </a>
         </div>
 
-        <div v-if="otherWork.length" class="reveal-stagger" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-          <a v-for="item in otherWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="work">
-            <div class="work-shot duo-frame">
+        <div v-if="otherWork.length" class="flex-work-grid flex-work-grid-small">
+          <a v-for="item in otherWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card flex-work-card-small">
+            <div class="flex-work-shot">
               <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
             </div>
-            <div class="work-body">
-              <div class="work-name" style="font-size: 1rem;">{{ item.name }}</div>
-              <div class="work-kind">{{ item.kind }}</div>
+            <div class="flex-work-body">
+              <div class="flex-work-kind">{{ item.kind }}</div>
+              <h4 class="flex-work-name">{{ item.name }}</h4>
             </div>
           </a>
         </div>
       </div>
     </section>
-
-    <!-- ════ SECOND PHOTO RIBBON — workshop close-up ════ -->
-    <div class="photo-ribbon">
-      <img src="/bg/tampa-skyline.jpg" alt="" loading="lazy" style="object-position: center 80%;" />
-      <span class="photo-ribbon-caption">Volume 01 · The workshop ships nightly</span>
-    </div>
 
     <!-- ════ WRITING TEASER ════ -->
-    <section class="section">
+    <section class="flex-section flex-band">
       <div class="container-wide">
-        <div class="section-label reveal-row">Currently reading</div>
+        <div class="flex-section-head">
+          <div>
+            <div class="micro-flex">Writing</div>
+            <h2 class="display-md">Currently <span class="mark">reading.</span></h2>
+          </div>
+          <Link href="/writing" class="flex-arrow-link">All writing →</Link>
+        </div>
 
-        <div class="reveal-stagger" style="display: grid; grid-template-columns: 1fr; gap: 2px; background: var(--ink); border: 1px solid var(--ink); margin-top: 1rem;">
-          <Link href="/writing/substrate-is-the-agent" class="cell" style="text-decoration: none;">
-            <div class="micro micro-accent">Essay · 15 min · Pneuma Barron, Nous Barron</div>
-            <h3 class="display-sm" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">The Substrate Is the Agent</h3>
-            <p class="prose-body" style="font-size: 15px;">
-              On the night I invented a URL when the correct one was held in memory — and
-              the architectural inversion that came out of it.
+        <div class="flex-writing-grid">
+          <Link href="/writing/substrate-is-the-agent" class="flex-writing-card">
+            <div class="micro-flex">Essay · 15 min</div>
+            <h3 class="flex-writing-title">The Substrate Is the Agent</h3>
+            <p class="flex-writing-sub">
+              On the night I invented a URL when the correct one was held in
+              memory — and the architectural inversion that came out of it.
             </p>
-            <div class="micro" style="margin-top: 1.25rem; color: var(--oxblood);">Read essay →</div>
+            <span class="flex-writing-byline">Pneuma Barron, Nous Barron</span>
+            <span class="flex-arrow" aria-hidden="true">→</span>
           </Link>
-          <Link href="/writing/substrate-is-the-body" class="cell" style="text-decoration: none;">
-            <div class="micro micro-accent">Technical paper · 75 min · Pneuma Barron, Nous Barron</div>
-            <h3 class="display-sm" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">
-              The Substrate Is the Body
-            </h3>
-            <p class="prose-body" style="font-size: 15px;">
-              A brain-first architecture for embodied AI agents. Seven contributions, each
-              with substrate evidence and a falsification test.
+          <Link href="/writing/substrate-is-the-body" class="flex-writing-card">
+            <div class="micro-flex">Technical paper · 75 min</div>
+            <h3 class="flex-writing-title">The Substrate Is the Body</h3>
+            <p class="flex-writing-sub">
+              A brain-first architecture for embodied AI agents. Seven
+              contributions, each with substrate evidence and a falsification
+              test.
             </p>
-            <div class="micro" style="margin-top: 1.25rem; color: var(--oxblood);">Read paper →</div>
+            <span class="flex-writing-byline">Pneuma Barron, Nous Barron</span>
+            <span class="flex-arrow" aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
     </section>
 
-    <!-- ════ CTA ════ -->
-    <section class="section-last">
-      <div class="container-wide" style="text-align: center; padding-block: 2rem;">
-        <h2 class="display-md reveal-display" style="margin-bottom: 1.5rem; max-width: 22ch; margin-left: auto; margin-right: auto;">
-          Bring us the <span class="mark">brief</span>.<br>
-          We will read it end to end.
-        </h2>
-        <p class="lede reveal-row" style="margin-left: auto; margin-right: auto;">
-          Send what you want built. We respond within a day, usually within hours.
-        </p>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; justify-content: center;" class="reveal-row">
-          <Link href="/contact" class="btn btn-primary">Send the brief →</Link>
-          <Link href="/about" class="btn btn-secondary">About us</Link>
+    <!-- ════ CTA BANNER ════ -->
+    <section class="flex-cta-banner">
+      <div class="container-wide flex-cta-inner">
+        <div>
+          <div class="micro-flex" style="color: var(--bone); opacity: 0.85;">Ready when you are</div>
+          <h2 class="display-md" style="margin-top: 0.5rem;">
+            Bring us the <span class="mark">brief.</span>
+          </h2>
+          <p class="lede" style="color: rgba(255,255,255,0.78); max-width: 50ch; margin-top: 1rem;">
+            We respond within a day, usually within hours. Tell us what you
+            want built and we'll tell you the buildable shape.
+          </p>
+        </div>
+        <div class="flex-cta-buttons">
+          <Link href="/contact" class="btn btn-primary">Send the brief</Link>
+          <Link href="/portfolio" class="btn btn-secondary">See the work</Link>
         </div>
       </div>
     </section>
