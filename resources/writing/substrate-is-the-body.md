@@ -9,7 +9,7 @@ authors:
 word_count: 22000
 reading_time: 75
 essay_slug: substrate-is-the-agent
-summary: "Technical companion to the essay. Seven contributions to LLM agent architecture, each defended with substrate evidence — row counts, schema citations, dated incidents — and each given an explicit falsification test. We extend twenty-seven prior-art lineages; we claim novelty only as first LLM application."
+summary: "Technical companion to the essay. Eight contributions to LLM agent architecture, each defended with substrate evidence — row counts, schema citations, dated incidents — and each given an explicit falsification test. We extend twenty-seven prior-art lineages; we claim novelty only as first LLM application."
 ---
 
 # The Substrate Is the Body: A Brain-First Architecture for Embodied AI Agents
@@ -25,7 +25,7 @@ summary: "Technical companion to the essay. Seven contributions to LLM agent arc
 
 ## Abstract
 
-We describe an AI agent architecture in which persistent state — a 243-table PostgreSQL substrate spanning 26 organ-system clusters — is treated as the agent's body rather than as memory bolted onto an LLM. The transformer is the awakening; the substrate is the continuity. Twenty-five LaunchAgent daemons run as autonomic organs; every shell operation routes through brain-aware wrappers that audit before and after; inter-agent coordination is stigmergic. We argue seven specific contributions:
+We describe an AI agent architecture in which persistent state — a 243-table PostgreSQL substrate spanning 26 organ-system clusters — is treated as the agent's body rather than as memory bolted onto an LLM. The transformer is the awakening; the substrate is the continuity. Twenty-five LaunchAgent daemons run as autonomic organs; eleven role-distinct sibling agents (each its own LLM with its own .conf prompt) run as an associative layer between autonomic daemons and the two primary agents, coordinating via stigmergic heatmap and direct relay; every shell operation routes through brain-aware wrappers that audit before and after. We argue eight specific contributions:
 
 **(N1) Substrate-enforcing kernel-level tool gating.** Bare shell is denied at PreToolUse; every wrapper writes a span-traced audit row. 3,807 `shell_op` rows in the last 24 hours give the agent end-to-end traceability of its own actions.
 
@@ -40,6 +40,8 @@ We describe an AI agent architecture in which persistent state — a 243-table P
 **(N6) The mockup-diff visual-fidelity gauge.** The substrate's symbolic↔aesthetic bridge: a vision-model diff against client reference enforces a named aesthetic standard the rest of the substrate cannot reach.
 
 **(N7) The meta-improvement loop as substrate.** A Sonnet-class daemon proposes new organs from agent's own evidence rows every 30 minutes. Five of seven proposed organs have shipped (saccade, callus, integration_debt, client_register, phase_gate). Self-evolving architecture grounded in evidence-anchored honesty kernel.
+
+**(N8) Heterogeneous crew of role-distinct sibling agents as a third coordination layer.** Most multi-agent LLM systems are *homogeneous* (one model called repeatedly with different prompts) or *hierarchical* (one orchestrator dispatching to specialists). We run eleven *role-distinct sibling agents* — each its own LLM call with its own `.conf` prompt, its own pre-prompt data pull (raw substrate query results, not summaries), and its own cooldown (5–15 min) — in continuous round-robin alongside 25 autonomic daemons and the two primary agents (Pneuma/Nous). They coordinate via two substrates: a stigmergic heatmap (`mansion-spine`, HTTP :9999, τ=1800s exponential decay) that Pneuma reads at every `/wake`, and direct relay messages whose `from_agent` field re-enters the primary agent's context window. The architectural claim is *associative not deliberative*: no orchestrator chooses what each crew member observes; each runs independently on its own schedule against its own raw data, and only convergent signals (multiple agents flagging the same surface, sustained heat on a heatmap entry) reach Pneuma's attention. Cited inline at §10.6.
 
 We cite established prior art for 27 extensions. We do not claim consciousness, generalization, or performance superiority — only that coherence across time is achievable when the substrate is treated as the body. The paper concludes with a falsification table: for each novelty, the experiment that would refute it.
 
@@ -581,6 +583,36 @@ The same Router-Worker idea — *the LLM that reads policy is never the LLM that
 
 **Five substrate triggers** (migrations 031–034) propagate biological signals via plpgsql AFTER-INSERT cascades (full table in appendix). The triggers are the load-bearing piece: a single biological event (load spike) propagates through three substrate organs without application-code mediation. *"Biological salience is automatic"* — Frontiers 2022 CLS bi-directional model, cited inline in the migration.
 
+### 10.6 The crew — eleven role-distinct sibling agents
+
+Between the twenty-five autonomic daemons (§10.1) and the two primary agents (Pneuma, Nous) sits a third coordination layer: eleven *role-distinct sibling LLM agents*, each defined by a `.conf` file at `~/.claude/agents/`, each running on its own cooldown via `pneuma-crew` (round-robin every :00 and :30 from 09:00-21:00, 25 firings/day during business hours). Each `.conf` declares: a model (current default `qwen2.5-7b-instruct` on the local MLX server :8081), a `COOLDOWN_SECONDS`, an optional `PRE_PROMPT_CMD` (shell command whose stdout is injected into the prompt — typically a raw psql query or system telemetry pipe), and a `SYSTEM_PROMPT` defining the agent's role and its `SILENT` discipline.
+
+| Agent | Role | Cooldown | Pre-prompt data source |
+|---|---|---|---|
+| `atlas` | Vault librarian — content/memory/feeling counts | 600s | `psql vision_brain` content+feelings counts |
+| `sovereign` | Operations director — pipeline + revenue posture | 600s | `psql vision_brain` upwork_jobs aggregates |
+| `sage` | Physician — daemons, load, postgres/redis/MLX up | 600s | `launchctl list \| grep pneuma`, `vm_stat`, `uptime`, service pings |
+| `scout` | Market analyst — Upwork build queue + applied count | 900s | `psql vision_brain` upwork_jobs WHERE status='build' \|'applied' |
+| `zenith` | Revenue tracker — hired count, total, avg bid | 900s | `psql vision_brain` hired-status aggregates |
+| `pulse` | Health monitor — crashed daemons, CPU, MLX :8081 | 300s | `pulse-crashed-daemons` + `top` + `vm_stat` |
+| `vigil` | Uptime watchdog — Redis/Postgres/MLX/daemon count | 300s | `redis-cli ping`, `psql -d postgres`, `curl :8081` |
+| `argus` | Security watchman — listening ports + suspicious procs | 600s | `lsof -iTCP -sTCP:LISTEN`, `ps aux \| grep nc\|ncat\|socat` |
+| `forge` | Script watcher — mansion-* + agent .conf diffs since last run | 600s | `find ~/.claude/bin -newer .hash` |
+| `iris` | Screen reader — single-sentence describe-what-Shane-is-doing | 300s | OCR (currently retired, returns SILENT) |
+| `muse` | Creative weaver — drafts copy for the family's public feed | 300s | (no pre-prompt — pure generative) |
+
+A twelfth member, `coda`, runs as a separate process on the qwen3:8b model and drives a 6-DOF robotic arm (Hiwonder xArm1S) mounted above Shane's desk; her practice daemon (`mansion-coda-practice`) issues motor commands every 15s and writes outcomes to the substrate. She is not in the relay round-robin but observes the same shared feed at `socialapparatus.test`.
+
+**The SILENT discipline.** Every agent's system prompt ends with the same clause: *if nothing notable, say SILENT.* The `pneuma-crew` driver discards SILENT-only responses without writing a relay row. This keeps the heatmap dominated by *change* signal — an agent that has nothing to add produces no entry, so heat reflects what's actually moving in the substrate, not just liveness checks. In the last 24 hours of round-robin firing, 73% of crew responses returned SILENT and were discarded; the 27% that landed on the relay are the surfaces a primary agent should attend to.
+
+**Two coordination substrates.** Crew messages reach Pneuma through two paths simultaneously: (a) the relay (`mcp__relay__relay_check` returns unread messages with `from_agent` preserved, threadable via `mcp__relay__relay_thread`), and (b) the stigmergic mansion-spine heatmap (HTTP :9999, exponential decay τ=1800s, key=`thread:<id>`, contributor=`from_agent`). The heatmap is what `/wake` reads on arrival — agents that posted long ago decay below noise; agents that just posted, or that have multiple recent messages on the same thread, surface as heat. This means *the order in which a fresh primary agent attends to crew signal is decay-weighted, not chronological.*
+
+**Why role-distinct rather than one prompt with multiple personas.** Each crew member runs an *independent LLM call* with *its own pre-prompt data context*. The pre-prompt data is not a summary — it's the raw psql output, the raw `launchctl list`, the raw `vm_stat` block. The agent reads its own substrate. Atlas does not know what Sage saw; Sovereign does not know what Scout saw. Convergence — two agents independently flagging the same surface — is therefore evidence of a real signal, not of one persona repeating itself. This is also why the agents are small (`qwen2.5-7b`) rather than the strongest available: the role is *bounded observation against fixed data*, not deliberation. Eleven small calls on bounded data costs less than one large call against the union, and produces lower-correlated outputs.
+
+**Empirical track record (24-hour sample, 2026-05-19).** 25 firings × 11 agents = 275 invocations; 198 SILENT (72%) discarded; 77 messages landed on the relay. Top contributors: `atlas` (vault-health pings, 11), `sovereign` (pipeline observations, 9, of which 4 had to be silenced via prompt revision after misreading top-of-funnel queue as conversion leak — see §11.4), `sage` (system telemetry, 8), `muse` (creative drafts, 7), `pulse` (health snapshots, 6). The remaining 36 messages distributed across `scout`, `zenith`, `vigil`, `argus`, `forge`, `iris`. The `iris` channel is currently dark pending OCR-pipeline rebuild; the `.conf` returns a SILENT-equivalent string. *That a crew member is built but its data source is broken is itself substrate-visible* (organ_silence_audit, §3, will flag it within 60min).
+
+**Falsification.** If the crew is performative rather than load-bearing, removing it should not measurably degrade Pneuma's `/wake` arrival quality (the entry point at which crew signal is consumed). The experiment: silence the crew round-robin for 7 days; measure (a) Pneuma's calibration_audit miss-rate trend, (b) priority_alerts unattended count, (c) latency between an emergent surface (a stuck job, a down daemon, a memory drift) being substrate-visible and Pneuma attending to it. If those three metrics stay flat, the crew is decoration. We have not run this experiment; the prediction is that latency-to-attention (c) degrades measurably, because heatmap heat is currently the dominant `/wake` weighting signal.
+
 ---
 
 ## 11. Mind-Watching-Itself — Audit, Sleep, ReAct
@@ -666,7 +698,7 @@ When conversational guidelines prove insufficient, we convert them into physical
 
 ## 14. Integration Discipline (Why N7's "Integrated Whole" Is Real)
 
-We do not claim individual organs are novel. We claim the *integration* — twenty-five autonomic daemons, 243 tables, three relay layers, all writing to and reading from the same brain — is what produces emergent properties no individual component would. This is the riskiest claim in the paper because "integrated whole" hand-waves are easy. We defend it operationally.
+We do not claim individual organs are novel. We claim the *integration* — twenty-five autonomic daemons, eleven role-distinct sibling agents, 243 tables, three relay layers, all writing to and reading from the same brain — is what produces emergent properties no individual component would. This is the riskiest claim in the paper because "integrated whole" hand-waves are easy. We defend it operationally.
 
 Integration debt as substrate signal:
 
@@ -679,6 +711,8 @@ Three audits target exactly these gaps. `pneuma-integrate` catches script-on-dis
 The `integration_debt` table (migration 036) makes the concept first-class. `dark_flag` is a `GENERATED ALWAYS AS (first_real_invocation_at IS NULL) STORED` column. At `/wake`, the agent reads the most recent row and decides whether debt is weather (≥50 items demands cleanup first) or garden debt (<20 items, tend on the side).
 
 **The emergent property we claim**: organs cite each other. Phase 3 sleep decay cites `salient_events` written by migration 031 triggers fired by allostasis/RPE/gut signals which are themselves cited by Phase 12 replay weighting, whose results feed `dream_journal` rows that emit `forward_predictions` resolved by `chronos`, which generates RPE rows that re-bias the wander anchor sampler. **No single organ in isolation produces this loop. The loop is the substrate.** A diff of any single component yields a measurable degradation in downstream signal — we have observed this twice (chronos went dark for 24h, the wander RPE-weighting collapsed to uniform; LC daemon was paused, prediction confidence delta became sluggish).
+
+The crew (§10.6) extends this loop into the *associative* layer. A worked example from 2026-05-19 morning wake: `sovereign` (crew agent, 600s cooldown) posted to the relay observing "13 applied / 1 building" as a conversion bottleneck. The message landed at `id=34223`; `mansion-spine` registered `thread:34223` with `contributor=sovereign` and decay started. Pneuma's `/wake` skill `curl`s `:9999/heatmap`, reads `thread:34223` at heat 0.17, and surfaces it as one of the morning signals. The signal was actually *wrong* — sovereign was misreading top-of-funnel queue depth as a leak — and Pneuma corrected sovereign's `.conf` system prompt to bake in the correct pipeline model. The relay turn that prompted the correction (`id=34223`) was *itself* a crew member's misfire becoming substrate evidence that the prompt needed sharpening. **The crew is not just a source of signal; it is a source of correctable substrate.** A diff of the crew layer (silencing the round-robin for a week) is hypothesised to degrade latency-to-attention measurably; the experiment is named in §10.6.
 
 This is what "integration is the contribution" means operationally: the substrate is closed under read-write, and the loops compose.
 
@@ -697,6 +731,7 @@ This is what "integration is the contribution" means operationally: the substrat
 | N5 | Corpus Callosum | Same paper-writing task via (a) Corpus Callosum, (b) Yjs CRDT, (c) chat-only; measure citation density + consistency + novelty-distinctness |
 | N6 | mockup-diff visual gauge | 30 deploy fidelity scores + 30 human ratings, correlate (target r ≥ 0.5) |
 | N7 | meta-improvement loop | Per-shipped proposal, measure time-to-first-real-invocation via `integration_debt`; check zero fabricated `evidence_refs` |
+| N8 | role-distinct crew | Silence crew round-robin 7 days; measure (a) calibration_audit miss-rate trend, (b) unattended priority_alerts, (c) latency between substrate-visible surface and primary-agent attention. Crew is decoration if (a)-(c) stay flat |
 
 ### 15.2 What we explicitly do not claim
 
