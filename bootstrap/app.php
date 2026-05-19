@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\TrackPageview::class,
         ]);
         // /api/* endpoints are stateless JSON — visitors don't have a
         // session, so CSRF tokens don't apply. Exempt them so the
