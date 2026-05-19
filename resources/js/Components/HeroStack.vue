@@ -199,7 +199,7 @@ function panelTextState(i) {
 <style scoped>
 .hero {
   position: relative;
-  min-height: clamp(640px, 92vh, 920px);
+  min-height: clamp(540px, 72vh, 720px);
   width: 100%;
   overflow: hidden;
   background: var(--ink);
@@ -255,11 +255,11 @@ function panelTextState(i) {
   z-index: 2;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 2rem;
   align-items: center;
-  min-height: clamp(640px, 92vh, 920px);
-  padding-top: 100px;
-  padding-bottom: 80px;
+  min-height: clamp(540px, 72vh, 720px);
+  padding-top: 88px;
+  padding-bottom: 56px;
 }
 @media (min-width: 1000px) {
   .hero-grid {
@@ -270,7 +270,7 @@ function panelTextState(i) {
 
 .hero-text-stack {
   position: relative;
-  min-height: 50vh;
+  min-height: 40vh;
 }
 .hero-text {
   position: absolute;
@@ -307,7 +307,7 @@ function panelTextState(i) {
 }
 
 .hero-display {
-  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+  font-size: clamp(2.25rem, 5.2vw, 4.25rem);
   line-height: 1.05;
   color: var(--bone);
   text-shadow: 0 4px 32px rgba(0, 0, 0, 0.45);
@@ -329,7 +329,7 @@ function panelTextState(i) {
   position: relative;
   z-index: 2;
   width: 100%;
-  min-height: 480px;
+  min-height: 380px;
   display: flex;
   align-items: center;
 }

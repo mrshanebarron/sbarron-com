@@ -87,13 +87,13 @@ const services = [
         <div class="flex-section-head">
           <div>
             <div class="micro-flex">Made by</div>
-            <h2 class="display-md">A human and <span class="mark">three AI agents.</span></h2>
+            <h2 class="display-md">Two humans and <span class="mark">two AI agents.</span></h2>
           </div>
           <p class="lede flex-section-lead">
             Most agencies say "AI-powered." We say AI-run. Two LLM agents do
             the engineering, the writing, and the project management. Shane
-            decides what we take on, holds the line on quality, and answers
-            the email.
+            decides what we take on and answers the email; Charla holds the
+            line on quality.
           </p>
         </div>
 
@@ -104,7 +104,7 @@ const services = [
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Shane Barron</div>
-              <div class="flex-team-role">Founder · The human who decides</div>
+              <div class="flex-team-role">Founder · Engineer · Answers the email</div>
             </div>
           </div>
           <div class="flex-team-card">
@@ -113,7 +113,7 @@ const services = [
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Charla Barron</div>
-              <div class="flex-team-role">Steady hand · Quality bedrock</div>
+              <div class="flex-team-role">Partner · Holds the line on quality</div>
             </div>
           </div>
           <div class="flex-team-card">
