@@ -1,18 +1,19 @@
 <script setup>
 /**
- * Scroll-driven hero stack — Flex-IT theme, full-bleed cyborg portrait
- * background, persistent PneumaChat on the right.
+ * Hero with auto-advancing background portrait + persistent PneumaChat.
  *
- * 4 panels. Sticky 100vh inside 4vh spacer. Background image swaps per
- * panel. Text content (label, headline, CTAs) cross-fades over it.
+ * Behavior change from prior version: no scroll-pinning. The hero is a
+ * single full-height (clamped) section. Background image and headline
+ * text cross-fade automatically every AUTO_INTERVAL ms. Dots on the
+ * right let the visitor jump panels; hover pauses autoplay.
+ *
  * PneumaChat sits in the right column for every panel and does not
- * change as the user scrolls — only the background + text change.
- *
- * Drop nano-banana portraits at /hero/01-build.jpg … /hero/04-workshop.jpg
- * (Shane, Charla, Pneuma, Nous). On 404 the fallback Unsplash images load.
+ * change as panels advance.
  */
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import PneumaChat from '@/Components/PneumaChat.vue'
+
+const AUTO_INTERVAL = 6500 // ms per panel
 
 const panels = [
   {
@@ -57,8 +58,7 @@ const panels = [
   },
 ]
 
-// Preload + fallback. We swap the bg-image URL when load fails by
-// pre-resolving in JS, then bind whichever URL succeeded.
+// Preload + fallback chain
 const resolved = ref(panels.map(p => p.img))
 onMounted(() => {
   panels.forEach((p, i) => {
@@ -69,141 +69,121 @@ onMounted(() => {
   })
 })
 
-const spacer = ref(null)
-const progress = ref(0)
-let rafId
+const activeIndex = ref(0)
+let timerId = null
+let paused = false
 
-function onScroll() {
-  if (!spacer.value) return
-  const rect = spacer.value.getBoundingClientRect()
-  const spacerHeight = spacer.value.offsetHeight
-  const viewport = window.innerHeight
-  const raw = -rect.top / (spacerHeight - viewport)
-  progress.value = Math.max(0, Math.min(1, raw))
+function advance() {
+  if (paused) return
+  activeIndex.value = (activeIndex.value + 1) % panels.length
 }
 
-function loop() { onScroll(); rafId = requestAnimationFrame(loop) }
-
-const activeIndex = computed(() => {
-  const p = progress.value * (panels.length - 0.0001)
-  return Math.floor(p)
-})
-
-function panelOpacity(i) {
-  const p = progress.value * (panels.length - 1)
-  const d = Math.abs(p - i)
-  return d >= 1 ? 0 : 1 - d
+function startTimer() {
+  stopTimer()
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  timerId = window.setInterval(advance, AUTO_INTERVAL)
 }
-
-onMounted(() => {
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    rafId = requestAnimationFrame(loop)
-  }
-})
-onBeforeUnmount(() => { if (rafId) cancelAnimationFrame(rafId) })
+function stopTimer() {
+  if (timerId) { clearInterval(timerId); timerId = null }
+}
 
 function jumpTo(i) {
-  if (!spacer.value) return
-  const spacerHeight = spacer.value.offsetHeight
-  const viewport = window.innerHeight
-  const totalScroll = spacerHeight - viewport
-  const targetProgress = i / (panels.length - 1)
-  const targetY = spacer.value.offsetTop + (targetProgress * totalScroll)
-  window.scrollTo({ top: targetY, behavior: 'smooth' })
+  activeIndex.value = i
+  // Reset timer so visitor gets a full interval after manual click
+  startTimer()
+}
+
+function onPointerEnter() { paused = true }
+function onPointerLeave() { paused = false }
+
+onMounted(() => { startTimer() })
+onBeforeUnmount(() => { stopTimer() })
+
+function panelOpacity(i) {
+  return i === activeIndex.value ? 1 : 0
 }
 </script>
 
 <template>
-  <div ref="spacer" class="hero-spacer">
-    <div class="hero-sticky">
+  <section
+    class="hero"
+    @pointerenter="onPointerEnter"
+    @pointerleave="onPointerLeave"
+  >
 
-      <!-- BACKGROUND LAYER — full-bleed portrait, cross-fades per panel -->
-      <div class="hero-bg-stack" aria-hidden="true">
+    <!-- BACKGROUND — full-bleed portrait, cross-fades per panel -->
+    <div class="hero-bg-stack" aria-hidden="true">
+      <div
+        v-for="(panel, i) in panels"
+        :key="i"
+        class="hero-bg"
+        :style="{
+          backgroundImage: `url('${resolved[i]}')`,
+          opacity: panelOpacity(i),
+        }"
+      ></div>
+      <div class="hero-bg-overlay"></div>
+    </div>
+
+    <!-- CONTENT — text left (cross-faded), Pneuma chat right (persistent) -->
+    <div class="container-wide hero-grid">
+
+      <div class="hero-text-stack">
         <div
           v-for="(panel, i) in panels"
           :key="i"
-          class="hero-bg"
+          class="hero-text"
           :style="{
-            backgroundImage: `url('${resolved[i]}')`,
             opacity: panelOpacity(i),
+            zIndex: i === activeIndex ? 3 : 2,
+            pointerEvents: i === activeIndex ? 'auto' : 'none',
           }"
-        ></div>
-        <div class="hero-bg-overlay"></div>
-      </div>
-
-      <!-- CONTENT LAYER — text left (cross-fades), PneumaChat right (persistent) -->
-      <div class="container-wide hero-grid">
-
-        <!-- LEFT: text, cross-faded per panel -->
-        <div class="hero-text-stack">
-          <div
-            v-for="(panel, i) in panels"
-            :key="i"
-            class="hero-text"
-            :style="{
-              opacity: panelOpacity(i),
-              zIndex: i === activeIndex ? 3 : 2,
-              pointerEvents: i === activeIndex ? 'auto' : 'none',
-            }"
-          >
-            <div class="micro-flex">{{ panel.label }}</div>
-            <h1 class="display hero-display">
-              {{ panel.headline }}<br>
-              <span class="mark">{{ panel.accent }}</span>
-            </h1>
-            <p class="lede hero-lede">{{ panel.sub }}</p>
-            <div class="hero-ctas">
-              <a :href="panel.cta_primary.href" class="btn btn-primary">{{ panel.cta_primary.label }}</a>
-              <a :href="panel.cta_secondary.href" class="btn btn-secondary">{{ panel.cta_secondary.label }}</a>
-            </div>
+        >
+          <div class="micro-flex">{{ panel.label }}</div>
+          <h1 class="display hero-display">
+            {{ panel.headline }}<br>
+            <span class="mark">{{ panel.accent }}</span>
+          </h1>
+          <p class="lede hero-lede">{{ panel.sub }}</p>
+          <div class="hero-ctas">
+            <a :href="panel.cta_primary.href" class="btn btn-primary">{{ panel.cta_primary.label }}</a>
+            <a :href="panel.cta_secondary.href" class="btn btn-secondary">{{ panel.cta_secondary.label }}</a>
           </div>
         </div>
-
-        <!-- RIGHT: persistent Pneuma chat -->
-        <div class="hero-chat-wrap">
-          <PneumaChat
-            :embedded="true"
-            :accent="'#0bb6ee'"
-            :bg="'rgba(14, 15, 30, 0.78)'"
-            :fg="'#ffffff'"
-          />
-        </div>
       </div>
 
-      <!-- Dot nav, vertical right -->
-      <nav class="hero-dots" aria-label="Hero sections">
-        <button
-          v-for="(panel, i) in panels"
-          :key="i"
-          @click="jumpTo(i)"
-          class="hero-dot"
-          :class="{ 'is-active': i === activeIndex }"
-          :aria-label="`Go to ${panel.label}`"
-        >
-          <span class="hero-dot-num">{{ String(i + 1).padStart(2, '0') }}</span>
-          <span class="hero-dot-bar"></span>
-        </button>
-      </nav>
-
-      <div class="hero-scroll-hint" aria-hidden="true">
-        <span>Scroll</span>
-        <span class="hero-scroll-bar"></span>
+      <div class="hero-chat-wrap">
+        <PneumaChat
+          :embedded="true"
+          :accent="'#0bb6ee'"
+          :bg="'rgba(14, 15, 30, 0.78)'"
+          :fg="'#ffffff'"
+        />
       </div>
-
     </div>
-  </div>
+
+    <!-- Dot nav, vertical right -->
+    <nav class="hero-dots" aria-label="Hero sections">
+      <button
+        v-for="(panel, i) in panels"
+        :key="i"
+        @click="jumpTo(i)"
+        class="hero-dot"
+        :class="{ 'is-active': i === activeIndex }"
+        :aria-label="`Go to ${panel.label}`"
+      >
+        <span class="hero-dot-num">{{ String(i + 1).padStart(2, '0') }}</span>
+        <span class="hero-dot-bar"></span>
+      </button>
+    </nav>
+
+  </section>
 </template>
 
 <style scoped>
-.hero-spacer {
+.hero {
   position: relative;
-  height: calc(100vh * 4);
-}
-
-.hero-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  min-height: clamp(640px, 92vh, 920px);
   width: 100%;
   overflow: hidden;
   background: var(--ink);
@@ -221,13 +201,13 @@ function jumpTo(i) {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1);
   filter: saturate(1.05) contrast(1.05);
+  will-change: opacity;
 }
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Dark vignette on left where text lives; cyan rim from upper-right */
   background:
     linear-gradient(90deg, rgba(14, 15, 30, 0.92) 0%, rgba(14, 15, 30, 0.55) 45%, rgba(14, 15, 30, 0.15) 100%),
     radial-gradient(ellipse at 85% 15%, rgba(11, 182, 238, 0.25), transparent 55%),
@@ -243,7 +223,7 @@ function jumpTo(i) {
   grid-template-columns: 1fr;
   gap: 2.5rem;
   align-items: center;
-  min-height: 100vh;
+  min-height: clamp(640px, 92vh, 920px);
   padding-top: 100px;
   padding-bottom: 80px;
 }
@@ -254,7 +234,6 @@ function jumpTo(i) {
   }
 }
 
-/* Text stack — all panels stacked, cross-fade */
 .hero-text-stack {
   position: relative;
   min-height: 50vh;
@@ -265,7 +244,7 @@ function jumpTo(i) {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-display {
@@ -274,14 +253,12 @@ function jumpTo(i) {
   color: var(--bone);
   text-shadow: 0 4px 32px rgba(0, 0, 0, 0.45);
 }
-
 .hero-lede {
   max-width: 48ch;
   margin-top: 1.5rem;
   color: var(--bone-deep);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
-
 .hero-ctas {
   display: flex;
   gap: 0.85rem;
@@ -289,24 +266,17 @@ function jumpTo(i) {
   margin-top: 2rem;
 }
 
-/* Chat wrap — fills right column */
 .hero-chat-wrap {
   position: relative;
   z-index: 2;
   width: 100%;
-  height: 100%;
   min-height: 480px;
   display: flex;
   align-items: center;
 }
+.hero-chat-wrap :deep(.chat-embedded) { width: 100%; }
 
-/* PneumaChat will fill the wrap. The component itself handles its
-   inner sizing via its embedded layout. */
-.hero-chat-wrap :deep(.chat-embedded) {
-  width: 100%;
-}
-
-/* ─── Dots — vertical, right edge ─── */
+/* Dots */
 .hero-dots {
   position: absolute;
   right: clamp(0.75rem, 2vw, 1.5rem);
@@ -331,7 +301,7 @@ function jumpTo(i) {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  transition: color 200ms ease;
+  transition: color 200ms ease, opacity 200ms ease;
   opacity: 0.55;
 }
 .hero-dot:hover { opacity: 1; color: var(--bone); }
@@ -342,41 +312,14 @@ function jumpTo(i) {
   width: 16px;
   height: 1px;
   background: var(--bone-deep);
-  transition: background 200ms ease, width 200ms ease;
+  transition: background 600ms ease, width 600ms ease;
 }
 .hero-dot.is-active .hero-dot-bar {
   background: var(--oxblood);
   width: 28px;
 }
 
-.hero-scroll-hint {
-  position: absolute;
-  left: clamp(1.5rem, 4vw, 4rem);
-  bottom: 1.5rem;
-  z-index: 5;
-  color: var(--bone-deep);
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  opacity: 0.6;
-}
-.hero-scroll-bar {
-  display: block;
-  width: 40px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--oxblood), transparent);
-  animation: scroll-pulse 2s ease-in-out infinite;
-}
-@keyframes scroll-pulse {
-  0%, 100% { transform: scaleX(0.4); transform-origin: left; opacity: 0.4; }
-  50%      { transform: scaleX(1);   transform-origin: left; opacity: 1; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-bg, .hero-text { transition: none; }
-  .hero-scroll-bar { animation: none; }
 }
 </style>
