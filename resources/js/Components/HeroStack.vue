@@ -141,8 +141,17 @@ function panelTextState(i) {
       <div class="hero-bg-overlay"></div>
     </div>
 
-    <!-- CONTENT — text left (cross-faded), Pneuma chat right (persistent) -->
+    <!-- CONTENT — Pneuma chat left (persistent), text right (cross-faded) -->
     <div class="container-wide hero-grid">
+
+      <div class="hero-chat-wrap">
+        <PneumaChat
+          :embedded="true"
+          :accent="'#0bb6ee'"
+          :bg="'rgba(14, 15, 30, 0.78)'"
+          :fg="'#ffffff'"
+        />
+      </div>
 
       <div class="hero-text-stack">
         <div
@@ -166,15 +175,6 @@ function panelTextState(i) {
             <a :href="panel.cta_secondary.href" class="btn btn-secondary">{{ panel.cta_secondary.label }}</a>
           </div>
         </div>
-      </div>
-
-      <div class="hero-chat-wrap">
-        <PneumaChat
-          :embedded="true"
-          :accent="'#0bb6ee'"
-          :bg="'rgba(14, 15, 30, 0.78)'"
-          :fg="'#ffffff'"
-        />
       </div>
     </div>
 
@@ -242,9 +242,11 @@ function panelTextState(i) {
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
+  /* Darker on right (where text lives now), lighter on left (chat),
+     plus cyan rim from upper-left + top/bottom vignettes. */
   background:
-    linear-gradient(90deg, rgba(14, 15, 30, 0.92) 0%, rgba(14, 15, 30, 0.55) 45%, rgba(14, 15, 30, 0.15) 100%),
-    radial-gradient(ellipse at 85% 15%, rgba(11, 182, 238, 0.25), transparent 55%),
+    linear-gradient(270deg, rgba(14, 15, 30, 0.92) 0%, rgba(14, 15, 30, 0.55) 45%, rgba(14, 15, 30, 0.15) 100%),
+    radial-gradient(ellipse at 15% 15%, rgba(11, 182, 238, 0.25), transparent 55%),
     linear-gradient(180deg, rgba(14, 15, 30, 0.7) 0%, transparent 30%, rgba(14, 15, 30, 0.85) 100%);
   pointer-events: none;
 }
