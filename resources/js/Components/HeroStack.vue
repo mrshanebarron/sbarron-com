@@ -242,10 +242,20 @@ function panelTextState(i) {
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Light touch: cyan rim from upper-left, minimal vignette for legibility.
-     No dark mass — the photo carries the hero. */
+  /* Three bands at fullscreen:
+     0–32%   solid navy   (chat surface)
+     32–48%  navy → clear (soft seam into the photo)
+     48–66%  clear        (the photo breathes)
+     66–100% clear → 0.55 navy (soft wash to support text-column legibility) */
   background:
-    radial-gradient(ellipse at 15% 20%, rgba(11, 182, 238, 0.18), transparent 60%);
+    linear-gradient(90deg,
+      var(--ink) 0%,
+      var(--ink) 32%,
+      rgba(14, 15, 30, 0.85) 38%,
+      rgba(14, 15, 30, 0.0) 48%,
+      rgba(14, 15, 30, 0.0) 66%,
+      rgba(14, 15, 30, 0.55) 88%,
+      rgba(14, 15, 30, 0.75) 100%);
   pointer-events: none;
 }
 
@@ -332,7 +342,7 @@ function panelTextState(i) {
   min-height: 0;
   max-height: clamp(280px, 38vh, 360px);
   display: flex;
-  align-items: center;
+  align-items: stretch;
 }
 .hero-chat-wrap :deep(.chat-embedded) {
   width: 100%;
