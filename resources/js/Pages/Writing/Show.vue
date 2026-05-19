@@ -55,7 +55,7 @@ const sibling = computed(() => {
           <span>{{ piece.reading_time }} read</span>
         </div>
 
-        <div v-if="sibling" style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--bone-soft); border-left: 2px solid var(--oxblood);">
+        <div v-if="sibling" style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--ink-soft); border-left: 3px solid var(--oxblood);">
           <span class="micro micro-accent">{{ sibling.label }}</span>
           <span class="micro" style="color: var(--ink-faint); margin: 0 0.5rem;">·</span>
           <Link :href="`/writing/${sibling.slug}`" style="color: var(--ink);">

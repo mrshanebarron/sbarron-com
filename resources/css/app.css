@@ -711,61 +711,64 @@
   }
 
   /* ─── Long-form article body ─── */
+  /* Long-form prose on dark ground. Sans body, cyan accents,
+     readable contrast at scale. */
   .prose-substrate {
-    font-family: var(--font-serif);
-    font-size: 1.125rem;
-    line-height: 1.65;
-    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--bone-deep);
   }
   .prose-substrate > * + * { margin-top: 1.4em; }
   .prose-substrate p { text-wrap: pretty; max-width: var(--measure-text); }
 
   .prose-substrate h2 {
-    font-family: var(--font-serif);
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-weight: 800;
     font-size: clamp(1.75rem, 2.6vw, 2.25rem);
     line-height: 1.15;
     letter-spacing: -0.02em;
     margin-top: 3.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--ink);
-    color: var(--ink);
+    border-top: 1px solid var(--rule-soft);
+    color: var(--bone);
   }
   .prose-substrate h3 {
-    font-family: var(--font-serif);
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-weight: 700;
     font-size: 1.4rem;
-    line-height: 1.2;
+    line-height: 1.25;
     margin-top: 2.5rem;
-    color: var(--ink);
+    color: var(--bone);
   }
   .prose-substrate h4 {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 11px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    font-size: 12px;
     margin-top: 2rem;
     color: var(--oxblood);
   }
-  .prose-substrate strong { color: var(--ink); font-weight: 600; }
-  .prose-substrate em { color: var(--ink); font-style: italic; }
+  .prose-substrate strong { color: var(--bone); font-weight: 700; }
+  .prose-substrate em { color: var(--bone); font-style: italic; }
 
   .prose-substrate a {
-    color: var(--ink);
+    color: var(--oxblood);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
-  .prose-substrate a:hover { color: var(--oxblood); }
+  .prose-substrate a:hover { color: var(--bone); }
 
   .prose-substrate blockquote {
     margin: 2rem 0;
-    padding: 0.25rem 0 0.25rem 1.5rem;
-    border-left: 2px solid var(--oxblood);
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    border-left: 3px solid var(--oxblood);
     font-style: italic;
-    color: var(--ink);
+    color: var(--bone);
     font-size: 1.1em;
-    line-height: 1.5;
+    line-height: 1.55;
     max-width: var(--measure-text);
   }
   .prose-substrate blockquote p { margin: 0; }
@@ -783,38 +786,43 @@
     position: absolute;
     left: -1.5rem;
     color: var(--oxblood);
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
+    font-weight: 700;
   }
   .prose-substrate ol { list-style: decimal; }
   .prose-substrate ol li::marker {
     color: var(--oxblood);
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 0.9em;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .prose-substrate hr {
     margin: 3rem 0;
     background: var(--rule-soft);
+    height: 1px;
+    border: none;
   }
 
   .prose-substrate code {
     font-family: var(--font-mono);
     font-size: 0.9em;
-    padding: 0.1em 0.4em;
-    background: var(--bone-soft);
-    color: var(--oxblood-deep);
+    padding: 0.12em 0.45em;
+    background: rgba(11, 182, 238, 0.12);
+    color: var(--oxblood);
+    border-radius: 2px;
   }
   .prose-substrate pre {
     font-family: var(--font-mono);
     font-size: 0.85em;
     line-height: 1.6;
     padding: 1.25rem 1.5rem;
-    background: var(--ink);
+    background: var(--ink-soft);
     color: var(--bone);
     overflow-x: auto;
     margin: 1.8rem 0;
-    border-left: 2px solid var(--oxblood);
+    border-left: 3px solid var(--oxblood);
+    border-radius: 4px;
     max-width: 100%;
   }
   .prose-substrate pre code {
@@ -822,6 +830,7 @@
     color: inherit;
     padding: 0;
     font-size: 1em;
+    border-radius: 0;
   }
 
   .prose-substrate table {
@@ -830,26 +839,28 @@
     border-collapse: collapse;
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    border: 1px solid var(--ink);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    overflow: hidden;
   }
   .prose-substrate th,
   .prose-substrate td {
     text-align: left;
-    padding: 0.6rem 0.75rem;
+    padding: 0.65rem 0.85rem;
     border-bottom: 1px solid var(--rule-soft);
     vertical-align: top;
   }
   .prose-substrate th {
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     font-size: 0.7rem;
     color: var(--oxblood);
-    border-bottom: 1px solid var(--ink);
-    background: var(--bone-soft);
+    background: var(--ink-soft);
+    border-bottom: 1px solid var(--oxblood);
   }
-  .prose-substrate td { color: var(--ink-soft); }
-  .prose-substrate td strong { color: var(--ink); }
+  .prose-substrate td { color: var(--bone-deep); }
+  .prose-substrate td strong { color: var(--bone); }
 
   /* ════════════════════════════════════════════════════════════════
      E.1 — Paper grain. Faint SVG noise overlay across the whole page.
