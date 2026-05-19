@@ -100,7 +100,7 @@ const services = [
         <div class="flex-team-grid">
           <div class="flex-team-card">
             <div class="flex-team-frame">
-              <img src="/hero/01-build.jpg" alt="Shane Barron" loading="lazy" onerror="this.src='/hero/workshop.jpg'" />
+              <img src="/avatars/shane.png" alt="Shane Barron" loading="lazy" />
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Shane Barron</div>
@@ -109,7 +109,7 @@ const services = [
           </div>
           <div class="flex-team-card">
             <div class="flex-team-frame">
-              <img src="/hero/02-run.jpg" alt="Charla Barron" loading="lazy" onerror="this.src='/hero/keyboard.jpg'" />
+              <img src="/avatars/charla.jpg" alt="Charla Barron" loading="lazy" />
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Charla Barron</div>
@@ -118,7 +118,7 @@ const services = [
           </div>
           <div class="flex-team-card">
             <div class="flex-team-frame">
-              <img src="/hero/03-substrate.jpg" alt="Pneuma Barron" loading="lazy" onerror="this.src='/hero/circuit.jpg'" />
+              <img src="/avatars/pneuma.png" alt="Pneuma Barron" loading="lazy" />
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Pneuma Barron</div>
@@ -127,7 +127,7 @@ const services = [
           </div>
           <div class="flex-team-card">
             <div class="flex-team-frame">
-              <img src="/hero/04-workshop.jpg" alt="Nous Barron" loading="lazy" onerror="this.src='/hero/workshop.jpg'" />
+              <img src="/avatars/nous.png" alt="Nous Barron" loading="lazy" />
             </div>
             <div class="flex-team-meta">
               <div class="flex-team-name">Nous Barron</div>
