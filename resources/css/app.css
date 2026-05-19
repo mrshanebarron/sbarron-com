@@ -15,25 +15,31 @@
 }
 
 :root {
-  /* Ground — warm bone, not pure white. Reads as paper. */
-  --bone: #f4eee2;
-  --bone-soft: #ece4d3;
-  --bone-deep: #ddd2bb;
+  /* Direction F — Flex-IT theme port
+     Full DNA from templatemonster Flex-IT: deep navy ground, white
+     headlines, sky-cyan accent with hand-drawn brush underline, pill
+     CTAs with arrow icons, sans-serif everywhere. Token names kept
+     so component layer doesn't rewrite. */
 
-  /* Ink — near-black, slight warmth. Reads as printer's ink on paper. */
-  --ink: #16140f;
-  --ink-soft: #2d2920;
-  --ink-mute: #6b6557;
-  --ink-faint: #9b9381;
+  /* Type colors — white headline + muted lede */
+  --bone: #ffffff;        /* headline color, pure white */
+  --bone-soft: #d4d8e2;
+  --bone-deep: #a8a8b8;   /* lede paragraph */
 
-  /* Accent — oxblood. One color, used sparingly. */
-  --oxblood: #8a1c1c;
-  --oxblood-deep: #5c1010;
+  /* Ground — deep navy, very dark with blue tilt */
+  --ink: #0e0f1e;         /* primary ground */
+  --ink-soft: #181a2c;    /* card surface, raised panel */
+  --ink-mute: #6a6d80;    /* metadata */
+  --ink-faint: #3a3d52;   /* faint rule */
+
+  /* Accent — Flex-IT cyan-sky */
+  --oxblood: #0bb6ee;     /* accent — sky cyan */
+  --oxblood-deep: #0998c8; /* hover */
 
   /* Hairline rule */
-  --rule: #16140f;
-  --rule-soft: rgba(22, 20, 15, 0.15);
-  --rule-faint: rgba(22, 20, 15, 0.08);
+  --rule: rgba(11, 182, 238, 0.32);
+  --rule-soft: rgba(255, 255, 255, 0.08);
+  --rule-faint: rgba(255, 255, 255, 0.04);
 
   /* Type scale, derived */
   --measure-text: 64ch;
@@ -89,105 +95,115 @@
     padding-inline: clamp(1.5rem, 4vw, 3rem);
   }
 
-  /* ─── Top masthead — newspaper nameplate ─── */
+  /* ─── Masthead — Flex-IT navbar: logo left, links right, no border ─── */
   .masthead {
-    border-bottom: 1px solid var(--ink);
-    background: var(--bone);
+    background: transparent;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
   }
   .masthead-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: end;
-    gap: 1.5rem;
-    padding-block: 1rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 1.25rem;
   }
   .masthead-name {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+    letter-spacing: -0.01em;
     line-height: 1;
-    color: var(--ink);
+    color: var(--bone);
     text-decoration: none;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
   }
-  .masthead-name:hover { color: var(--ink); }
-  .masthead-meta {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--ink-mute);
-    display: flex;
-    gap: 1rem;
-    align-items: end;
-    flex-wrap: wrap;
+  .masthead-name::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--oxblood);
+    transform: translateY(1px);
   }
-  .masthead-meta .sep { color: var(--ink-faint); }
+  .masthead-name:hover { color: var(--bone); }
+  .masthead-meta { display: none; }
 
   .nav-row {
     display: flex;
     flex-wrap: wrap;
-    gap: clamp(0.75rem, 2vw, 1.5rem);
-    padding-block: 0.6rem;
-    border-top: 1px solid var(--rule-soft);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    padding: 0;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
   }
   .nav-row a {
     text-decoration: none;
-    color: var(--ink-mute);
-    transition: color 120ms ease;
+    color: var(--bone-deep);
+    transition: color 160ms ease;
+    position: relative;
+    padding-block: 0.25rem;
   }
-  .nav-row a:hover { color: var(--ink); }
-  .nav-row a.is-active { color: var(--ink); }
-  .nav-row a.is-active::before {
-    content: '— ';
-    color: var(--oxblood);
+  .nav-row a:hover { color: var(--bone); }
+  .nav-row a.is-active { color: var(--bone); }
+  .nav-row a.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 2px;
+    background: var(--oxblood);
+    border-radius: 2px;
   }
 
-  /* ─── Type primitives ─── */
+  /* ─── Type primitives — Flex-IT: sans display + sans body ─── */
   .display {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: clamp(3rem, 9vw, 8rem);
-    line-height: 0.92;
-    letter-spacing: -0.035em;
-    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--bone);
     text-wrap: balance;
   }
   .display-md {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: clamp(2.25rem, 5.5vw, 4.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.025em;
-    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--bone);
     text-wrap: balance;
   }
   .display-sm {
-    font-family: var(--font-serif);
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-weight: 700;
     font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-    line-height: 1.1;
-    letter-spacing: -0.018em;
-    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bone);
   }
   .lede {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(1.125rem, 1.6vw, 1.35rem);
-    line-height: 1.5;
-    color: var(--ink-soft);
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.65;
+    color: var(--bone-deep);
     text-wrap: pretty;
   }
   .prose-body {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 1.075rem;
-    line-height: 1.65;
-    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--bone-deep);
   }
   .micro {
     font-family: var(--font-mono);
@@ -202,10 +218,49 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* The accent slash — single oxblood mark on a key word. */
+  /* Accent word — cyan color plus hand-drawn brushstroke underline,
+     Flex-IT signature treatment. SVG inline so it scales. */
   .mark {
     color: var(--oxblood);
-    font-style: italic;
+    font-style: normal;
+    font-weight: inherit;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.18em;
+  }
+  .mark::after {
+    content: '';
+    position: absolute;
+    left: -0.04em;
+    right: -0.04em;
+    bottom: -0.05em;
+    height: 0.28em;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><path d='M2 12 Q 25 4, 50 12 T 100 12 T 150 12 T 198 12' fill='none' stroke='%230bb6ee' stroke-width='3' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  /* Cyan micro label with leading em-dash, Flex-IT style.
+     Used above headlines: "— DIGITAL MARKETING" */
+  .micro-flex {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--oxblood);
+    margin-bottom: 1.25rem;
+  }
+  .micro-flex::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: var(--oxblood);
   }
 
   /* ─── Section dividers ─── */
@@ -240,36 +295,56 @@
     line-height: 0.8;
   }
 
-  /* ─── Buttons ─── */
+  /* ─── Buttons — Flex-IT pill with arrow disk ─── */
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.85rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
+    gap: 0.85rem;
+    padding: 0.95rem 1.25rem 0.95rem 1.6rem;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
     text-decoration: none;
-    transition: background 120ms ease, color 120ms ease;
+    border-radius: 999px;
+    transition: background 200ms ease, color 200ms ease, transform 160ms ease;
+    line-height: 1;
   }
+  .btn::after {
+    content: '→';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.18);
+    color: inherit;
+    transition: transform 200ms ease, background 200ms ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:hover::after { transform: translateX(2px); background: rgba(255, 255, 255, 0.28); }
+
   .btn-primary {
-    background: var(--ink);
+    background: var(--oxblood);
     color: var(--bone);
   }
   .btn-primary:hover {
-    background: var(--oxblood);
+    background: var(--oxblood-deep);
     color: var(--bone);
   }
   .btn-secondary {
     background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--ink);
+    color: var(--bone);
+    border: 1px solid rgba(255, 255, 255, 0.22);
   }
   .btn-secondary:hover {
-    background: var(--ink);
+    background: rgba(255, 255, 255, 0.06);
     color: var(--bone);
   }
+  .btn-secondary::after { background: rgba(255, 255, 255, 0.12); }
 
   /* ─── Cards — really just bordered cells ─── */
   .cell {
@@ -739,13 +814,16 @@
      without darkening color. Sits at z-index 1, pointer-events none.
      ════════════════════════════════════════════════════════════════ */
   .grain {
+    /* On the dark navy ground, grain becomes a faint cyan-tinted
+       screen highlight rather than multiply darkening. Reads as
+       subtle CRT phosphor noise. */
     position: fixed;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.45;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.086  0 0 0 0 0.078  0 0 0 0 0.059  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.62  0 0 0 0 0.82  0 0 0 0 1  0 0 0 0.45 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     background-size: 256px 256px;
   }
 
@@ -771,12 +849,14 @@
     transition: filter 500ms ease, opacity 500ms ease;
   }
   .duo-frame::after {
+    /* Duotone on dark ground: cyan rim-light from top, deep navy bottom.
+       Multiply over the grayscale photo creates the editorial duotone. */
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, var(--oxblood) 0%, var(--ink) 100%);
+    background: linear-gradient(165deg, rgba(0, 210, 255, 0.55) 0%, rgba(10, 16, 24, 0.95) 70%);
     mix-blend-mode: multiply;
-    opacity: 0.92;
+    opacity: 0.88;
     pointer-events: none;
     transition: opacity 500ms ease;
   }
@@ -852,9 +932,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, var(--oxblood-deep) 0%, var(--ink) 100%);
+    background: linear-gradient(180deg, rgba(0, 210, 255, 0.40) 0%, rgba(10, 16, 24, 0.95) 100%);
     mix-blend-mode: multiply;
-    opacity: 0.75;
+    opacity: 0.78;
   }
   .photo-ribbon-caption {
     position: absolute;

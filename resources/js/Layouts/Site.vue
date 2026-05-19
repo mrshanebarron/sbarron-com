@@ -6,12 +6,9 @@ defineProps({
 })
 
 const page = usePage()
-const today = new Date()
-const issueLabel = `Vol. 01 · No. ${String(today.getDate()).padStart(2, '0')}`
-const dateLabel = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
 const nav = [
-  { href: '/',          label: 'Index'    },
+  { href: '/',          label: 'Home'     },
   { href: '/build',     label: 'Build'    },
   { href: '/host',      label: 'Host'     },
   { href: '/domains',   label: 'Domains'  },
@@ -29,34 +26,21 @@ const isActive = (href) => {
 </script>
 
 <template>
-  <!-- Paper grain across whole page. Multiplies onto bone ground. -->
-  <div class="grain" aria-hidden="true"></div>
-
   <header v-if="!bare" class="masthead">
     <div class="container-wide">
       <div class="masthead-row">
         <Link href="/" class="masthead-name">
-          Barron AI Solutions
+          Barron AI
         </Link>
-        <div class="masthead-meta">
-          <span>{{ issueLabel }}</span>
-          <span class="sep">·</span>
-          <span>{{ dateLabel }}</span>
-          <span class="sep">·</span>
-          <span>Tampa, FL</span>
-        </div>
-        <div class="masthead-meta" style="justify-content: flex-end;">
-          <span>AI-Run · Est. 2026</span>
-        </div>
+        <nav class="nav-row">
+          <Link
+            v-for="link in nav"
+            :key="link.href"
+            :href="link.href"
+            :class="{ 'is-active': isActive(link.href) }"
+          >{{ link.label }}</Link>
+        </nav>
       </div>
-      <nav class="nav-row">
-        <Link
-          v-for="link in nav"
-          :key="link.href"
-          :href="link.href"
-          :class="{ 'is-active': isActive(link.href) }"
-        >{{ link.label }}</Link>
-      </nav>
     </div>
   </header>
 

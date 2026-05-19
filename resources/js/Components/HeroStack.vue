@@ -1,65 +1,70 @@
 <script setup>
 /**
- * Scroll-driven hero stack.
+ * Scroll-driven hero stack — Flex-IT theme port.
  *
- * Sticky-positioned hero (100vh) inside a scroll spacer (Nx that height).
- * As the user scrolls down, we compute which panel is "active" based on
- * scroll progress through the spacer, then cross-fade between panels.
+ * 4 panels. Sticky-positioned hero (100vh) inside a 4-viewport spacer.
+ * Scroll advances panels. Each panel: text left, treated photo right.
  *
- * Each panel:
- *   - Full-bleed photographic background (duotone-treated via CSS filter)
- *   - Left column: micro label, big serif headline with oxblood accent word
- *   - Right column: photo (already in background, this is a darkening overlay)
- *
- * Inspired by demo.templatemonster.com/demo/297700.html — but treated under
- * Direction E's editorial restraint instead of the original neon-cyan/dark.
- *
- * Falls back gracefully: with reduced-motion or no JS, panel 0 shows.
+ * When user-provided nano-banana images are present at
+ * /hero/01-build.jpg etc, they take precedence; otherwise falls
+ * back to the Unsplash placeholders (workshop, circuit, keyboard).
  */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const panels = [
   {
-    img: '/hero/workshop.jpg',
-    label: '§ 01 · Build',
+    img: '/hero/01-build.jpg',
+    fallback: '/hero/workshop.jpg',
+    label: 'Build',
     headline: 'Enterprise software,',
     accent: 'in hours.',
     sub: 'A working SPEC.md before any code. Real database, real auth, real flows. The agent verifies before it says done.',
-    cta_primary: { href: '/build', label: 'How we build →' },
+    cta_primary: { href: '/build', label: 'How we build' },
     cta_secondary: { href: '/contact', label: 'Start a project' },
   },
   {
-    img: '/hero/workshop.jpg',
-    label: '§ 02 · Run',
-    headline: 'Hosting that',
+    img: '/hero/02-run.jpg',
+    fallback: '/hero/keyboard.jpg',
+    label: 'Run',
+    headline: "Hosting that",
     accent: "doesn't get cute.",
     sub: 'Managed DigitalOcean. We charge what hosting costs us. No upsells. No surprise renewal pricing. From $20 a month.',
-    cta_primary: { href: '/host', label: 'See hosting →' },
+    cta_primary: { href: '/host', label: 'See hosting' },
     cta_secondary: { href: '/domains', label: 'Or a domain' },
   },
   {
-    img: '/hero/circuit.jpg',
-    label: '§ 03 · Substrate',
+    img: '/hero/03-substrate.jpg',
+    fallback: '/hero/circuit.jpg',
+    label: 'Substrate',
     headline: 'The substrate',
     accent: 'is the body.',
     sub: 'A 243-table Postgres brain. 25 autonomic daemons. Every action audited. The architecture is the research, and it ships your software.',
-    cta_primary: { href: '/writing/substrate-is-the-body', label: 'Read the paper →' },
+    cta_primary: { href: '/writing/substrate-is-the-body', label: 'Read the paper' },
     cta_secondary: { href: '/writing/substrate-is-the-agent', label: 'Start with the essay' },
   },
   {
-    img: '/bg/tampa-skyline.jpg',
-    label: '§ 04 · Workshop',
-    headline: 'Built in',
-    accent: 'Tampa, FL.',
-    sub: 'Two LLMs and a human in a Tampa workshop, on a single M3 Max. We answer the email ourselves. Shane decides what we take on.',
-    cta_primary: { href: '/about', label: 'About us →' },
+    img: '/hero/04-workshop.jpg',
+    fallback: '/hero/workshop.jpg',
+    label: 'Workshop',
+    headline: 'Two LLMs and',
+    accent: 'a human.',
+    sub: 'A small AI-run software company on a single M3 Max. We answer the email ourselves. Shane decides what we take on.',
+    cta_primary: { href: '/about', label: 'About us' },
     cta_secondary: { href: '/portfolio', label: 'See the work' },
   },
 ]
 
+// On image load failure, swap to fallback path.
+const heroImgRefs = ref([])
+function onImgErr(e, panel) {
+  if (e.target.src.endsWith(panel.img)) {
+    e.target.src = panel.fallback
+  }
+}
+
 const stage = ref(null)
 const spacer = ref(null)
-const progress = ref(0) // 0..1 through the spacer
+const progress = ref(0)
 let rafId
 
 function onScroll() {
@@ -67,7 +72,6 @@ function onScroll() {
   const rect = spacer.value.getBoundingClientRect()
   const spacerHeight = spacer.value.offsetHeight
   const viewport = window.innerHeight
-  // Spacer top reaches 0 → progress 0; spacer top hits -(spacerHeight - viewport) → progress 1
   const raw = -rect.top / (spacerHeight - viewport)
   progress.value = Math.max(0, Math.min(1, raw))
 }
@@ -77,14 +81,11 @@ function loop() {
   rafId = requestAnimationFrame(loop)
 }
 
-// Which panel index is "primary" right now
 const activeIndex = computed(() => {
   const p = progress.value * (panels.length - 0.0001)
   return Math.floor(p)
 })
 
-// Per-panel opacity: each panel is fully visible at its index, fades over
-// 0.5 of a step on either side.
 function panelOpacity(i) {
   const p = progress.value * (panels.length - 1)
   const distance = Math.abs(p - i)
@@ -92,25 +93,21 @@ function panelOpacity(i) {
   return 1 - distance
 }
 
-// Per-panel translate (subtle parallax in/out)
-function panelTransform(i) {
+function panelImgX(i) {
   const p = progress.value * (panels.length - 1)
-  const delta = (p - i) * 60 // px
-  return `translateY(${delta}px)`
+  const delta = (p - i) * 40
+  return `translateX(${delta}px) scale(1.04)`
 }
 
 onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reduce) {
-    rafId = requestAnimationFrame(loop)
-  }
+  if (!reduce) rafId = requestAnimationFrame(loop)
 })
 
 onBeforeUnmount(() => {
   if (rafId) cancelAnimationFrame(rafId)
 })
 
-// Active dot navigation — click jumps to that panel's scroll position
 function jumpTo(i) {
   if (!spacer.value) return
   const spacerHeight = spacer.value.offsetHeight
@@ -123,11 +120,9 @@ function jumpTo(i) {
 </script>
 
 <template>
-  <!-- Outer spacer reserves scroll room. Hero is sticky inside it. -->
   <div ref="spacer" class="hero-spacer">
     <div ref="stage" class="hero-sticky">
 
-      <!-- Panel stack — all stacked, cross-fade via opacity -->
       <div
         v-for="(panel, i) in panels"
         :key="i"
@@ -135,37 +130,39 @@ function jumpTo(i) {
         :class="{ 'is-active': i === activeIndex }"
         :style="{
           opacity: panelOpacity(i),
-          transform: panelTransform(i),
           zIndex: i === activeIndex ? 3 : 2,
           pointerEvents: i === activeIndex ? 'auto' : 'none',
         }"
       >
-        <!-- Photographic background, ink+oxblood duotone treated -->
-        <div class="hero-photo" :style="{ backgroundImage: `url('${panel.img}')` }"></div>
-        <div class="hero-photo-overlay"></div>
+        <div class="container-wide hero-grid">
+          <!-- LEFT: text -->
+          <div class="hero-text">
+            <div class="micro-flex">{{ panel.label }}</div>
+            <h1 class="display hero-display">
+              {{ panel.headline }}<br>
+              <span class="mark">{{ panel.accent }}</span>
+            </h1>
+            <p class="lede hero-lede">{{ panel.sub }}</p>
+            <div class="hero-ctas">
+              <a :href="panel.cta_primary.href" class="btn btn-primary">{{ panel.cta_primary.label }}</a>
+              <a :href="panel.cta_secondary.href" class="btn btn-secondary">{{ panel.cta_secondary.label }}</a>
+            </div>
+          </div>
 
-        <!-- Content -->
-        <div class="container-wide hero-content">
-          <div class="micro" style="color: var(--bone-deep); margin-bottom: 1.25rem;">{{ panel.label }}</div>
-          <h1 class="display hero-display" style="color: var(--bone); margin-bottom: 1.5rem;">
-            {{ panel.headline }}<br>
-            <span class="hero-accent">{{ panel.accent }}</span>
-          </h1>
-          <p class="lede" style="color: rgba(244, 238, 226, 0.78); max-width: 52ch;">
-            {{ panel.sub }}
-          </p>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem;">
-            <a :href="panel.cta_primary.href" class="btn btn-primary" style="background: var(--bone); color: var(--ink);">
-              {{ panel.cta_primary.label }}
-            </a>
-            <a :href="panel.cta_secondary.href" class="btn btn-secondary" style="border-color: var(--bone); color: var(--bone);">
-              {{ panel.cta_secondary.label }}
-            </a>
+          <!-- RIGHT: image, framed -->
+          <div class="hero-image-wrap">
+            <div class="hero-image" :style="{ transform: panelImgX(i) }">
+              <img :src="panel.img" :alt="panel.label" loading="eager" @error="onImgErr($event, panel)" />
+              <div class="hero-image-overlay"></div>
+            </div>
+            <!-- Decorative cyan brackets, Flex-IT style -->
+            <span class="hero-bracket hero-bracket-tl" aria-hidden="true"></span>
+            <span class="hero-bracket hero-bracket-br" aria-hidden="true"></span>
           </div>
         </div>
       </div>
 
-      <!-- Panel dots — bottom-left chip navigation -->
+      <!-- Dot nav, vertical on right -->
       <nav class="hero-dots" aria-label="Hero sections">
         <button
           v-for="(panel, i) in panels"
@@ -180,7 +177,6 @@ function jumpTo(i) {
         </button>
       </nav>
 
-      <!-- Scroll hint -->
       <div class="hero-scroll-hint" aria-hidden="true">
         <span>Scroll</span>
         <span class="hero-scroll-bar"></span>
@@ -193,7 +189,6 @@ function jumpTo(i) {
 <style scoped>
 .hero-spacer {
   position: relative;
-  /* 1 viewport per panel-1 — so 4 panels = 4 viewport heights of scroll */
   height: calc(100vh * 4);
 }
 
@@ -204,8 +199,18 @@ function jumpTo(i) {
   width: 100%;
   overflow: hidden;
   background: var(--ink);
-  border-bottom: 1px solid var(--ink);
   isolation: isolate;
+}
+
+/* Faint cyan-blue radial wash in the corners, sets the Flex-IT mood */
+.hero-sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(11, 182, 238, 0.10), transparent 50%),
+    radial-gradient(ellipse at 15% 85%, rgba(154, 56, 255, 0.08), transparent 55%);
+  z-index: 0;
 }
 
 .hero-panel {
@@ -213,123 +218,145 @@ function jumpTo(i) {
   inset: 0;
   display: flex;
   align-items: center;
-  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding-top: 100px; /* clear the masthead */
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hero-photo {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  /* Duotone: grayscale + boost contrast — overlay does the color */
-  filter: grayscale(1) contrast(1.15) brightness(0.65);
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr 1.05fr; gap: 4rem; }
 }
 
-.hero-photo-overlay {
+.hero-text { position: relative; z-index: 2; }
+.hero-display {
+  font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+  line-height: 1.05;
+}
+.hero-lede {
+  max-width: 48ch;
+  margin-top: 1.5rem;
+}
+.hero-ctas {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* RIGHT image — bracketed, treated */
+.hero-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 70vh;
+  isolation: isolate;
+}
+.hero-image {
   position: absolute;
   inset: 0;
-  /* Ink + oxblood gradient, multiply onto the desaturated photo */
+  overflow: hidden;
+  border-radius: 4px;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.1) contrast(1.05);
+}
+.hero-image-overlay {
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(ellipse at 25% 30%, rgba(138, 28, 28, 0.55), transparent 60%),
-    linear-gradient(180deg, rgba(22, 20, 15, 0.65) 0%, rgba(22, 20, 15, 0.92) 100%);
-  mix-blend-mode: multiply;
+    radial-gradient(ellipse at 30% 70%, rgba(11, 182, 238, 0.18), transparent 65%),
+    linear-gradient(135deg, transparent 30%, rgba(14, 15, 30, 0.7) 100%);
   pointer-events: none;
 }
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
+.hero-bracket {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--oxblood);
+  z-index: 3;
 }
+.hero-bracket-tl { top: -8px; left: -8px; border-right: none; border-bottom: none; }
+.hero-bracket-br { bottom: -8px; right: -8px; border-left: none; border-top: none; }
 
-.hero-display {
-  font-size: clamp(2.75rem, 8vw, 7rem);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
-  text-shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-
-.hero-accent {
-  color: var(--oxblood);
-  font-style: italic;
-  font-weight: 700;
-  /* Brighter on dark background */
-  filter: brightness(1.4) saturate(1.2);
-}
-
-/* Dots navigation */
+/* Dots — vertical right side */
 .hero-dots {
   position: absolute;
-  left: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(1.5rem, 4vh, 2.5rem);
+  right: clamp(1rem, 3vw, 2.5rem);
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 5;
   display: flex;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 .hero-dot {
   appearance: none;
   background: transparent;
   border: none;
-  color: rgba(244, 238, 226, 0.5);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
+  color: var(--bone-deep);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
   padding: 0;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.6rem;
   transition: color 200ms ease;
+  opacity: 0.55;
 }
-.hero-dot:hover { color: var(--bone); }
-.hero-dot.is-active { color: var(--bone); }
+.hero-dot:hover { opacity: 1; color: var(--bone); }
+.hero-dot.is-active { opacity: 1; color: var(--bone); }
 .hero-dot-num { font-variant-numeric: tabular-nums; }
 .hero-dot-bar {
   display: block;
-  width: 32px;
+  width: 16px;
   height: 1px;
-  background: rgba(244, 238, 226, 0.3);
+  background: var(--bone-deep);
   transition: background 200ms ease, width 200ms ease;
 }
-.hero-dot:hover .hero-dot-bar,
 .hero-dot.is-active .hero-dot-bar {
   background: var(--oxblood);
-  width: 48px;
+  width: 28px;
 }
 
-/* Scroll hint */
 .hero-scroll-hint {
   position: absolute;
-  right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(1.5rem, 4vh, 2.5rem);
+  left: clamp(1.5rem, 4vw, 4rem);
+  bottom: 1.5rem;
   z-index: 5;
-  color: rgba(244, 238, 226, 0.5);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
+  color: var(--bone-deep);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0.6;
 }
 .hero-scroll-bar {
   display: block;
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, transparent, var(--bone));
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--oxblood), transparent);
   animation: scroll-pulse 2s ease-in-out infinite;
 }
 @keyframes scroll-pulse {
-  0%, 100% { transform: scaleY(0.4); transform-origin: top; opacity: 0.4; }
-  50%      { transform: scaleY(1);   transform-origin: top; opacity: 1; }
+  0%, 100% { transform: scaleX(0.4); transform-origin: left; opacity: 0.4; }
+  50%      { transform: scaleX(1);   transform-origin: left; opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-panel { transition: none; }
+  .hero-panel, .hero-image { transition: none; }
   .hero-scroll-bar { animation: none; }
 }
 </style>
