@@ -40,4 +40,9 @@ return [
         'model' => env('ANTHROPIC_CHAT_MODEL', 'claude-sonnet-4-5'),
     ],
 
+    'namecom' => [
+        'username' => env('NAMECOM_USERNAME'),
+        'token' => env('NAMECOM_TOKEN'),
+    ],
+
 ];
