@@ -1163,6 +1163,29 @@
   .flex-band {
     background: var(--ink-soft);
   }
+  /* Pneuma chat — own section below hero */
+  .pneuma-chat-section .pneuma-chat-frame {
+    max-width: 760px;
+    margin: 2.5rem auto 0;
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 22px 60px -28px rgba(11, 182, 238, 0.35),
+                0 8px 22px -12px rgba(0, 0, 0, 0.45);
+  }
+  .pneuma-chat-section .pneuma-chat-frame .chat-embedded {
+    width: 100%;
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pneuma-chat-section .pneuma-chat-frame .chat-embedded .chat-messages,
+  .pneuma-chat-section .pneuma-chat-frame .chat-embedded .messages,
+  .pneuma-chat-section .pneuma-chat-frame .chat-embedded .chat-log {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
 
   .flex-section-head {
     display: grid;

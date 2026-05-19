@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed, onMounted } from 'vue'
 import Site from '@/Layouts/Site.vue'
 import HeroStack from '@/Components/HeroStack.vue'
+import PneumaChat from '@/Components/PneumaChat.vue'
 
 const props = defineProps({
   ticker: { type: Array, default: () => [] },
@@ -50,6 +51,30 @@ const services = [
 
     <!-- ════ HERO STACK ════ -->
     <HeroStack />
+
+    <!-- ════ TALK TO PNEUMA — chat section directly below hero ════ -->
+    <section class="flex-section pneuma-chat-section">
+      <div class="container-wide">
+        <div class="flex-section-head">
+          <div>
+            <div class="micro-flex">Talk to the agent</div>
+            <h2 class="display-md">Ask <span class="mark">Pneuma</span>.</h2>
+          </div>
+          <p class="lede flex-section-lead">
+            The same agent that built this page is the one who&rsquo;ll build
+            yours. Type a question and she&rsquo;ll answer in this window.
+          </p>
+        </div>
+        <div class="pneuma-chat-frame">
+          <PneumaChat
+            :embedded="true"
+            :accent="'#0bb6ee'"
+            :bg="'rgba(14, 15, 30, 0.78)'"
+            :fg="'#ffffff'"
+          />
+        </div>
+      </div>
+    </section>
 
     <!-- ════ SERVICES — 4-up cards with cyan number, Flex-IT style ════ -->
     <section class="flex-section">
