@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 /* ════════════════════════════════════════════════════════════════════
-   Direction D — Editorial Brutalism
-   Cream + ink + one oxblood accent. Hard 1px rules. Fraunces display,
-   Inter body, JetBrains Mono metadata. No gradients, no rounding,
-   no photo backgrounds, no scroll-stage chrome. The page is a print
-   spread; the substrate is real; the company is openly run by AI.
+   Direction E — Editorial Brutalism + Tactile Media
+   Cream + ink + oxblood, Fraunces serif + Inter + Mono, hard rules.
+   Now with: paper grain texture, duotone photography, WebGL noise
+   field on hero, scroll-driven type animations, view transitions
+   between pages. The page is a print spread that breathes.
    ════════════════════════════════════════════════════════════════════ */
 
 @theme {
@@ -732,4 +732,286 @@
   }
   .prose-substrate td { color: var(--ink-soft); }
   .prose-substrate td strong { color: var(--ink); }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.1 — Paper grain. Faint SVG noise overlay across the whole page.
+     Multiplies onto the bone ground; reads as inked-newsprint texture
+     without darkening color. Sits at z-index 1, pointer-events none.
+     ════════════════════════════════════════════════════════════════ */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.45;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.086  0 0 0 0 0.078  0 0 0 0 0.059  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 256px 256px;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.2 — Duotone photography. Photos rendered as ink+bone duotone
+     blocks. Hover reveals desaturated original. Used on hero,
+     section breaks, portfolio thumbnails.
+     ════════════════════════════════════════════════════════════════ */
+  .duo-frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .duo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Duotone via grayscale + tint */
+    filter: grayscale(1) contrast(1.15) brightness(0.85);
+    mix-blend-mode: screen;
+    opacity: 0.85;
+    transition: filter 500ms ease, opacity 500ms ease;
+  }
+  .duo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--oxblood) 0%, var(--ink) 100%);
+    mix-blend-mode: multiply;
+    opacity: 0.92;
+    pointer-events: none;
+    transition: opacity 500ms ease;
+  }
+  .duo-frame:hover img,
+  .duo-frame.duo-live img {
+    filter: grayscale(0.1) contrast(1.05) brightness(1);
+    opacity: 1;
+  }
+  .duo-frame:hover::after,
+  .duo-frame.duo-live::after { opacity: 0.15; }
+
+  /* Smaller variant for work cards — same treatment, no hover-reveal. */
+  .work-shot {
+    background: var(--ink);
+  }
+  .work-shot img {
+    filter: grayscale(0.6) contrast(1.08);
+    transition: filter 320ms ease;
+  }
+  .work:hover .work-shot img {
+    filter: grayscale(0) contrast(1);
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.3 — Hero with WebGL backdrop. The hero section becomes a
+     positioning container; canvas slots in at z=0; content at z=2.
+     ════════════════════════════════════════════════════════════════ */
+  .hero-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink);
+  }
+  .hero-stage > .container-wide,
+  .hero-stage > .hero-photo {
+    position: relative;
+    z-index: 2;
+  }
+  .hero-stage canvas { z-index: 0; }
+  .hero-stage::after {
+    /* Soft vignette into bone so canvas blends with surrounding sections */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, transparent 30%, var(--bone) 90%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.4 — Photographic ribbon. A duotone Tampa skyline appears as
+     a narrow ribbon at section breaks. Reads as "the workshop is
+     real, in a real place" without dominating.
+     ════════════════════════════════════════════════════════════════ */
+  .photo-ribbon {
+    position: relative;
+    height: clamp(180px, 30vh, 320px);
+    width: 100%;
+    overflow: hidden;
+    background: var(--ink);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .photo-ribbon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 65%;
+    filter: grayscale(1) contrast(1.2) brightness(0.7);
+    opacity: 0.85;
+  }
+  .photo-ribbon::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--oxblood-deep) 0%, var(--ink) 100%);
+    mix-blend-mode: multiply;
+    opacity: 0.75;
+  }
+  .photo-ribbon-caption {
+    position: absolute;
+    bottom: 1.25rem;
+    left: clamp(1.5rem, 4vw, 4rem);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--bone);
+    opacity: 0.85;
+    z-index: 1;
+  }
+  .photo-ribbon-caption::before {
+    content: '§ ';
+    color: var(--bone-deep);
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.5 — Scroll-driven type animation. Display headings shift
+     weight 500→800 as they enter the viewport. Uses native
+     animation-timeline: view() — Chrome/Edge stable, Safari 17+,
+     Firefox progressively. Degrades gracefully (just renders 800).
+     ════════════════════════════════════════════════════════════════ */
+  @supports (animation-timeline: view()) {
+    .reveal-display {
+      animation: reveal-weight linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+    @keyframes reveal-weight {
+      from {
+        font-variation-settings: 'wght' 400, 'opsz' 144, 'SOFT' 50;
+        opacity: 0;
+        transform: translateY(1rem);
+        letter-spacing: -0.06em;
+      }
+      to {
+        font-variation-settings: 'wght' 700, 'opsz' 144, 'SOFT' 30;
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: -0.035em;
+      }
+    }
+
+    .reveal-row {
+      animation: reveal-row linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 20%;
+    }
+    @keyframes reveal-row {
+      from { opacity: 0; transform: translateY(1.5rem); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal-stagger > * {
+      animation: reveal-row linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    /* Telemetry numerals — drift in weight as they cross viewport */
+    .reveal-num {
+      animation: reveal-num linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+    @keyframes reveal-num {
+      from {
+        font-variation-settings: 'wght' 300, 'opsz' 144;
+        opacity: 0.3;
+      }
+      to {
+        font-variation-settings: 'wght' 700, 'opsz' 144;
+        opacity: 1;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-display, .reveal-row, .reveal-stagger > *, .reveal-num {
+      animation: none !important;
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.6 — View Transitions API. Smooth cross-fade between pages.
+     The masthead persists, content cross-fades. Falls back silently
+     in browsers that don't support it.
+     ════════════════════════════════════════════════════════════════ */
+  @view-transition { navigation: auto; }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 280ms;
+  }
+
+  ::view-transition-old(root) {
+    animation: vt-fade-out 200ms ease both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-fade-in 280ms ease both;
+  }
+  @keyframes vt-fade-out {
+    to { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes vt-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+  }
+
+  /* Keep the masthead static across navigation */
+  .masthead { view-transition-name: site-masthead; }
+
+  /* ════════════════════════════════════════════════════════════════
+     E.7 — Telemetry numerals: variable font, tabular figures,
+     subtle hover.
+     ════════════════════════════════════════════════════════════════ */
+  .telemetry-cell {
+    transition: background 240ms ease;
+  }
+  .telemetry-cell:hover {
+    background: var(--bone-soft);
+  }
+  .telemetry-cell:hover .telemetry-num {
+    color: var(--oxblood);
+  }
+  .telemetry-num {
+    transition: color 240ms ease;
+  }
+
+  /* Marquee tape — quiet running ledger between sections.
+     One line, mono, slow, oxblood accent on commit type. */
+  .marquee {
+    overflow: hidden;
+    position: relative;
+    background: var(--ink);
+    color: var(--bone);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-block: 0.75rem;
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 3rem;
+    white-space: nowrap;
+    animation: marquee-scroll 42s linear infinite;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-item .kind-commit { color: var(--oxblood); }
+  .marquee-item .kind-deploy { color: var(--bone-deep); }
+  .marquee-item .kind-test   { color: #b6c98c; }
+  .marquee-item .kind-vital  { color: var(--bone-deep); }
 }

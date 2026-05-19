@@ -29,6 +29,9 @@ const isActive = (href) => {
 </script>
 
 <template>
+  <!-- Paper grain across whole page. Multiplies onto bone ground. -->
+  <div class="grain" aria-hidden="true"></div>
+
   <header v-if="!bare" class="masthead">
     <div class="container-wide">
       <div class="masthead-row">
