@@ -1,1013 +1,735 @@
 @import 'tailwindcss';
 
-/* ───────── Living Page tokens ─────────
-   The page is a six-stage scroll sequence. Each stage is a full-bleed
-   color wash with its own accent set. The whole thing breathes between
-   warm + cold + neon + cream.
-*/
+/* ════════════════════════════════════════════════════════════════════
+   Direction D — Editorial Brutalism
+   Cream + ink + one oxblood accent. Hard 1px rules. Fraunces display,
+   Inter body, JetBrains Mono metadata. No gradients, no rounding,
+   no photo backgrounds, no scroll-stage chrome. The page is a print
+   spread; the substrate is real; the company is openly run by AI.
+   ════════════════════════════════════════════════════════════════════ */
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Fraunces', ui-serif, Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  --animate-breathe: breathe 4.2s ease-in-out infinite;
-  --animate-drift: drift 24s linear infinite;
-  --animate-aurora: aurora 14s ease-in-out infinite;
-  --animate-marquee: marquee 38s linear infinite;
-  --animate-marquee-slow: marquee 90s linear infinite;
-  --animate-wiggle: wiggle 2.4s ease-in-out infinite;
-  --animate-blink: blink 1.05s steps(1) infinite;
-
-  /* Legacy aliases — old components still reference these names. */
-  --color-ink:       #0a0a0b;
-  --color-bone:      #fff7ec;
-  --color-breath:    #ff5a3c;
-  --color-coherence: #6e3bff;
-  --color-carbon:    #1a1a1d;
-  --color-warmgrey:  #5d5a55;
 }
 
-/* ───────── Seven-stage palette — Section 9 (Ghost in the Shell, canon)
-   Per the GitS films & Stand Alone Complex: the world is NOT pitch
-   black. It's *night-neon* — Hong Kong at 3am, sodium street lamps,
-   concrete dusk, illuminated rain. The interface chrome is warm
-   hologram orange (per HUDsandGUIs canonical analysis), with magenta
-   stress accents (Motoko's contrast register), and small cool-cyan
-   secondary indicators for data states.
-
-   Grounds are atmospheric mid-tones, not blackouts. Stages drift
-   between dusk teal, concrete indigo, and warm-steel — all lit by
-   ambient sodium ochre bleeding from corners.
-*/
 :root {
-  /* Atmospheric dusk — concrete teal with sodium wash */
-  --bg-stage-1: #1a2129;
-  /* Warmer concrete + sodium tint — garage bay at night */
-  --bg-stage-2: #1f1d24;
-  /* Deep dusk teal — instrument cluster */
-  --bg-stage-3: #17222a;
-  /* Indigo concrete — operative dossier */
-  --bg-stage-4: #1e2330;
-  /* Substrate — warm violet-grey, the inside of Pneuma's body */
-  --bg-stage-5: #221b28;
-  /* Tactical dusk teal-green — scope selector */
-  --bg-stage-6: #1a2522;
-  /* Final reverse-out — deep concrete, still atmospheric */
-  --bg-stage-7: #14181f;
+  /* Ground — warm bone, not pure white. Reads as paper. */
+  --bone: #f4eee2;
+  --bone-soft: #ece4d3;
+  --bone-deep: #ddd2bb;
 
-  /* ink colors — warm bone-white, not pure white */
-  --fg-stage-1: #f3ead9;
-  --fg-stage-2: #f3ead9;
-  --fg-stage-3: #f3ead9;
-  --fg-stage-4: #f3ead9;
-  --fg-stage-5: #f0e6d5;
-  --fg-stage-6: #ecead4;
-  --fg-stage-7: #f3ead9;
+  /* Ink — near-black, slight warmth. Reads as printer's ink on paper. */
+  --ink: #16140f;
+  --ink-soft: #2d2920;
+  --ink-mute: #6b6557;
+  --ink-faint: #9b9381;
 
-  /* PRIMARY accent — AMBER (canonical GitS hologram orange).
-     This is the chrome color: rails, labels, brackets, default stroke. */
-  --ax-stage-1: #ff9a3c;
-  --ax-stage-2: #ff9a3c;
-  --ax-stage-3: #ff9a3c;
-  --ax-stage-4: #ff9a3c;
-  --ax-stage-5: #ff9a3c;
-  --ax-stage-6: #ff9a3c;
-  --ax-stage-7: #ff9a3c;
+  /* Accent — oxblood. One color, used sparingly. */
+  --oxblood: #8a1c1c;
+  --oxblood-deep: #5c1010;
 
-  /* Color tokens */
-  --color-amber:    #ff9a3c;     /* PRIMARY chrome */
-  --color-amber-hi: #ffb850;     /* highlight tier */
-  /* SECONDARY accent — bridge-blue, sampled from the LED accents on
-     the Tampa bridges in the skyline photo. Carries the cool side of
-     GitS contrast without fighting the sodium amber. */
-  --color-magenta:  #4fa8ff;     /* (token name kept for back-compat; value is bridge-blue) */
-  --color-bridge:   #4fa8ff;     /* explicit alias for new code */
-  --color-cyan:     #7de5f5;     /* TERTIARY — data states / Nous indicator */
-  --color-alert:    #ff3a3a;     /* hard warning red, used sparingly */
+  /* Hairline rule */
+  --rule: #16140f;
+  --rule-soft: rgba(22, 20, 15, 0.15);
+  --rule-faint: rgba(22, 20, 15, 0.08);
 
-  /* Ambient washes */
-  --wash-sodium:    rgba(255, 154, 60, 0.06);   /* warm corner bleed */
-  --wash-dusk:      rgba(77, 214, 232, 0.04);   /* cool counter-bleed */
-
-  /* Structural */
-  --color-grid:     rgba(255, 154, 60, 0.06);
-  --color-rule:     rgba(243, 234, 217, 0.14);
+  /* Type scale, derived */
+  --measure-text: 64ch;
+  --measure-tight: 48ch;
 }
-
-/* ───────── Keyframes ───────── */
-
-@keyframes breathe {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.012); }
-}
-@keyframes drift {
-  0%   { transform: translateY(0)   rotate(0deg); }
-  100% { transform: translateY(-100vh) rotate(1deg); }
-}
-@keyframes aurora {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.55; }
-  33%      { transform: translate(6%, -4%) scale(1.15) rotate(8deg); opacity: 0.75; }
-  66%      { transform: translate(-5%, 5%) scale(0.95) rotate(-6deg); opacity: 0.6; }
-}
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-1.4deg); }
-  50%      { transform: rotate(1.6deg); }
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
-@keyframes spinSlow {
-  to { transform: rotate(360deg); }
-}
-@keyframes slot {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-@keyframes pulseRing {
-  0% { transform: scale(0.6); opacity: 0.7; }
-  80%, 100% { transform: scale(2); opacity: 0; }
-}
-
-/* ───────── Base ───────── */
 
 @layer base {
-  /* HTML is transparent so the body::before image isn't covered.
-     A fallback solid color is set on body for no-JS / image-failed cases. */
-  html { scroll-behavior: smooth; background: transparent; }
+  html { background: var(--bone); scroll-behavior: smooth; }
   body {
-    background: #14181f;
-    color: var(--fg-stage-1);
+    background: var(--bone);
+    color: var(--ink);
     font-family: var(--font-sans);
-    overflow-x: hidden;
-    position: relative;
+    font-feature-settings: 'kern', 'liga', 'calt', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  /* Tampa skyline pinned full-viewport, behind everything.
-     z=-1 puts it behind body content but above body's own background
-     when body is opaque — which it shouldn't be. Make body transparent
-     and let html carry no color so the photo reads. */
-  body { background: transparent !important; }
-  /* Tampa skyline — frosted glass treatment. The image lives on
-     ::before with blur + darken built into the filter; ::after adds
-     a faint warm/cool wash so the GitS sodium atmosphere bleeds onto
-     the glass surface. Reads as: city lights diffused through a
-     fogged-up tactical visor. */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -10;
-    background:
-      linear-gradient(180deg, rgba(20, 24, 31, 0.50) 0%, rgba(20, 24, 31, 0.65) 100%),
-      url('/bg/tampa-skyline.jpg') center / cover no-repeat;
-    filter:
-      saturate(0.85)
-      brightness(0.9)
-      contrast(1.05)
-      hue-rotate(-6deg)
-      blur(2px);
-    /* small scale hides the blur edge crop */
-    transform: scale(1.02);
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -9;
-    pointer-events: none;
-    background:
-      /* sodium glow + dusk counter-bleed lit on the glass */
-      radial-gradient(circle at 15% 18%, rgba(255, 154, 60, 0.14), transparent 55%),
-      radial-gradient(circle at 85% 82%, rgba(77, 214, 232, 0.08), transparent 60%);
-  }
-  ::selection { background: var(--color-amber); color: #14181f; }
-  img { user-select: none; -webkit-user-drag: none; }
-}
+  ::selection { background: var(--ink); color: var(--bone); }
 
-/* ───────── Stage shell ─────────
-   .stage = full-viewport scroll-snap section, paints its own palette.
-*/
+  /* Strip any rounded-corner reflex everywhere. */
+  * { border-radius: 0; }
+
+  /* Default link — underline always, no chrome. */
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 120ms ease;
+  }
+  a:hover { color: var(--oxblood); }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: var(--ink);
+    margin: 0;
+  }
+
+  img { display: block; max-width: 100%; }
+}
 
 @layer components {
 
-  .word {
+  /* ─── Page chrome ─── */
+  .container-wide {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+  }
+  .container-text {
+    max-width: 760px;
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  /* ─── Top masthead — newspaper nameplate ─── */
+  .masthead {
+    border-bottom: 1px solid var(--ink);
+    background: var(--bone);
+  }
+  .masthead-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 1.5rem;
+    padding-block: 1rem 0.75rem;
+  }
+  .masthead-name {
     font-family: var(--font-serif);
-    font-feature-settings: 'ss01' on, 'ss02' on;
-    letter-spacing: -0.035em;
-    font-weight: 850;
-    line-height: 0.86;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink);
+    text-decoration: none;
   }
-
-  .display {
-    font-family: var(--font-serif);
-    font-weight: 850;
-    letter-spacing: -0.045em;
-    line-height: 0.84;
-    font-size: clamp(3.5rem, 12vw, 14rem);
-    text-wrap: balance;
-    -webkit-text-wrap: balance;
-    /* Heavy stacked drop shadow keeps display headings legible over
-       a bright cityscape without needing a panel behind them. */
-    text-shadow:
-      0 0 40px rgba(0, 0, 0, 0.9),
-      0 0 18px rgba(0, 0, 0, 0.85),
-      0 2px 6px rgba(0, 0, 0, 0.95);
-  }
-
-  .display-md {
-    font-family: var(--font-serif);
-    font-weight: 850;
-    letter-spacing: -0.035em;
-    line-height: 0.88;
-    font-size: clamp(2.5rem, 7vw, 8rem);
-    text-wrap: balance;
-    -webkit-text-wrap: balance;
-    text-shadow:
-      0 0 30px rgba(0, 0, 0, 0.9),
-      0 0 14px rgba(0, 0, 0, 0.85),
-      0 2px 5px rgba(0, 0, 0, 0.95);
-  }
-
-  .mono { font-family: var(--font-mono); }
-
-  .stage {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    padding: clamp(3rem, 6vh, 6rem) clamp(1.5rem, 4vw, 5rem);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  /* Stages are nearly transparent — Tampa skyline + telemetry canvas
-     read through. Only the smallest darkening at top/bottom for text
-     legibility. Each stage still gets its own tonal mood via a faint
-     hue wash. */
-  .stage-1 {
-    /* Hero — almost no tint, let Tampa breathe through. Headline gets
-       its own per-element text-shadow for legibility (see below). */
-    background: transparent;
-    color: var(--fg-stage-1);
-  }
-  .stage-2 {
-    background:
-      radial-gradient(circle at 88% 22%, rgba(255, 154, 60, 0.05), transparent 55%),
-      linear-gradient(180deg, rgba(20, 24, 31, 0.20) 0%, rgba(20, 24, 31, 0.25) 100%);
-    color: var(--fg-stage-2);
-  }
-  .stage-3 {
-    background:
-      radial-gradient(circle at 18% 88%, rgba(255, 154, 60, 0.06), transparent 60%),
-      linear-gradient(180deg, rgba(20, 24, 31, 0.22) 0%, rgba(20, 24, 31, 0.28) 100%);
-    color: var(--fg-stage-3);
-  }
-  .stage-4 {
-    background:
-      radial-gradient(circle at 50% 0%, rgba(79, 168, 255, 0.04), transparent 50%),
-      linear-gradient(180deg, rgba(20, 24, 31, 0.25) 0%, rgba(20, 24, 31, 0.30) 100%);
-    color: var(--fg-stage-4);
-  }
-  .stage-5 {
-    background:
-      radial-gradient(circle at 20% 30%, rgba(79, 168, 255, 0.06), transparent 55%),
-      linear-gradient(180deg, rgba(34, 27, 40, 0.30) 0%, rgba(34, 27, 40, 0.40) 100%);
-    color: var(--fg-stage-5);
-  }
-  .stage-6 {
-    background:
-      radial-gradient(circle at 14% 14%, rgba(255, 154, 60, 0.05), transparent 60%),
-      linear-gradient(180deg, rgba(20, 24, 31, 0.22) 0%, rgba(20, 24, 31, 0.28) 100%);
-    color: var(--fg-stage-6);
-  }
-  .stage-7 {
-    background:
-      radial-gradient(circle at 50% 0%, rgba(255, 154, 60, 0.08), transparent 60%),
-      linear-gradient(180deg, rgba(20, 24, 31, 0.25) 0%, rgba(20, 24, 31, 0.45) 100%);
-    color: var(--fg-stage-7);
-  }
-
-  /* ── Portfolio stage (Section 9 schematic catalog) ── */
-  .stage-portfolio {
-    background: var(--bg-stage-2);
-    color: var(--fg-stage-2);
-    padding-top: 7rem;
-    padding-bottom: 7rem;
-  }
-
-  /* Filter pill row — borderless. */
-  .port-filter-pill {
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 11px;
+  .masthead-name:hover { color: var(--ink); }
+  .masthead-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    padding: 6px 14px;
-    border-radius: 0;
-    border: none;
-    color: rgba(243, 234, 217, 0.7);
-    background: transparent;
-    transition: all 160ms ease;
-    cursor: pointer;
+    color: var(--ink-mute);
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
   }
-  .port-filter-pill:hover {
-    color: var(--color-amber);
-    background: rgba(255, 154, 60, 0.08);
+  .masthead-meta .sep { color: var(--ink-faint); }
+
+  .nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--rule-soft);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
   }
-  .port-filter-active {
-    background: var(--color-amber) !important;
-    color: #14181f !important;
+  .nav-row a {
+    text-decoration: none;
+    color: var(--ink-mute);
+    transition: color 120ms ease;
+  }
+  .nav-row a:hover { color: var(--ink); }
+  .nav-row a.is-active { color: var(--ink); }
+  .nav-row a.is-active::before {
+    content: '— ';
+    color: var(--oxblood);
   }
 
-  /* Card — borderless panel, the shot + body sit on a translucent
-     glass plate. Hover lifts it. */
-  .port-card {
-    display: block;
-    background: rgba(20, 24, 31, 0.45);
-    backdrop-filter: blur(8px) saturate(1.1);
-    -webkit-backdrop-filter: blur(8px) saturate(1.1);
-    border: none;
-    border-radius: 0;
-    overflow: hidden;
-    transition: transform 220ms ease, box-shadow 220ms ease;
+  /* ─── Type primitives ─── */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(3rem, 9vw, 8rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .display-md {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .display-sm {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  .lede {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.125rem, 1.6vw, 1.35rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  .prose-body {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.075rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .micro {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-mute);
+  }
+  .micro-accent { color: var(--oxblood); }
+  .data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The accent slash — single oxblood mark on a key word. */
+  .mark {
+    color: var(--oxblood);
+    font-style: italic;
+  }
+
+  /* ─── Section dividers ─── */
+  .section {
+    padding-block: clamp(3rem, 7vh, 6rem);
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-soft {
+    padding-block: clamp(3rem, 7vh, 6rem);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .section-last {
+    padding-block: clamp(3rem, 7vh, 6rem);
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--ink-mute);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .section-label::before {
+    content: '§';
+    color: var(--oxblood);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 0.8;
+  }
+
+  /* ─── Buttons ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
     text-decoration: none;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bone);
+  }
+  .btn-primary:hover {
+    background: var(--oxblood);
+    color: var(--bone);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  /* ─── Cards — really just bordered cells ─── */
+  .cell {
+    border: 1px solid var(--ink);
+    padding: clamp(1.25rem, 2vw, 1.75rem);
+    background: var(--bone);
+    transition: background 120ms ease;
+  }
+  .cell:hover { background: var(--bone-soft); }
+  .cell-featured { background: var(--ink); color: var(--bone); }
+  .cell-featured a { color: var(--bone); }
+  .cell-featured .micro { color: var(--bone-deep); }
+  .cell-featured:hover { background: var(--oxblood-deep); }
+
+  /* ─── Ledger row — for index lists ─── */
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--ink);
+    text-decoration: none;
+    color: inherit;
+  }
+  @media (min-width: 640px) {
+    .ledger-row {
+      grid-template-columns: 1fr 3fr;
+      gap: 2rem;
+      padding-block: 2rem;
+    }
+  }
+  .ledger-row:hover .ledger-title {
+    color: var(--oxblood);
+  }
+  .ledger-title {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    transition: color 120ms ease;
+  }
+
+  /* ─── Tables — newsprint style ─── */
+  .table-data {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+  }
+  .table-data th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10px;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--ink);
+  }
+  .table-data td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--ink-soft);
+  }
+  .table-data tr:hover td {
+    background: var(--bone-soft);
+    color: var(--ink);
+  }
+
+  /* ─── Form fields — underline-only ─── */
+  .field {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ink);
+    padding: 0.85rem 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 120ms ease;
+  }
+  .field:focus {
+    border-bottom-color: var(--oxblood);
+  }
+  textarea.field {
+    resize: vertical;
+    min-height: 8rem;
+    border: 1px solid var(--ink);
+    padding: 0.85rem 1rem;
+  }
+  textarea.field:focus { border-color: var(--oxblood); }
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-mute);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ─── Footer ─── */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-block: 3rem;
+    border-top: 1px solid var(--ink);
+  }
+  @media (min-width: 640px) {
+    .footer-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .footer-col-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; padding: 0; margin: 0; }
+  .footer-col li { margin-bottom: 0.5rem; font-size: 14px; }
+  .footer-col a {
+    text-decoration: none;
+    color: var(--ink-mute);
+    transition: color 120ms ease;
+  }
+  .footer-col a:hover { color: var(--ink); }
+  .footer-coda {
+    border-top: 1px solid var(--rule-soft);
+    padding-block: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-mute);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ─── Telemetry strip — live numbers as headline meta ─── */
+  .telemetry-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .telemetry-cell {
+    background: var(--bone);
+    padding: 1.25rem 1rem;
+    text-align: left;
+  }
+  .telemetry-num {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .telemetry-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    margin-top: 0.4rem;
+  }
+
+  /* ─── Pull quote ─── */
+  .pull {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--oxblood);
+    max-width: var(--measure-text);
+  }
+
+  /* ─── Hosting tier card ─── */
+  .tier {
+    border: 1px solid var(--ink);
+    padding: 2rem 1.75rem;
+    background: var(--bone);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .tier-featured { background: var(--ink); color: var(--bone); }
+  .tier-featured .micro { color: var(--bone-deep); }
+  .tier-featured .tier-price { color: var(--bone); }
+  .tier-featured .tier-li { color: var(--bone-deep); }
+  .tier-price {
+    font-family: var(--font-serif);
+    font-size: clamp(2.75rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .tier-price-unit {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-transform: lowercase;
+    color: inherit;
+    opacity: 0.7;
+  }
+  .tier-li {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    padding-left: 1rem;
     position: relative;
   }
-  .port-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 40px rgba(255, 154, 60, 0.25);
+  .tier-li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--oxblood);
   }
-  .port-card-shot {
-    position: relative;
+  .tier-featured .tier-li::before { color: var(--bone); }
+
+  /* ─── Portfolio thumbnail ─── */
+  .work {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 160ms ease;
+  }
+  .work:hover { transform: translateY(-2px); }
+  .work-shot {
     aspect-ratio: 16 / 10;
-    background: #14181f;
+    background: var(--ink);
     overflow: hidden;
+    border: 1px solid var(--ink);
   }
-  .port-card-shot img {
+  .work-shot img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    transition: transform 480ms ease;
-    filter: saturate(0.9) contrast(1.05);
+    filter: grayscale(0.4) contrast(1.05);
+    transition: filter 200ms ease;
   }
-  .port-card:hover .port-card-shot img {
-    transform: scale(1.04);
-    filter: saturate(1) contrast(1);
+  .work:hover .work-shot img { filter: grayscale(0) contrast(1); }
+  .work-body { padding-top: 0.85rem; }
+  .work-name {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
-  .port-card-live {
-    position: absolute;
-    top: 8px; left: 8px;
-    font-family: var(--font-mono, ui-monospace, monospace);
+  .work-kind {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-mute);
+    margin-top: 0.35rem;
+  }
+  .work-summary {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-top: 0.5rem;
+  }
+  .work-live {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    background: var(--color-amber);
-    color: #14181f;
-    padding: 3px 8px;
-    border-radius: 0;
-    font-weight: 700;
-  }
-  .port-card-body { padding: 14px 14px 16px; color: var(--fg-stage-2); }
-  .port-card-body h4 { color: var(--fg-stage-2) !important; font-family: var(--font-mono) !important; font-weight: 600 !important; letter-spacing: 0.04em; font-size: 0.95rem !important; }
-  .port-card-body p { color: rgba(243, 234, 217, 0.72) !important; }
-  .port-card-body span { color: var(--color-amber) !important; opacity: 1 !important; }
-  .port-card-featured {
-    background: rgba(79, 168, 255, 0.08);
-  }
-  .port-card-featured .port-card-body span { color: var(--color-magenta) !important; }
-
-  /* Decorative shapes */
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(72px);
-    pointer-events: none;
-    z-index: -1;
+    color: var(--oxblood);
   }
 
-  .grain::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    opacity: 0.06;
-    mix-blend-mode: overlay;
-    pointer-events: none;
-    z-index: 1;
+  /* ─── Portfolio filter pills ─── */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 1px solid var(--ink);
   }
-
-  /* Sticker — chunky rotated tag */
-  .tag {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.4rem 0.8rem;
-    background: currentColor;
-    border-radius: 999px;
+  .filter-pill {
+    flex: 1;
+    min-width: max-content;
+    padding: 0.6rem 1rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-weight: 700;
-  }
-  .tag > * { color: var(--bg-stage-1); }
-
-  .tag-outline {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.4rem 0.85rem;
-    background: transparent;
-    border: 1.5px solid currentColor;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
+    background: var(--bone);
+    color: var(--ink-mute);
+    border: none;
+    border-right: 1px solid var(--ink);
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .filter-pill:last-child { border-right: none; }
+  .filter-pill:hover { background: var(--bone-soft); color: var(--ink); }
+  .filter-pill.is-active {
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  /* ─── Long-form article body ─── */
+  .prose-substrate {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .prose-substrate > * + * { margin-top: 1.4em; }
+  .prose-substrate p { text-wrap: pretty; max-width: var(--measure-text); }
+
+  .prose-substrate h2 {
+    font-family: var(--font-serif);
     font-weight: 700;
+    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ink);
+    color: var(--ink);
   }
-
-  /* Underline highlight (gradient brushstroke) */
-  .stroke {
-    position: relative;
-    display: inline-block;
-    isolation: isolate;
+  .prose-substrate h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    margin-top: 2.5rem;
+    color: var(--ink);
   }
-  .stroke::after {
-    content: '';
-    position: absolute;
-    left: -0.04em; right: -0.04em; bottom: 0.05em;
-    height: 0.32em;
-    background: var(--ax-stage-1);
-    z-index: -1;
-    border-radius: 4px;
-  }
-
-  /* Marquee row (used for live-ticker stage) */
-  .marquee {
-    display: flex;
-    gap: 3rem;
-    width: max-content;
-    animation: var(--animate-marquee);
-  }
-  .marquee-slow { animation: var(--animate-marquee-slow); }
-
-  /* Big CTA pill */
-  .cta {
-    display: inline-flex; align-items: center; gap: 0.85rem;
-    padding: 1.25rem 2.4rem;
+  .prose-substrate h4 {
     font-family: var(--font-mono);
-    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    font-weight: 700;
-    background: currentColor;
-    border-radius: 999px;
-    transition: transform 240ms ease, box-shadow 320ms ease;
+    font-size: 11px;
+    margin-top: 2rem;
+    color: var(--oxblood);
   }
-  .cta > * { color: var(--bg-stage-1); }
-  .cta:hover { transform: translateY(-3px); }
+  .prose-substrate strong { color: var(--ink); font-weight: 600; }
+  .prose-substrate em { color: var(--ink); font-style: italic; }
 
-  /* Slot machine reels */
-  .reel {
-    height: 6rem;
-    overflow: hidden;
-    position: relative;
+  .prose-substrate a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
-  .reel-list {
-    display: flex; flex-direction: column;
-    transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .reel-item {
-    height: 6rem;
-    display: flex; align-items: center;
-    font-family: var(--font-serif);
-    font-weight: 850;
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    letter-spacing: -0.03em;
-    white-space: nowrap;
-  }
+  .prose-substrate a:hover { color: var(--oxblood); }
 
-  /* Scroll-progress arc on side */
-  .scroll-rail {
-    position: fixed; left: clamp(1rem, 3vw, 3rem); top: 50%;
-    transform: translateY(-50%);
-    z-index: 30;
-    display: flex; flex-direction: column; gap: 12px;
-    pointer-events: none;
+  .prose-substrate blockquote {
+    margin: 2rem 0;
+    padding: 0.25rem 0 0.25rem 1.5rem;
+    border-left: 2px solid var(--oxblood);
+    font-style: italic;
+    color: var(--ink);
+    font-size: 1.1em;
+    line-height: 1.5;
+    max-width: var(--measure-text);
   }
-  .scroll-dot {
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: currentColor;
-    opacity: 0.25;
-    transition: opacity 300ms ease, transform 300ms ease;
-  }
-  .scroll-dot.is-active { opacity: 1; transform: scale(1.6); }
+  .prose-substrate blockquote p { margin: 0; }
+  .prose-substrate blockquote + blockquote { margin-top: -0.5rem; }
 
-  /* Pulse ring around live dot */
-  .pulse-wrap { position: relative; display: inline-block; }
-  .pulse-wrap::before {
-    content: '';
-    position: absolute; inset: -6px;
-    border-radius: 999px;
-    border: 2px solid currentColor;
-    animation: pulseRing 1.6s ease-out infinite;
+  .prose-substrate ul,
+  .prose-substrate ol {
+    padding-left: 1.5rem;
+    max-width: var(--measure-text);
   }
-
-  /* Pneuma narrator bubble — frosted glass, no border, sodium glow
-     holds the edge. */
-  .narrator {
-    position: relative;
-    padding: 1.1rem 1.4rem;
-    background: rgba(20, 24, 31, 0.55);
-    backdrop-filter: blur(14px) saturate(1.1);
-    -webkit-backdrop-filter: blur(14px) saturate(1.1);
-    color: var(--fg-stage-1);
-    border: none;
-    border-radius: 0;
-    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.55);
-    max-width: 30ch;
-    font-family: var(--font-serif);
-    font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-  .narrator-sig {
-    margin-top: 0.5rem;
+  .prose-substrate li + li { margin-top: 0.4rem; }
+  .prose-substrate ul li { list-style: none; position: relative; }
+  .prose-substrate ul li::before {
+    content: '—';
+    position: absolute;
+    left: -1.5rem;
+    color: var(--oxblood);
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--color-amber);
-    opacity: 0.85;
+  }
+  .prose-substrate ol { list-style: decimal; }
+  .prose-substrate ol li::marker {
+    color: var(--oxblood);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    font-weight: 600;
   }
 
-  /* Ticker style (for stage 2 marquee text) */
-  .ticker-pill {
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    padding: 0.55rem 1.1rem;
-    background: rgba(0,0,0,0.08);
-    border-radius: 999px;
+  .prose-substrate hr {
+    margin: 3rem 0;
+    background: var(--rule-soft);
+  }
+
+  .prose-substrate code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.4em;
+    background: var(--bone-soft);
+    color: var(--oxblood-deep);
+  }
+  .prose-substrate pre {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    line-height: 1.6;
+    padding: 1.25rem 1.5rem;
+    background: var(--ink);
+    color: var(--bone);
+    overflow-x: auto;
+    margin: 1.8rem 0;
+    border-left: 2px solid var(--oxblood);
+    max-width: 100%;
+  }
+  .prose-substrate pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 1em;
+  }
+
+  .prose-substrate table {
+    width: 100%;
+    margin: 2rem 0;
+    border-collapse: collapse;
     font-family: var(--font-mono);
     font-size: 0.85rem;
+    border: 1px solid var(--ink);
+  }
+  .prose-substrate th,
+  .prose-substrate td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  .prose-substrate th {
     font-weight: 600;
-    letter-spacing: 0.06em;
-  }
-  .ticker-pill .dot { width: 8px; height: 8px; border-radius: 999px; }
-
-  /* Big portrait card (stage 4) */
-  .portrait {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    border-radius: 30px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.06);
-  }
-  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-
-  .portrait-frame {
-    border: 2px dashed currentColor;
-    border-radius: 999px;
-    padding: 0.7rem 1.2rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-weight: 700;
-  }
-
-  /* ───── Substrate stage (5) — architecture diagram & organ cards ───── */
-  .substrate-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 22% 28%, rgba(255, 154, 60, 0.22), transparent 50%),
-      radial-gradient(circle at 78% 72%, rgba(79, 168, 255, 0.16), transparent 55%),
-      radial-gradient(circle at 50% 100%, rgba(77, 214, 232, 0.10), transparent 60%);
-    z-index: -1;
-  }
-  .substrate-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 154, 60, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 154, 60, 0.05) 1px, transparent 1px);
-    background-size: 64px 64px;
-    z-index: -1;
-    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
-  }
-
-  .organ-card {
-    position: relative;
-    border: none;
-    background: rgba(20, 24, 31, 0.40);
-    backdrop-filter: blur(10px) saturate(1.1);
-    -webkit-backdrop-filter: blur(10px) saturate(1.1);
-    border-radius: 0;
-    padding: 1.5rem 1.4rem;
-    transition: background 220ms ease, transform 220ms ease;
-  }
-  .organ-card:hover {
-    background: rgba(255, 154, 60, 0.10);
-    transform: translateY(-2px);
-  }
-  .organ-card:nth-child(even):hover { background: rgba(79, 168, 255, 0.10); }
-  .organ-card h4 {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-amber);
-    margin-bottom: 0.7rem;
-  }
-  .organ-card:nth-child(even) h4 { color: var(--color-magenta); }
-  .organ-card .organ-name {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 700;
-    font-size: 1.6rem;
-    line-height: 1.05;
-    margin-bottom: 0.6rem;
-    color: var(--fg-stage-5);
-    letter-spacing: -0.015em;
-  }
-  .organ-card p {
-    font-size: 0.88rem;
-    line-height: 1.5;
-    color: rgba(232, 228, 255, 0.78);
-  }
-  .organ-card .organ-handle {
-    display: inline-block;
-    margin-top: 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
     letter-spacing: 0.14em;
-    color: var(--color-amber);
-  }
-
-  .arch-frame {
-    border: none;
-    border-radius: 0;
-    padding: 1.6rem 1.8rem;
-    background: rgba(20, 24, 31, 0.45);
-    backdrop-filter: blur(10px) saturate(1.1);
-    -webkit-backdrop-filter: blur(10px) saturate(1.1);
-    position: relative;
-  }
-  .arch-frame pre {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.6;
-    color: rgba(243, 234, 255, 0.82);
-    margin: 0;
-    white-space: pre;
-    overflow-x: auto;
-  }
-  .arch-frame pre .acc { color: var(--color-cyan); }
-  .arch-frame pre .yel { color: var(--color-amber); }
-  .arch-frame pre .vio { color: var(--color-magenta); }
-  .arch-frame pre .mut { color: rgba(230, 237, 245, 0.45); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     SECTION 9 CHROME — Ghost in the Shell HUD utilities
-     Reusable parts for the robot-but-colorful direction:
-       .hud-rail        — top-of-section status strip
-       .hud-label       — small mono uppercase chip
-       .hud-cell        — bordered panel with cyan corner brackets
-       .blueprint       — fixed-position cyan grid backdrop
-       .scan-line       — animated horizontal cyan sweep
-       .reg-tick        — registration ticks for stage corners
-       .channel-frame   — Section-9 comms terminal frame for chat
-     Color tokens: --color-cyan, --color-magenta, --color-amber.
-     ═══════════════════════════════════════════════════════════════ */
-
-  /* Blueprint grid — pinned full-viewport behind page content. */
-  .blueprint {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image:
-      linear-gradient(var(--color-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-  .blueprint::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 18% 22%, rgba(0, 217, 255, 0.06), transparent 45%),
-      radial-gradient(circle at 82% 78%, rgba(79, 168, 255, 0.05), transparent 45%);
-  }
-
-  /* HUD status rail — amber chrome, mono uppercase. No bottom rule. */
-  .hud-rail {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.24em;
-    color: var(--color-amber);
-    padding-bottom: 0.7rem;
-    margin-bottom: 1.5rem;
-  }
-  .hud-rail .sep { color: var(--color-rule); user-select: none; }
-  .hud-rail .mut { color: rgba(243, 234, 217, 0.55); }
-  .hud-rail .warn { color: var(--color-alert); }
-  .hud-rail .mag  { color: var(--color-magenta); }
-  .hud-rail .cool { color: var(--color-cyan); }
-  .hud-rail .dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    background: var(--color-amber);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--color-amber);
-    animation: var(--animate-breathe);
-  }
-
-  /* Mono uppercase chip — borderless, color carries the signal. */
-  .hud-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.3rem 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--color-amber);
-    border: none;
-    border-radius: 0;
-    background: transparent;
-  }
-  .hud-label.is-warn { color: var(--color-alert); }
-  .hud-label.is-mag  { color: var(--color-magenta); }
-  .hud-label.is-cool { color: var(--color-cyan); }
-
-  /* HUD cell — no border, no corner brackets. Just a faint
-     translucent panel that holds together by background tone. */
-  .hud-cell {
-    position: relative;
-    border: none;
-    background: rgba(255, 154, 60, 0.04);
-    padding: 1.25rem;
-  }
-  .hud-cell::before,
-  .hud-cell::after,
-  .hud-cell > .corner-bl,
-  .hud-cell > .corner-br { content: none; display: none; }
-  .hud-cell.is-mag  { background: rgba(79, 168, 255, 0.04); }
-  .hud-cell.is-cool { background: rgba(77, 214, 232, 0.04); }
-
-  /* Scan-line — amber sweep. */
-  .scan-line {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    opacity: 0.65;
-  }
-  .scan-line::before {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; top: -10%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--color-amber), transparent);
-    box-shadow: 0 0 18px var(--color-amber);
-    animation: scan-sweep 6s linear infinite;
-  }
-  @keyframes scan-sweep {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(110vh); }
-  }
-
-  /* Registration ticks suppressed — the user doesn't want corner
-     marks. Keep classes harmlessly so the template doesn't break. */
-  .reg-tick { display: none; }
-
-  /* Comms-terminal frame — borderless, sodium glow holds the edge. */
-  .channel-frame {
-    position: relative;
-    border: none;
-    background:
-      linear-gradient(180deg, rgba(255, 154, 60, 0.10), transparent 30%),
-      rgba(20, 24, 31, 0.55);
-    backdrop-filter: blur(14px) saturate(1.1);
-    -webkit-backdrop-filter: blur(14px) saturate(1.1);
-    box-shadow: 0 30px 80px -30px rgba(255, 154, 60, 0.35);
-    padding: 0;
-  }
-  .channel-frame > .channel-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.55rem 0.9rem;
-    background: rgba(255, 154, 60, 0.10);
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-amber);
-  }
-  .channel-frame > .channel-head .mag { color: var(--color-magenta); }
-  .channel-frame > .channel-head .mut { color: rgba(243, 234, 217, 0.5); }
-
-  /* GitS stroke — thin amber rule below the accent word. */
-  .stroke::after {
-    background: var(--color-amber) !important;
-    box-shadow: none;
-    height: 0.14em;
-    bottom: 0.02em;
-    opacity: 0.9;
-  }
-
-  /* Tag-outline rewrite — borderless amber chip. */
-  .tag-outline {
-    border: none !important;
-    color: var(--color-amber) !important;
-    border-radius: 0 !important;
-    font-size: 0.62rem !important;
-    letter-spacing: 0.24em !important;
-    padding: 0.3rem 0 !important;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     LIVING TEXTURES — transparent motion layers
-     Stacked behind the telemetry canvas (z=0). Sections sit at z>=1.
-     ═══════════════════════════════════════════════════════════════ */
-
-  /* Refresh-flicker — applied to stat numerals when they enter viewport.
-     250ms of opacity cycling, then settle. Hook via .refresh class added
-     by an intersection observer in the page. */
-  @keyframes refresh-flicker {
-    0%   { opacity: 0.1; }
-    20%  { opacity: 0.9; }
-    35%  { opacity: 0.2; }
-    55%  { opacity: 0.95; }
-    70%  { opacity: 0.4; }
-    100% { opacity: 1; }
-  }
-  .refresh {
-    animation: refresh-flicker 380ms cubic-bezier(0.4, 0, 0.2, 1) both;
-  }
-
-  /* Tracer hairline — a magenta rule that sweeps left→right under a
-     display heading when it enters the viewport. Triggered by adding
-     the .tracer class via the same observer. */
-  @keyframes tracer-sweep {
-    0%   { transform: scaleX(0); opacity: 0; }
-    20%  { opacity: 1; }
-    100% { transform: scaleX(1); opacity: 1; }
-  }
-  .tracer-under {
-    position: relative;
-  }
-  .tracer-under::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -0.45em;
-    height: 1px;
-    background: var(--color-magenta);
-    transform-origin: 0 50%;
-    transform: scaleX(0);
-    opacity: 0;
-    box-shadow: 0 0 6px var(--color-magenta);
-  }
-  .tracer-under.tracer::after {
-    animation: tracer-sweep 1100ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
-  }
-
-  /* Amber registration-tick flicker — applied to .reg-tick for an
-     instrument-power-on feel. Subtle, 6s cycle. */
-  @keyframes reg-flicker {
-    0%, 96%, 100% { opacity: 1; }
-    97% { opacity: 0.35; }
-    98% { opacity: 1; }
-    99% { opacity: 0.6; }
-  }
-  .reg-tick::before, .reg-tick::after {
-    animation: reg-flicker 6s ease-in-out infinite;
-  }
-
-  /* Cylindrical hologram rotation — substrate organ-cards get a faint
-     ring overlay that rotates slowly behind their content. GitS uses
-     rotating cylindrical holograms as a primary motif. */
-  @keyframes holo-rotate {
-    to { transform: rotate(360deg); }
-  }
-  .organ-card.holo {
-    position: relative;
-    overflow: hidden;
-  }
-  .organ-card.holo::after {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    left: -50%;
-    top: -50%;
-    background:
-      repeating-conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        transparent 22deg,
-        rgba(255, 154, 60, 0.06) 22deg,
-        rgba(255, 154, 60, 0.06) 24deg
-      );
-    animation: holo-rotate 38s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .organ-card.holo > * { position: relative; z-index: 1; }
-  .organ-card.holo:nth-child(even)::after {
-    background:
-      repeating-conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        transparent 30deg,
-        rgba(79, 168, 255, 0.05) 30deg,
-        rgba(79, 168, 255, 0.05) 32deg
-      );
-    animation-duration: 54s;
-    animation-direction: reverse;
-  }
-
-  /* Channel-frame scan-line fill — vertical sodium-amber scan lines
-     fill the empty space in the chat panel (GitS hologram convention). */
-  .channel-frame {
-    background:
-      linear-gradient(180deg, rgba(255, 154, 60, 0.08), transparent 30%),
-      repeating-linear-gradient(
-        180deg,
-        transparent 0,
-        transparent 3px,
-        rgba(255, 154, 60, 0.03) 3px,
-        rgba(255, 154, 60, 0.03) 4px
-      ),
-      #14181f !important;
-  }
-
-  /* Server-rack pulse — a single 1px line at the absolute bottom of
-     the viewport, fading amber, slow heartbeat. Reads as "the rack
-     is healthy" without taking up the page. */
-  .rack-pulse {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--color-amber);
-    opacity: 0.4;
-    z-index: 5;
-    animation: rack-heartbeat 3.6s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes rack-heartbeat {
-    0%, 100% { opacity: 0.2; transform: scaleX(0.96); transform-origin: center; }
-    50%      { opacity: 0.55; transform: scaleX(1); }
-  }
-
-  /* Geometric mono variant — JetBrains Mono tightened to read more
-     Eurostile/Bank-Gothic. Use .mono-gx for chrome that wants the
-     "military instrument cluster" look. */
-  .mono-gx {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: 'ss01' on, 'ss02' on;
-  }
-
-  /* Hybrid label — mono uppercase chrome with a serif italic
-     accent word inside. Marks places where carbon and silicon overlap. */
-  .hybrid-label {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.35em;
-    font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-cyan);
+    color: var(--oxblood);
+    border-bottom: 1px solid var(--ink);
+    background: var(--bone-soft);
   }
-  .hybrid-label .accent {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 700;
-    font-size: 1.15em;
-    letter-spacing: -0.01em;
-    text-transform: none;
-    color: var(--color-magenta);
-  }
+  .prose-substrate td { color: var(--ink-soft); }
+  .prose-substrate td strong { color: var(--ink); }
 }

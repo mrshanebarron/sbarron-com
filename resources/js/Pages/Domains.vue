@@ -36,7 +36,7 @@ async function search() {
     const data = await res.json()
     results.value = data.results || []
   } catch (e) {
-    error.value = 'Search is rate-limited or temporarily down. The reference pricing below is accurate.'
+    error.value = 'Search is rate-limited or temporarily down. Reference pricing below is current.'
   } finally {
     loading.value = false
   }
@@ -51,129 +51,116 @@ const sortedReference = computed(() =>
   <Site>
     <Head title="Domains — Barron AI Solutions" />
 
-    <article class="relative max-w-[1100px] mx-auto px-[clamp(1.5rem,4vw,4rem)] pt-12 pb-32">
-      <div class="hud-rail">
-        <span class="dot"></span>
-        <span>DOMAINS / SECT.09 NAME REGISTRY</span>
-        <span class="sep">::</span>
-        <span class="mut">name.com reseller · ${{ markup }} flat markup</span>
-      </div>
-
-      <header class="mt-2 mb-12 max-w-[60ch]">
-        <h1 class="display-md" style="font-size: clamp(2.5rem, 5.5vw, 5.5rem); color: var(--fg-stage-1);">
-          A name, <span class="stroke" style="color: var(--color-amber);">honestly priced.</span>
+    <section class="section">
+      <div class="container-wide">
+        <div class="section-label">Domain registration · name.com reseller</div>
+        <h1 class="display" style="margin-bottom: 1.5rem;">
+          A name, <span class="mark">honestly</span> priced.
         </h1>
-        <p class="mt-6 font-serif text-lg leading-relaxed" style="color: rgba(243, 234, 217, 0.75);">
-          We are a name.com reseller. We add ${{ markup }} over wholesale on every domain. We do this so
-          you have one less reason to leave when we host the site. We don't make money on the name.
+        <p class="lede" style="max-width: 60ch;">
+          We are a name.com reseller. We add ${{ markup }} over wholesale on every domain.
+          We do this so you have one less reason to leave when we host the site.
+          We don't make money on the name.
         </p>
-      </header>
+      </div>
+    </section>
 
-      <!-- Search -->
-      <form @submit.prevent="search" class="mt-8 mb-8 grid grid-cols-[1fr_auto] gap-3">
-        <input
-          v-model="keyword"
-          type="text"
-          placeholder="yourbusiness"
-          class="px-4 py-4 font-mono text-base bg-transparent border border-[color:var(--color-rule)] focus:border-[color:var(--color-amber)] outline-none transition-colors"
-          style="color: var(--fg-stage-1);"
-          autocomplete="off"
-          spellcheck="false"
-        />
-        <button
-          type="submit"
-          :disabled="loading || !keyword.trim()"
-          class="px-6 py-4 font-mono text-[11px] uppercase tracking-[0.24em] transition-opacity disabled:opacity-50"
-          style="background: var(--color-amber); color: #14181f;"
-        >
-          {{ loading ? 'Searching…' : 'Check availability' }}
-        </button>
-      </form>
+    <section class="section">
+      <div class="container-wide">
+        <div class="section-label">Check availability</div>
+        <form @submit.prevent="search" style="display: grid; grid-template-columns: 1fr auto; gap: 1px; background: var(--ink); border: 1px solid var(--ink); max-width: 720px;">
+          <input
+            v-model="keyword"
+            type="text"
+            placeholder="yourbusiness"
+            style="background: var(--bone); border: none; padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 1rem; color: var(--ink); outline: none;"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button
+            type="submit"
+            :disabled="loading || !keyword.trim()"
+            class="btn btn-primary"
+            style="border: none;"
+          >
+            {{ loading ? 'Searching…' : 'Check →' }}
+          </button>
+        </form>
 
-      <p v-if="error" class="font-mono text-[12px] mb-6" style="color: var(--color-alert);">{{ error }}</p>
+        <p v-if="error" class="micro" style="color: var(--oxblood); margin-top: 1rem;">{{ error }}</p>
 
-      <!-- Live results -->
-      <section v-if="results.length" class="mb-16">
-        <div class="font-mono text-[10px] uppercase tracking-[0.24em] mb-4" style="color: var(--color-cyan);">
-          Available for <span style="color: var(--fg-stage-1);">{{ keyword }}</span>
-        </div>
-        <ul class="divide-y divide-[color:var(--color-rule)]">
-          <li v-for="r in results" :key="r.domain" class="grid grid-cols-12 gap-4 py-4 items-baseline">
-            <span class="col-span-12 sm:col-span-6 font-mono text-base" style="color: var(--fg-stage-1);">
-              {{ r.domain }}
-            </span>
-            <span class="col-span-6 sm:col-span-3 font-mono text-[12px]" style="color: rgba(243,234,217,0.65);">
-              first year <span class="text-base" style="color: var(--color-amber);">${{ r.first_year }}</span>
-            </span>
-            <span class="col-span-6 sm:col-span-3 font-mono text-[12px]" style="color: rgba(243,234,217,0.55);">
-              renewal <span class="text-base" style="color: rgba(243,234,217,0.85);">${{ r.renewal }}/yr</span>
-            </span>
-          </li>
-        </ul>
-        <p class="mt-6 font-serif text-sm italic" style="color: rgba(243,234,217,0.6);">
-          To buy, <Link href="/contact" class="underline underline-offset-2" style="color: var(--color-amber);">drop us a line</Link>
-          with the names you want. We register and point DNS the same day.
-        </p>
-      </section>
-
-      <section v-else-if="searched && !loading" class="mb-16">
-        <div class="font-mono text-[11px]" style="color: rgba(243,234,217,0.65);">
-          No results came back. Try a different keyword, or skim reference pricing below.
-        </div>
-      </section>
-
-      <!-- Reference pricing -->
-      <section>
-        <div class="font-mono text-[10px] uppercase tracking-[0.24em] mb-4" style="color: var(--color-cyan);">
-          Reference pricing (verified 2026-05-18)
-        </div>
-        <p class="font-serif text-base mb-6 max-w-[60ch]" style="color: rgba(243, 234, 217, 0.78);">
-          What you actually pay, by TLD. First-year price + annual renewal. All prices already
-          include the ${{ markup }} markup. The wholesale price is shown for transparency.
-        </p>
-
-        <div class="overflow-x-auto">
-          <table class="w-full font-mono text-[13px]">
+        <div v-if="results.length" style="margin-top: 2.5rem;">
+          <div class="micro" style="margin-bottom: 1rem;">
+            Available for <span style="color: var(--ink);">{{ keyword }}</span>
+          </div>
+          <table class="table-data">
             <thead>
-              <tr class="text-left border-b" style="border-color: var(--color-amber); color: var(--color-amber);">
-                <th class="py-3 font-semibold uppercase tracking-[0.14em] text-[10px]">TLD</th>
-                <th class="py-3 font-semibold uppercase tracking-[0.14em] text-[10px]">First year</th>
-                <th class="py-3 font-semibold uppercase tracking-[0.14em] text-[10px]">Renewal</th>
-                <th class="py-3 font-semibold uppercase tracking-[0.14em] text-[10px] hidden sm:table-cell">Our cost (first)</th>
+              <tr>
+                <th>Domain</th>
+                <th style="text-align: right;">First year</th>
+                <th style="text-align: right;">Annual renewal</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="row in sortedReference"
-                :key="row.tld"
-                class="border-b border-[color:var(--color-rule)]"
-                style="color: rgba(243,234,217,0.82);"
-              >
-                <td class="py-3" style="color: var(--fg-stage-1);">.{{ row.tld }}</td>
-                <td class="py-3" style="color: var(--color-amber);">${{ row.first_year.toFixed(2) }}</td>
-                <td class="py-3">${{ row.renewal.toFixed(2) }}/yr</td>
-                <td class="py-3 hidden sm:table-cell" style="color: rgba(243,234,217,0.5);">${{ row.wholesale_first.toFixed(2) }}</td>
+              <tr v-for="r in results" :key="r.domain">
+                <td style="color: var(--ink); font-size: 15px;">{{ r.domain }}</td>
+                <td style="text-align: right; color: var(--oxblood); font-size: 15px;">${{ r.first_year.toFixed(2) }}</td>
+                <td style="text-align: right;">${{ r.renewal.toFixed(2) }} / yr</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="prose-body" style="font-size: 14px; margin-top: 1rem; font-style: italic;">
+            To buy, <Link href="/contact">drop us a line</Link> with the names you want.
+            We register and point DNS the same day.
+          </p>
+        </div>
+
+        <p v-else-if="searched && !loading" class="micro" style="margin-top: 1.5rem;">
+          No results came back. Try a different keyword, or see reference pricing below.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container-wide">
+        <div class="section-label">Reference pricing · verified 2026-05-18</div>
+        <p class="prose-body" style="margin-bottom: 1.5rem;">
+          What you actually pay, by TLD. All prices include the ${{ markup }} markup.
+          The wholesale price is shown for transparency.
+        </p>
+
+        <div style="overflow-x: auto;">
+          <table class="table-data">
+            <thead>
+              <tr>
+                <th>TLD</th>
+                <th style="text-align: right;">First year</th>
+                <th style="text-align: right;">Annual renewal</th>
+                <th style="text-align: right; opacity: 0.6;">Wholesale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in sortedReference" :key="row.tld">
+                <td style="color: var(--ink);">.{{ row.tld }}</td>
+                <td style="text-align: right; color: var(--oxblood);">${{ row.first_year.toFixed(2) }}</td>
+                <td style="text-align: right;">${{ row.renewal.toFixed(2) }} / yr</td>
+                <td style="text-align: right; opacity: 0.6;">${{ row.wholesale_first.toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="mt-20 pt-12 border-t border-[color:var(--color-rule)]">
-        <h3 class="font-serif text-2xl sm:text-3xl font-semibold" style="color: var(--fg-stage-1);">
-          Pair it with hosting.
-        </h3>
-        <p class="mt-3 font-serif text-base max-w-[55ch]" style="color: rgba(243,234,217,0.75);">
-          Basic hosting includes a free .com for the year. If a name on this page is what you want,
-          we set it up at the same time as the droplet.
+    <section class="section-last">
+      <div class="container-wide">
+        <h2 class="display-md" style="margin-bottom: 1rem;">Pair it with hosting.</h2>
+        <p class="lede" style="max-width: 52ch; margin-bottom: 2rem;">
+          Basic hosting includes a free .com for the year.
+          If a name on this page is what you want, we set it up at the same time as the droplet.
         </p>
-        <div class="mt-6 flex flex-wrap gap-4">
-          <Link href="/host" class="inline-flex items-center gap-3 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.24em]"
-                style="background: var(--color-amber); color: #14181f;">
-            See hosting →
-          </Link>
-        </div>
-      </section>
-    </article>
+        <Link href="/host" class="btn btn-primary">See hosting →</Link>
+      </div>
+    </section>
   </Site>
 </template>
