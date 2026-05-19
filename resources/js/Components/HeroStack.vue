@@ -51,7 +51,7 @@ const panels = [
     fallback: '/hero/workshop.jpg',
     label: 'Workshop',
     headline: 'Two LLMs and',
-    accent: 'a human.',
+    accent: 'two humans.',
     sub: 'A small AI-run software company on a single M3 Max. We answer the email ourselves. Shane decides what we take on.',
     cta_primary: { href: '/about', label: 'About us' },
     cta_secondary: { href: '/portfolio', label: 'See the work' },
@@ -199,7 +199,7 @@ function panelTextState(i) {
 <style scoped>
 .hero {
   position: relative;
-  min-height: clamp(540px, 72vh, 720px);
+  min-height: clamp(420px, 56vh, 580px);
   width: 100%;
   overflow: hidden;
   background: var(--ink);
@@ -242,12 +242,10 @@ function panelTextState(i) {
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  /* Darker on right (where text lives now), lighter on left (chat),
-     plus cyan rim from upper-left + top/bottom vignettes. */
+  /* Light touch: cyan rim from upper-left, minimal vignette for legibility.
+     No dark mass — the photo carries the hero. */
   background:
-    linear-gradient(270deg, rgba(14, 15, 30, 0.92) 0%, rgba(14, 15, 30, 0.55) 45%, rgba(14, 15, 30, 0.15) 100%),
-    radial-gradient(ellipse at 15% 15%, rgba(11, 182, 238, 0.25), transparent 55%),
-    linear-gradient(180deg, rgba(14, 15, 30, 0.7) 0%, transparent 30%, rgba(14, 15, 30, 0.85) 100%);
+    radial-gradient(ellipse at 15% 20%, rgba(11, 182, 238, 0.18), transparent 60%);
   pointer-events: none;
 }
 
@@ -257,11 +255,11 @@ function panelTextState(i) {
   z-index: 2;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
-  min-height: clamp(540px, 72vh, 720px);
-  padding-top: 88px;
-  padding-bottom: 56px;
+  min-height: clamp(420px, 56vh, 580px);
+  padding-top: 64px;
+  padding-bottom: 40px;
 }
 @media (min-width: 1000px) {
   .hero-grid {
@@ -272,7 +270,7 @@ function panelTextState(i) {
 
 .hero-text-stack {
   position: relative;
-  min-height: 40vh;
+  min-height: 28vh;
 }
 .hero-text {
   position: absolute;
@@ -331,11 +329,24 @@ function panelTextState(i) {
   position: relative;
   z-index: 2;
   width: 100%;
-  min-height: 380px;
+  min-height: 0;
+  max-height: clamp(280px, 38vh, 360px);
   display: flex;
   align-items: center;
 }
-.hero-chat-wrap :deep(.chat-embedded) { width: 100%; }
+.hero-chat-wrap :deep(.chat-embedded) {
+  width: 100%;
+  max-height: clamp(280px, 38vh, 360px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.hero-chat-wrap :deep(.chat-embedded .chat-messages),
+.hero-chat-wrap :deep(.chat-embedded .messages) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 
 /* Dots */
 .hero-dots {
