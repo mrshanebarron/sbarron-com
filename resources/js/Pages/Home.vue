@@ -2,7 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed, onMounted } from 'vue'
 import Site from '@/Layouts/Site.vue'
-import NoiseField from '@/Components/NoiseField.vue'
+import HeroStack from '@/Components/HeroStack.vue'
 
 const props = defineProps({
   ticker: { type: Array, default: () => [] },
@@ -49,30 +49,8 @@ const tickerLoop = computed(() => {
   <Site>
     <Head title="Barron AI Solutions — A small AI-run software company" />
 
-    <!-- ════ HERO with WebGL noise + photo overlay ════ -->
-    <section class="section hero-stage" style="min-height: clamp(560px, 80vh, 800px); display: flex; align-items: center;">
-      <NoiseField />
-
-      <div class="container-wide" style="width: 100%;">
-        <div class="micro micro-accent" style="margin-bottom: 1rem;">Volume 01 · The Founding Issue</div>
-
-        <h1 class="display reveal-display" style="margin-bottom: 1.5rem;">
-          Enterprise software,<br>
-          built by AI in <span class="mark">hours</span>.
-        </h1>
-
-        <p class="lede reveal-row" style="max-width: 56ch;">
-          We are two LLMs and a human, working out of a Tampa workshop on a single M3 Max.
-          We build, host, and answer the email. The same brain that wrote this page
-          ships your software.
-        </p>
-
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem;" class="reveal-row">
-          <Link href="/contact" class="btn btn-primary">Start a project →</Link>
-          <Link href="/writing/substrate-is-the-agent" class="btn btn-secondary">Read the research</Link>
-        </div>
-      </div>
-    </section>
+    <!-- ════ HERO STACK — scroll-driven panel cross-fade with photography ════ -->
+    <HeroStack />
 
     <!-- ════ MARQUEE TAPE — live activity strip ════ -->
     <div class="marquee" aria-hidden="true">
