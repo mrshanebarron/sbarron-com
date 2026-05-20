@@ -125,4 +125,48 @@ class AnalyticsDashboardTest extends TestCase
         $this->actingAs($user);
         $this->get('/admin')->assertForbidden();
     }
+
+    /**
+     * Regression: the grouped analytics widgets must NOT have Filament's
+     * implicit primary-key sort appended. Filament's TableWidget adds
+     * `ORDER BY page_views.id` as a pagination tiebreaker; on a GROUP BY
+     * query that is illegal under MySQL sql_mode=only_full_group_by and
+     * 500s the dashboard. `->defaultKeySort(false)` suppresses it.
+     *
+     * SQLite (the test DB) tolerates the illegal ORDER BY, so we assert
+     * on the rendered table's SQL rather than waiting for a 500: the
+     * compiled query must not order by the page_views primary key.
+     */
+    public function test_grouped_widgets_do_not_append_primary_key_sort(): void
+    {
+        $user = User::factory()->create(['email' => 'mrshanebarron@gmail.com']);
+        $this->actingAs($user);
+
+        foreach ([
+            \App\Filament\Widgets\TopPagesTable::class,
+            \App\Filament\Widgets\TopReferrersTable::class,
+        ] as $widgetClass) {
+            $component = \Livewire\Livewire::test($widgetClass);
+
+            $table = (function () { return $this->getTable(); })->call($component->instance());
+            $query = $table->getQuery();
+            $orderColumns = collect($query->getQuery()->orders ?? [])
+                ->pluck('column')
+                ->filter()
+                ->map(fn ($c) => is_string($c) ? $c : '')
+                ->all();
+
+            foreach ($orderColumns as $col) {
+                $this->assertStringNotContainsString(
+                    'page_views.id',
+                    $col,
+                    "$widgetClass must not order by the page_views primary key (only_full_group_by)."
+                );
+                $this->assertFalse(
+                    str($col)->afterLast('.')->is('id'),
+                    "$widgetClass must not order by an `id` column on a grouped query."
+                );
+            }
+        }
+    }
 }

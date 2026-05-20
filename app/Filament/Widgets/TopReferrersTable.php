@@ -23,6 +23,10 @@ class TopReferrersTable extends BaseWidget
             ->query($this->buildQuery())
             ->paginated([10, 25])
             ->defaultSort('views', 'desc')
+            // Query is GROUP BY referrer_host — Filament's implicit
+            // primary-key tiebreaker (ORDER BY page_views.id) is illegal
+            // under MySQL only_full_group_by. Disable it.
+            ->defaultKeySort(false)
             ->emptyStateHeading('No external referrers yet')
             ->emptyStateDescription('Once someone arrives from outside sbarron.com, the link they came from shows up here.')
             ->columns([

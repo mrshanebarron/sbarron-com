@@ -23,6 +23,10 @@ class TopPagesTable extends BaseWidget
             ->query($this->buildQuery())
             ->paginated([10, 25, 50])
             ->defaultSort('views', 'desc')
+            // Query is GROUP BY path — Filament's implicit primary-key
+            // tiebreaker (ORDER BY page_views.id) is illegal under MySQL
+            // only_full_group_by. Disable it.
+            ->defaultKeySort(false)
             ->columns([
                 Tables\Columns\TextColumn::make('path')
                     ->label('Path')
