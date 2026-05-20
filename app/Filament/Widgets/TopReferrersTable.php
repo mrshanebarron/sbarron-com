@@ -65,4 +65,17 @@ class TopReferrersTable extends BaseWidget
             ->where('referrer', 'not like', 'http://sbarron.test%')
             ->groupBy('referrer_host');
     }
+
+    /**
+     * The query is GROUP BY referrer_host, so the result rows carry no
+     * primary key. Filament's default getTableRecordKey() returns the
+     * model key (null here) and the string return type throws. The
+     * group column referrer_host is unique per row — use it as key.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|array<string, mixed>  $record
+     */
+    public function getTableRecordKey($record): string
+    {
+        return (string) (is_array($record) ? ($record['referrer_host'] ?? '') : $record->referrer_host);
+    }
 }

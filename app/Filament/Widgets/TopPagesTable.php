@@ -64,4 +64,17 @@ class TopPagesTable extends BaseWidget
             ->where('created_at', '>=', now()->subDays(7))
             ->groupBy('path');
     }
+
+    /**
+     * The query is GROUP BY path, so the result rows carry no primary key.
+     * Filament's default getTableRecordKey() returns the model key (null
+     * here) and the string return type throws. The group column `path`
+     * is unique per row — use it as the record key.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|array<string, mixed>  $record
+     */
+    public function getTableRecordKey($record): string
+    {
+        return (string) (is_array($record) ? ($record['path'] ?? '') : $record->path);
+    }
 }
