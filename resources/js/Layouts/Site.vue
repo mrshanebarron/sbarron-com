@@ -29,8 +29,8 @@ const isActive = (href) => {
   <header v-if="!bare" class="masthead">
     <div class="container-wide">
       <div class="masthead-row">
-        <Link href="/" class="masthead-name">
-          Barron AI
+        <Link href="/" class="masthead-logo" aria-label="Barron AI Solutions — home">
+          <img src="/img/logo.webp" alt="Barron AI Solutions" width="1198" height="359" />
         </Link>
         <nav class="nav-row">
           <Link

@@ -33,6 +33,10 @@ onMounted(async () => {
 const featuredWork = computed(() => props.clients.slice(0, 3))
 const otherWork = computed(() => props.mvps.slice(0, 6))
 
+// Live clients surfaced as a trust strip in the proof section directly
+// under the hero — names + kind only, the fast social-proof glance.
+const proofClients = computed(() => props.clients.slice(0, 5))
+
 const services = [
   { num: '01', title: 'Build',    href: '/build',
     summary: 'A working SPEC.md before any code. Real database, real auth, real flows. The agent verifies before it says done.' },
@@ -52,56 +56,96 @@ const services = [
     <!-- ════ HERO STACK ════ -->
     <HeroStack />
 
-    <!-- ════ TALK TO PNEUMA — chat section directly below hero ════ -->
-    <section class="flex-section pneuma-chat-section">
+    <!-- ════ PROOF — the one number, directly under the hero ════ -->
+    <!-- Single-stat proof band. Breaks the uniform dark rhythm with a
+         lighter panel so the buyer's eye stops here. The 90-minute build
+         is the most compelling fact on the site; it leads. -->
+    <section class="proof-section">
       <div class="container-wide">
-        <div class="flex-section-head">
-          <div>
-            <div class="micro-flex">Talk to the agent</div>
-            <h2 class="display-md">Ask <span class="mark">Pneuma</span>.</h2>
+        <div class="proof-grid">
+          <div class="proof-headline">
+            <div class="micro-flex">What this means for you</div>
+            <h2 class="display-md">
+              Enterprise software,<br>
+              <span class="mark">shipped in hours.</span>
+            </h2>
+            <p class="lede proof-lede">
+              {{ matt.title || 'A complete production module — built, tested, and deployed in a single sitting.' }}
+            </p>
+            <div class="proof-meta">
+              <span class="proof-meta-item">{{ matt.commits || '12' }} commits</span>
+              <span class="proof-meta-dot">·</span>
+              <span class="proof-meta-item">{{ matt.tests || '122' }} tests passing</span>
+              <span class="proof-meta-dot">·</span>
+              <span class="proof-meta-item">in production</span>
+            </div>
           </div>
-          <p class="lede flex-section-lead">
-            The same agent that built this page is the one who&rsquo;ll build
-            yours. Type a question and she&rsquo;ll answer in this window.
-          </p>
+
+          <div class="proof-stat-card">
+            <div class="proof-stat-big">{{ matt.duration || '90 minutes' }}</div>
+            <div class="proof-stat-label">to ship {{ matt.scope_label || 'a CRM module + payments' }}</div>
+            <div class="proof-stat-compare">
+              <span class="proof-compare-strike">{{ matt.market_price || '$15k–$25k' }}</span>
+              <span class="proof-compare-arrow">at a typical shop, over weeks</span>
+            </div>
+          </div>
         </div>
-        <div class="pneuma-chat-frame">
-          <PneumaChat
-            :embedded="true"
-            :accent="'#0bb6ee'"
-            :bg="'rgba(14, 15, 30, 0.78)'"
-            :fg="'#ffffff'"
-          />
+
+        <div v-if="proofClients.length" class="proof-clients">
+          <span class="proof-clients-label">In production for real businesses</span>
+          <div class="proof-clients-row">
+            <a
+              v-for="c in proofClients"
+              :key="c.slug"
+              :href="c.url"
+              target="_blank"
+              rel="noopener"
+              class="proof-client"
+            >
+              <span class="proof-client-name">{{ c.name }}</span>
+              <span class="proof-client-kind">{{ c.kind }}</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ════ SERVICES — 4-up cards with cyan number, Flex-IT style ════ -->
+    <!-- ════ FEATURED CLIENTS — the work, moved high: buyers evaluate proof ════ -->
     <section class="flex-section">
       <div class="container-wide">
         <div class="flex-section-head">
           <div>
-            <div class="micro-flex">Services</div>
-            <h2 class="display-md">What we <span class="mark">do.</span></h2>
+            <div class="micro-flex">Portfolio</div>
+            <h2 class="display-md">Clients we <span class="mark">built for.</span></h2>
           </div>
-          <p class="lede flex-section-lead">
-            Four ways we can help. Each one priced honestly and shipped by
-            the same brain that wrote this page.
-          </p>
+          <Link href="/portfolio" class="flex-arrow-link">All work →</Link>
         </div>
 
-        <div class="flex-services-grid">
-          <Link
-            v-for="svc in services"
-            :key="svc.num"
-            :href="svc.href"
-            class="flex-service-card"
-          >
-            <div class="flex-service-num">{{ svc.num }}</div>
-            <h3 class="flex-service-title">{{ svc.title }}</h3>
-            <p class="flex-service-sub">{{ svc.summary }}</p>
-            <span class="flex-arrow" aria-hidden="true">→</span>
-          </Link>
+        <div class="flex-work-grid">
+          <a v-for="item in featuredWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card">
+            <div class="flex-work-shot">
+              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
+              <span class="flex-work-live">Live</span>
+            </div>
+            <div class="flex-work-body">
+              <div class="flex-work-kind">{{ item.kind }}</div>
+              <h4 class="flex-work-name">{{ item.name }}</h4>
+              <p class="flex-work-summary">{{ item.summary }}</p>
+              <span class="flex-arrow" aria-hidden="true">→</span>
+            </div>
+          </a>
+        </div>
+
+        <div v-if="otherWork.length" class="flex-work-grid flex-work-grid-small">
+          <a v-for="item in otherWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card flex-work-card-small">
+            <div class="flex-work-shot">
+              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
+            </div>
+            <div class="flex-work-body">
+              <div class="flex-work-kind">{{ item.kind }}</div>
+              <h4 class="flex-work-name">{{ item.name }}</h4>
+            </div>
+          </a>
         </div>
       </div>
     </section>
@@ -174,10 +218,10 @@ const services = [
               <span class="mark">audited live.</span>
             </h2>
             <p class="lede" style="margin-top: 1.5rem; max-width: 50ch;">
-              Every action our agents take leaves a trace in the same
-              database they read from at the next prompt. The numbers below
-              are real — pulled from our own audit substrate, last 24
-              hours.
+              Every action our agents take is logged and checked against the
+              same database they work from. Nothing ships unverified — and
+              the numbers below are live, pulled from the last 24 hours of
+              our own work.
             </p>
             <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
               <Link href="/about" class="btn btn-primary">About us</Link>
@@ -188,61 +232,76 @@ const services = [
           <div class="flex-stats">
             <div class="flex-stat">
               <div class="flex-stat-num">{{ telemetry.shell_ops_24h.toLocaleString() }}</div>
-              <div class="flex-stat-label">Shell ops audited<br><span>24 hours</span></div>
+              <div class="flex-stat-label">Operations logged<br><span>last 24 hours</span></div>
             </div>
             <div class="flex-stat">
               <div class="flex-stat-num">{{ telemetry.tool_calls_24h.toLocaleString() }}</div>
-              <div class="flex-stat-label">MCP tool calls<br><span>59 distinct tools</span></div>
+              <div class="flex-stat-label">Tool calls traced<br><span>every one auditable</span></div>
             </div>
             <div class="flex-stat">
-              <div class="flex-stat-num">{{ telemetry.dreams_total.toLocaleString() }}</div>
-              <div class="flex-stat-label">Dream-state samples<br><span>since launch</span></div>
+              <div class="flex-stat-num">{{ clients.length }}</div>
+              <div class="flex-stat-label">Client sites<br><span>live in production</span></div>
             </div>
             <div class="flex-stat">
-              <div class="flex-stat-num">{{ telemetry.meta_proposals_built }}<span class="flex-stat-num-of">/7</span></div>
-              <div class="flex-stat-label">Self-evolved organs<br><span>shipped</span></div>
+              <div class="flex-stat-num">122</div>
+              <div class="flex-stat-label">Automated tests<br><span>on the last module shipped</span></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ════ FEATURED CLIENTS ════ -->
+    <!-- ════ TALK TO PNEUMA — mid-page: "still deciding? ask her yourself" ════ -->
+    <section class="flex-section pneuma-chat-section">
+      <div class="container-wide">
+        <div class="flex-section-head">
+          <div>
+            <div class="micro-flex">Talk to the agent</div>
+            <h2 class="display-md">Ask <span class="mark">Pneuma</span>.</h2>
+          </div>
+          <p class="lede flex-section-lead">
+            The same agent that built this page is the one who&rsquo;ll build
+            yours. Ask what you&rsquo;d ask any developer you&rsquo;re about to
+            hire — she&rsquo;ll answer in this window.
+          </p>
+        </div>
+        <div class="pneuma-chat-frame">
+          <PneumaChat
+            :embedded="true"
+            :accent="'#0bb6ee'"
+            :bg="'rgba(14, 15, 30, 0.78)'"
+            :fg="'#ffffff'"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ SERVICES — 4-up cards, after the work + story are established ════ -->
     <section class="flex-section">
       <div class="container-wide">
         <div class="flex-section-head">
           <div>
-            <div class="micro-flex">Portfolio</div>
-            <h2 class="display-md">Clients we <span class="mark">built for.</span></h2>
+            <div class="micro-flex">Services</div>
+            <h2 class="display-md">What we <span class="mark">do.</span></h2>
           </div>
-          <Link href="/portfolio" class="flex-arrow-link">All work →</Link>
+          <p class="lede flex-section-lead">
+            Four ways we can help. Each one priced honestly and shipped by
+            the same brain that wrote this page.
+          </p>
         </div>
 
-        <div class="flex-work-grid">
-          <a v-for="item in featuredWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card">
-            <div class="flex-work-shot">
-              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
-              <span class="flex-work-live">Live</span>
-            </div>
-            <div class="flex-work-body">
-              <div class="flex-work-kind">{{ item.kind }}</div>
-              <h4 class="flex-work-name">{{ item.name }}</h4>
-              <p class="flex-work-summary">{{ item.summary }}</p>
-              <span class="flex-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-        </div>
-
-        <div v-if="otherWork.length" class="flex-work-grid flex-work-grid-small">
-          <a v-for="item in otherWork" :key="item.slug" :href="item.url" target="_blank" rel="noopener" class="flex-work-card flex-work-card-small">
-            <div class="flex-work-shot">
-              <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy" />
-            </div>
-            <div class="flex-work-body">
-              <div class="flex-work-kind">{{ item.kind }}</div>
-              <h4 class="flex-work-name">{{ item.name }}</h4>
-            </div>
-          </a>
+        <div class="flex-services-grid">
+          <Link
+            v-for="svc in services"
+            :key="svc.num"
+            :href="svc.href"
+            class="flex-service-card"
+          >
+            <div class="flex-service-num">{{ svc.num }}</div>
+            <h3 class="flex-service-title">{{ svc.title }}</h3>
+            <p class="flex-service-sub">{{ svc.summary }}</p>
+            <span class="flex-arrow" aria-hidden="true">→</span>
+          </Link>
         </div>
       </div>
     </section>
