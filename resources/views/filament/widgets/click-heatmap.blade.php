@@ -51,30 +51,33 @@
                     No clicks recorded on this page yet.
                 </p>
             @else
-                <div class="flex flex-col gap-[2px]"
-                     style="aspect-ratio: 1 / 1; max-width: 520px;"
+                <div class="overflow-x-auto"
                      title="Each cell is 5% of page width by 5% of viewport height">
-                    @for ($row = 0; $row < 20; $row++)
-                        <div class="flex gap-[2px]" style="flex: 1;">
-                            @for ($col = 0; $col < 20; $col++)
-                                @php
-                                    $count = $grid[$col][$row] ?? 0;
-                                    $ratio = $max > 0 ? $count / $max : 0;
-                                    $step = $count === 0 ? 0 : (int) ceil($ratio * 4);
-                                    $bg = [
-                                        0 => 'background-color: rgb(243 244 246);',  // gray-100 — no clicks
-                                        1 => 'background-color: rgb(254 215 170);',  // orange-200
-                                        2 => 'background-color: rgb(251 146 60);',   // orange-400
-                                        3 => 'background-color: rgb(234 88 12);',    // orange-600
-                                        4 => 'background-color: rgb(154 52 18);',    // orange-900
-                                    ][$step];
-                                @endphp
-                                <div class="rounded-[2px]"
-                                     style="flex: 1; {{ $bg }}"
-                                     title="{{ $count }} click{{ $count === 1 ? '' : 's' }}"></div>
+                    <table style="border-collapse: separate; border-spacing: 2px;">
+                        <tbody>
+                            @for ($row = 0; $row < 20; $row++)
+                                <tr>
+                                    @for ($col = 0; $col < 20; $col++)
+                                        @php
+                                            $count = $grid[$col][$row] ?? 0;
+                                            $ratio = $max > 0 ? $count / $max : 0;
+                                            $step = $count === 0 ? 0 : (int) ceil($ratio * 4);
+                                            $bg = [
+                                                0 => 'background-color: rgb(243 244 246);',  // gray-100 — no clicks
+                                                1 => 'background-color: rgb(254 215 170);',  // orange-200
+                                                2 => 'background-color: rgb(251 146 60);',   // orange-400
+                                                3 => 'background-color: rgb(234 88 12);',    // orange-600
+                                                4 => 'background-color: rgb(154 52 18);',    // orange-900
+                                            ][$step];
+                                        @endphp
+                                        <td class="rounded-[2px]"
+                                            style="width: 22px; height: 22px; {{ $bg }}"
+                                            title="{{ $count }} click{{ $count === 1 ? '' : 's' }}"></td>
+                                    @endfor
+                                </tr>
                             @endfor
-                        </div>
-                    @endfor
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="mt-4 flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
