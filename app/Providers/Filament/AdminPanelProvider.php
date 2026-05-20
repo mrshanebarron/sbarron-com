@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 \App\Filament\Widgets\AnalyticsStatsOverview::class,
+                \App\Filament\Widgets\TrafficHeatmap::class,
                 \App\Filament\Widgets\TopPagesTable::class,
                 \App\Filament\Widgets\TopReferrersTable::class,
             ])
