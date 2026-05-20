@@ -14,14 +14,13 @@
             </p>
         @else
             <div class="overflow-x-auto">
-                <table class="border-separate" style="border-spacing: 2px;">
+                <table class="w-full" style="border-collapse: separate; border-spacing: 3px; min-width: 640px;">
                     <thead>
                         <tr>
-                            <th class="w-10"></th>
+                            <th class="text-left" style="width: 44px;"></th>
                             @for ($h = 0; $h < 24; $h++)
-                                <th class="text-[10px] font-normal text-gray-400 dark:text-gray-500 text-center"
-                                    style="min-width: 22px;">
-                                    {{ $h % 6 === 0 ? str_pad((string) $h, 2, '0', STR_PAD_LEFT) : '' }}
+                                <th class="text-[10px] font-normal text-gray-400 dark:text-gray-500 text-center">
+                                    {{ $h % 3 === 0 ? str_pad((string) $h, 2, '0', STR_PAD_LEFT) : '' }}
                                 </th>
                             @endfor
                         </tr>
@@ -29,7 +28,8 @@
                     <tbody>
                         @foreach ($days as $dow => $dayLabel)
                             <tr>
-                                <td class="text-[11px] font-medium text-gray-500 dark:text-gray-400 pr-2 text-right">
+                                <td class="text-[11px] font-medium text-gray-500 dark:text-gray-400 pr-3 text-right"
+                                    style="width: 44px; white-space: nowrap;">
                                     {{ $dayLabel }}
                                 </td>
                                 @for ($h = 0; $h < 24; $h++)
@@ -48,7 +48,7 @@
                                         ][$step];
                                     @endphp
                                     <td class="rounded-sm"
-                                        style="width: 22px; height: 22px; {{ $bg }}"
+                                        style="height: 26px; {{ $bg }}"
                                         title="{{ $dayLabel }} {{ str_pad((string) $h, 2, '0', STR_PAD_LEFT) }}:00 — {{ $count }} view{{ $count === 1 ? '' : 's' }}">
                                     </td>
                                 @endfor
