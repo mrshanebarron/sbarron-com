@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HostingController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\TelemetryController;
+use App\Http\Controllers\TrackInteractionController;
 use App\Http\Controllers\WritingController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -29,3 +30,4 @@ Route::post('/api/chat/end',       [ChatController::class, 'end'])->name('api.ch
 Route::post('/api/contact',        ContactController::class)->name('api.contact');
 Route::post('/api/domains/search', [DomainController::class, 'search'])->name('api.domains.search');
 Route::get('/api/telemetry',       TelemetryController::class)->name('api.telemetry');
+Route::post('/api/track-interaction', TrackInteractionController::class)->name('api.track-interaction');

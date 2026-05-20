@@ -6,6 +6,7 @@ import '@fontsource-variable/jetbrains-mono'
 import { MotionPlugin } from '@vueuse/motion'
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import { startHeatmapCapture } from './heatmap'
 
 createInertiaApp({
   resolve: name => {
@@ -20,3 +21,6 @@ createInertiaApp({
   },
   progress: { color: '#e8443b' },
 })
+
+// Admin heatmap — capture clicks + scroll depth on the public site.
+startHeatmapCapture()
