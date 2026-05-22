@@ -1751,4 +1751,139 @@
   @media (min-width: 800px) {
     .flex-cta-buttons { justify-content: flex-end; }
   }
+
+  /* ════════════════════════════════════════════════════════════════
+     MNEVA BAND — our own product. Carries Mneva's ember accent,
+     scoped to .mneva-band so it reads as a distinct brand pocket
+     inside the cyan-accented sbarron page.
+     ════════════════════════════════════════════════════════════════ */
+  .mneva-band {
+    --mn-ember: #e0794a;
+    --mn-ember-soft: #ed8a5b;
+    --mn-glow: rgba(224, 121, 74, 0.13);
+    position: relative;
+    overflow: hidden;
+  }
+  .mneva-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 88% 18%, var(--mn-glow), transparent 55%);
+    pointer-events: none;
+  }
+  .mneva-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .mneva-grid { grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; }
+  }
+  .mneva-eyebrow::before { background: var(--mn-ember); }
+  .mneva-mark {
+    color: var(--mn-ember);
+    font-style: italic;
+  }
+  .mneva-lede {
+    max-width: 52ch;
+    margin-top: 1.25rem;
+  }
+  .mneva-traits {
+    list-style: none;
+    margin: 1.75rem 0 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .mneva-traits li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--bone-deep);
+  }
+  .mneva-traits li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mn-ember);
+    box-shadow: 0 0 9px var(--mn-glow);
+  }
+  .mneva-trait-name {
+    display: block;
+    font-weight: 700;
+    color: var(--bone);
+    margin-bottom: 0.15rem;
+  }
+  .mneva-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--mn-ember);
+    color: #1a0e07;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 7px;
+    text-decoration: none;
+    transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .mneva-cta:hover {
+    background: var(--mn-ember-soft);
+    color: #1a0e07;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px var(--mn-glow);
+  }
+  .mneva-cta-arrow { transition: transform 200ms ease; }
+  .mneva-cta:hover .mneva-cta-arrow { transform: translateX(3px); }
+
+  /* code-grammar panel — echoes Mneva's own "a Tuesday" panel */
+  .mneva-panel {
+    background: #0d0d13;
+    border: 1px solid var(--rule-soft);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 22px 60px -32px rgba(0, 0, 0, 0.6),
+                0 0 34px -20px var(--mn-glow);
+  }
+  .mneva-panel-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule-soft);
+    background: var(--ink-soft);
+  }
+  .mneva-panel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3a3a45;
+  }
+  .mneva-panel-label {
+    margin-left: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  .mneva-panel-pre {
+    margin: 0;
+    padding: 1.35rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--bone-deep);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .mn-you { color: var(--oxblood); }
+  .mn-mn { color: var(--mn-ember); }
+  .mn-com { color: var(--ink-mute); }
 }

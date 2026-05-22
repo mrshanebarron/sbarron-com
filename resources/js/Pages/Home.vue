@@ -207,6 +207,78 @@ const services = [
       </div>
     </section>
 
+    <!-- ════ MNEVA — our own product, a dedicated band ════ -->
+    <!-- Mneva is a product we build and run, not a client engagement.
+         The band carries Mneva's own ember accent (scoped to .mneva-band)
+         so it reads as a distinct brand inside the sbarron page. -->
+    <section class="flex-section flex-band mneva-band">
+      <div class="container-wide">
+        <div class="mneva-grid">
+          <div class="mneva-copy">
+            <div class="micro-flex mneva-eyebrow">Our product</div>
+            <h2 class="display-md">
+              Mneva — the mind
+              <span class="mneva-mark">behind your coding agent.</span>
+            </h2>
+            <p class="lede mneva-lede">
+              Every AI coding tool starts cold — it re-reads the codebase and
+              repeats the mistake you corrected last week. Mneva is the memory
+              underneath: it remembers your architecture, revises what it
+              believes when you correct it, and carries forward across Cursor,
+              Claude&nbsp;Code, Copilot, and Codex. We built it, we run it, and
+              it is live now.
+            </p>
+            <ul class="mneva-traits">
+              <li>
+                <span class="mneva-trait-name">Persistent memory</span>
+                Your codebase, your conventions, and the decisions behind them —
+                held, not re-explained every session.
+              </li>
+              <li>
+                <span class="mneva-trait-name">Belief revision</span>
+                Correct it once and the correction sticks. It revises what it
+                believes instead of stacking notes on the wrong old one.
+              </li>
+              <li>
+                <span class="mneva-trait-name">One mind, every tool</span>
+                Runs as an MCP server. Teach it once; every tool you code with
+                already knows.
+              </li>
+            </ul>
+            <a
+              href="https://mneva.dev"
+              target="_blank"
+              rel="noopener"
+              class="mneva-cta"
+            >
+              Visit Mneva
+              <span class="mneva-cta-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="mneva-panel">
+            <div class="mneva-panel-bar">
+              <span class="mneva-panel-dot" />
+              <span class="mneva-panel-dot" />
+              <span class="mneva-panel-dot" />
+              <span class="mneva-panel-label">a Tuesday, with Mneva</span>
+            </div>
+            <pre class="mneva-panel-pre"><span class="mn-you">you</span>  ›  add rate limiting to the upload route
+
+<span class="mn-mn">mneva</span> › done. used your throttle middleware pattern
+         from the auth routes — not a new dependency.
+         <span class="mn-com">[remembered: you rejected bucket4j in March]</span>
+
+<span class="mn-you">you</span>  ›  careful, that service is fragile
+
+<span class="mn-mn">mneva</span> › noted — i will slow down and verify around
+         BillingService from here on.
+         <span class="mn-com">[belief revised · caution raised here]</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ════ ABOUT BAND — pull quote + telemetry side by side ════ -->
     <section class="flex-section flex-band">
       <div class="container-wide">
