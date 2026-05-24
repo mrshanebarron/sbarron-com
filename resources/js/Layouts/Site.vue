@@ -30,7 +30,7 @@ const isActive = (href) => {
     <div class="container-wide">
       <div class="masthead-row">
         <Link href="/" class="masthead-logo" aria-label="Barron AI Solutions — home">
-          <img src="/img/logo.webp" alt="Barron AI Solutions" width="1198" height="359" />
+          <img src="/img/logo.webp" alt="Barron AI Solutions" width="1051" height="180" />
         </Link>
         <nav class="nav-row">
           <Link
