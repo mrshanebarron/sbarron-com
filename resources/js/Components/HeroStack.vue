@@ -260,8 +260,8 @@ const pad2 = (n) => String(n).padStart(2, '0')
 }
 .hero-chat-glass {
   background: rgba(20, 20, 29, 0.55);
-  backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   box-shadow:
@@ -270,6 +270,11 @@ const pad2 = (n) => String(n).padStart(2, '0')
   overflow: hidden;
   min-height: 420px;
   max-height: 560px;
+}
+@supports not (backdrop-filter: blur(20px)) {
+  .hero-chat-glass {
+    background: rgba(20, 20, 29, 0.85);
+  }
 }
 @media (max-width: 991px) {
   .hero-chat-glass { min-height: 360px; max-height: 440px; }
