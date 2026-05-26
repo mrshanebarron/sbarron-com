@@ -126,8 +126,15 @@ const pad2 = (n) => String(n).padStart(2, '0')
       <div class="overlay-gradient-color"></div>
     </div>
 
-    <!-- ─── Hero content: text left, chat right (glass over slider) ─── -->
+    <!-- ─── Hero content: chat left (glass), text right ─── -->
     <div class="hero-container">
+      <!-- Left column: PneumaChat in glass frame. Background slider visible through. -->
+      <aside class="hero-chat-slot">
+        <div class="hero-chat-glass">
+          <PneumaChat embedded bg="transparent" fg="#ffffff" accent="#0bb6ee" />
+        </div>
+      </aside>
+
       <div class="hero-text-area">
         <div
           v-for="(panel, i) in panels"
@@ -154,13 +161,6 @@ const pad2 = (n) => String(n).padStart(2, '0')
           </div>
         </div>
       </div>
-
-      <!-- Right column: PneumaChat in glass frame. Background slider stays visible through it. -->
-      <aside class="hero-chat-slot">
-        <div class="hero-chat-glass">
-          <PneumaChat embedded bg="transparent" fg="#ffffff" accent="#0bb6ee" />
-        </div>
-      </aside>
     </div>
 
     <!-- ─── Slides state: current num · dots · count (Flex-IT bottom strip) ─── -->
@@ -242,7 +242,9 @@ const pad2 = (n) => String(n).padStart(2, '0')
 }
 @media (min-width: 992px) {
   .hero-container {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    /* Chat on left (2fr), text on right (3fr). Right side stays readable
+       while chat anchors the eye on the slider's quieter left edge. */
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 3rem;
   }
 }
@@ -251,6 +253,17 @@ const pad2 = (n) => String(n).padStart(2, '0')
   position: relative;
   width: 100%;
   min-height: 360px;
+}
+/* When grid puts chat on the left, the text column shifts right.
+   Tighten max-width on the slide text so the column reads as a clean
+   right-aligned block rather than a banner trying to fill the page. */
+@media (min-width: 992px) {
+  .hero-text-area {
+    padding-left: 1rem;
+  }
+  .slide-subtitle {
+    max-width: 52ch;
+  }
 }
 
 /* ─── Right-side chat slot, glassmorphism over the slider ─── */
