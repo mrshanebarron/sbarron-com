@@ -2,23 +2,14 @@
 /**
  * Flex-IT (#297700) hero replica.
  *
- * Structure per Flex-IT spec:
- *   <section class="hero d-flex align-items-center">
- *     full-bleed bg with overlay-gradient-color
- *     <div class="container">
- *       <div class="hero-text-area col-lg-8">         (LEFT 8/12 — content)
- *         pre-title
- *         h1 with <span class="featured-text">accent</span> + brush SVG
- *         slide-subtitle
- *         cta-links-area (solid primary + outline secondary)
- *       (right 4/12 left empty so photo carries through)
- *     <div class="slides-state">                       (bottom-left counter + dots)
- *     <div class="slider-stacked-arrows">              (right edge prev/next)
+ * Structure: text on the left, PneumaChat on the right in a glassmorphic
+ * panel so the background slider still bleeds through. Grid at lg+,
+ * stacked on mobile.
  *
  * Auto-advances every AUTO_INTERVAL ms with pointer-pause.
- * No chat in the hero — chat is its own section below.
  */
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import PneumaChat from './PneumaChat.vue'
 
 const AUTO_INTERVAL = 6500
 
@@ -135,7 +126,7 @@ const pad2 = (n) => String(n).padStart(2, '0')
       <div class="overlay-gradient-color"></div>
     </div>
 
-    <!-- ─── Slide text area, Flex-IT 8/12 ─── -->
+    <!-- ─── Hero content: text left, chat right (glass over slider) ─── -->
     <div class="hero-container">
       <div class="hero-text-area">
         <div
@@ -163,6 +154,13 @@ const pad2 = (n) => String(n).padStart(2, '0')
           </div>
         </div>
       </div>
+
+      <!-- Right column: PneumaChat in glass frame. Background slider stays visible through it. -->
+      <aside class="hero-chat-slot">
+        <div class="hero-chat-glass">
+          <PneumaChat embedded />
+        </div>
+      </aside>
     </div>
 
     <!-- ─── Slides state: current num · dots · count (Flex-IT bottom strip) ─── -->
@@ -237,16 +235,44 @@ const pad2 = (n) => String(n).padStart(2, '0')
   margin: 0 auto;
   padding: 0 clamp(1rem, 4vw, 3rem);
   padding-top: 96px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+@media (min-width: 992px) {
+  .hero-container {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 3rem;
+  }
 }
 
 .hero-text-area {
   position: relative;
   width: 100%;
-  max-width: 66.6667%;
   min-height: 360px;
 }
+
+/* ─── Right-side chat slot, glassmorphism over the slider ─── */
+.hero-chat-slot {
+  position: relative;
+  width: 100%;
+}
+.hero-chat-glass {
+  background: rgba(20, 20, 29, 0.55);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  min-height: 420px;
+  max-height: 560px;
+}
 @media (max-width: 991px) {
-  .hero-text-area { max-width: 100%; }
+  .hero-chat-glass { min-height: 360px; max-height: 440px; }
 }
 
 .hero-slide-text {
