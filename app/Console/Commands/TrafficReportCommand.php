@@ -22,6 +22,7 @@ class TrafficReportCommand extends Command
                             {--window=24 : Hours to look back}
                             {--log=/var/log/nginx/access.log : Nginx access log path}
                             {--site=sbarron.com : Site label for subject + heading}
+                            {--host= : Filter log lines by Host header (matches with_host log_format, leading field). Empty = no filter.}
                             {--dry : Print HTML instead of sending}';
 
     protected $description = 'Email Shane a traffic + heatmap digest.';
@@ -33,7 +34,7 @@ class TrafficReportCommand extends Command
         $site = $this->option('site');
         $since = now()->subHours($windowHours);
 
-        $report = $this->parseLog($log, $since);
+        $report = $this->parseLog($log, $since, $this->option('host') ?: null);
         $report['window_label'] = "last {$windowHours}h";
         $report['window_since'] = $since->toISO8601String();
         $report['generated_at'] = now()->toISO8601String();
@@ -61,12 +62,12 @@ class TrafficReportCommand extends Command
         }
     }
 
-    private function parseLog(string $log, \Carbon\Carbon $since): array
+    private function parseLog(string $log, \Carbon\Carbon $since, ?string $hostFilter = null): array
     {
         if (! is_readable($log)) {
             return $this->emptyReport();
         }
-        $lines = $this->tailLines($log, 200000);
+        $lines = $this->tailLines($log, 500000);
 
         $ips = [];
         $byPath = [];
@@ -74,14 +75,32 @@ class TrafficReportCommand extends Command
         $byUA = [];
         $byHour = [];
         $errors = [];
+        $byHost = [];  // top vhosts when filter is null
         $count = 0;
         $bytesOut = 0;
 
+        // Two formats supported:
+        //   with_host: $host $remote_addr - $remote_user [...] "$request" ...
+        //   combined:  $remote_addr - $remote_user [...] "$request" ...
+        $reWithHost = '/^(\S+) (\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) [^"]*" (\d+) (\d+) "([^"]*)" "([^"]*)"/';
+        $reCombined = '/^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) [^"]*" (\d+) (\d+) "([^"]*)" "([^"]*)"/';
+
         foreach ($lines as $line) {
-            if (! preg_match('/^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) (\S+) [^"]*" (\d+) (\d+) "([^"]*)" "([^"]*)"/', $line, $m)) {
+            $host = null;
+            if (preg_match($reWithHost, $line, $m)) {
+                [, $host, $ip, $when, $method, $path, $status, $bytes, $ref, $ua] = $m;
+            } elseif (preg_match($reCombined, $line, $m)) {
+                [, $ip, $when, $method, $path, $status, $bytes, $ref, $ua] = $m;
+            } else {
                 continue;
             }
-            [, $ip, $when, $method, $path, $status, $bytes, $ref, $ua] = $m;
+
+            if ($hostFilter !== null && $host !== null && $host !== $hostFilter) {
+                continue;
+            }
+            if ($host !== null) {
+                $byHost[$host] = ($byHost[$host] ?? 0) + 1;
+            }
             try {
                 $ts = \Carbon\Carbon::createFromFormat('d/M/Y:H:i:s O', $when);
                 if (! $ts || $ts->lt($since)) continue;
@@ -109,6 +128,7 @@ class TrafficReportCommand extends Command
         arsort($byStatus);
         arsort($byUA);
         arsort($errors);
+        arsort($byHost);
 
         return [
             'requests' => $count,
@@ -119,6 +139,7 @@ class TrafficReportCommand extends Command
             'top_user_agents' => array_slice($byUA, 0, 8, true),
             'errors' => array_slice($errors, 0, 10, true),
             'by_hour' => $byHour,
+            'top_hosts' => array_slice($byHost, 0, 20, true),
         ];
     }
 

@@ -61,6 +61,15 @@ $cellColor = function(int $count, int $max): string {
 </table>
 <p class="legend">low <span style="background:#1a1f2e"></span><span style="background:hsl(40,40%,25%)"></span><span style="background:hsl(40,60%,35%)"></span><span style="background:hsl(40,80%,50%)"></span> high · max = {{ $r['heatmap']['max'] }}/hr</p>
 
+@if (!empty($r['top_hosts']))
+<h2>Top hosts ({{ count($r['top_hosts']) }})</h2>
+<table><thead><tr><th>host</th><th class="num">hits</th></tr></thead><tbody>
+@foreach ($r['top_hosts'] as $host => $count)
+ <tr><td><code>{{ $host }}</code></td><td class="num">{{ number_format($count) }}</td></tr>
+@endforeach
+</tbody></table>
+@endif
+
 @if (!empty($r['top_paths']))
 <h2>Top paths</h2>
 <table><thead><tr><th>path</th><th class="num">hits</th></tr></thead><tbody>
