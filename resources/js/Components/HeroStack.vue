@@ -158,7 +158,7 @@ const pad2 = (n) => String(n).padStart(2, '0')
       <!-- Right column: PneumaChat in glass frame. Background slider stays visible through it. -->
       <aside class="hero-chat-slot">
         <div class="hero-chat-glass">
-          <PneumaChat embedded />
+          <PneumaChat embedded bg="transparent" fg="#ffffff" accent="#0bb6ee" />
         </div>
       </aside>
     </div>
@@ -259,21 +259,55 @@ const pad2 = (n) => String(n).padStart(2, '0')
   width: 100%;
 }
 .hero-chat-glass {
-  background: rgba(20, 20, 29, 0.55);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   overflow: hidden;
   min-height: 420px;
   max-height: 560px;
 }
+/* Subtle inner highlight at top for glass-edge feel. */
+.hero-chat-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, transparent 30%);
+  pointer-events: none;
+}
+/* Strip PneumaChat's internal backgrounds so the glass shows through. */
+.hero-chat-glass :deep(.chat-embed),
+.hero-chat-glass :deep(.chat-head),
+.hero-chat-glass :deep(.chat-body),
+.hero-chat-glass :deep(.chat-input) {
+  background: transparent !important;
+}
+/* The chat sets dark borders to match its brown bg. Soften for glass. */
+.hero-chat-glass :deep(.chat-head),
+.hero-chat-glass :deep(.chat-input) {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+/* User bubble keeps its accent fill; assistant bubble gets a glass tint. */
+.hero-chat-glass :deep(.bubble-assistant) {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+.hero-chat-glass :deep(.bubble-user) {
+  background: rgba(11, 182, 238, 0.18) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(11, 182, 238, 0.35);
+}
 @supports not (backdrop-filter: blur(20px)) {
   .hero-chat-glass {
-    background: rgba(20, 20, 29, 0.85);
+    background: rgba(20, 20, 29, 0.65);
   }
 }
 @media (max-width: 991px) {
