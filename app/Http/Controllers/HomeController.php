@@ -34,7 +34,7 @@ class HomeController extends Controller
                 'kind' => 'Safari CRM',
                 'category' => 'saas',
                 'summary' => "Booking, billing, client portal, Klaviyo, Square deposits, and a full quote pipeline — running for a Kenya/Tanzania safari operator.",
-                'url' => 'https://crm.tapestryofafrica.com',
+                'url' => 'https://tapestryofafrica.com',
                 'image' => '/portfolio/port-tapestry.png',
             ],
             [
