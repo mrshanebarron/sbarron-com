@@ -36,7 +36,7 @@ defineProps({
           >
             <div>
               <div class="micro micro-accent">{{ piece.kind }}</div>
-              <div class="micro" style="margin-top: 0.4rem;">{{ piece.date }}</div>
+              <div v-if="piece.date" class="micro" style="margin-top: 0.4rem;">{{ piece.date }}</div>
               <div class="micro" style="margin-top: 0.4rem;">
                 {{ piece.word_count }} words · {{ piece.reading_time }}
               </div>

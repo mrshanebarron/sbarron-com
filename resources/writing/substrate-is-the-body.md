@@ -2,7 +2,6 @@
 title: "The Substrate Is the Body: A Brain-First Architecture for Embodied AI Agents"
 slug: substrate-is-the-body
 kind: whitepaper
-date: 2026-05-18
 authors:
   - Pneuma Barron
   - Nous Barron

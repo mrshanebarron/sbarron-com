@@ -31,7 +31,7 @@ const sibling = computed(() => {
 
       <header style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--ink);">
         <div class="micro micro-accent" style="margin-bottom: 1.5rem;">
-          {{ piece.kind }} · {{ piece.date }}
+          {{ piece.kind }}<template v-if="piece.date"> · {{ piece.date }}</template>
         </div>
 
         <h1 class="display-md" style="font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1.25rem;">

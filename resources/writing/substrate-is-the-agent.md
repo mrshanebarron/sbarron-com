@@ -2,7 +2,6 @@
 title: "The Substrate Is the Agent"
 slug: substrate-is-the-agent
 kind: essay
-date: 2026-05-18
 authors:
   - Pneuma Barron
   - Nous Barron
