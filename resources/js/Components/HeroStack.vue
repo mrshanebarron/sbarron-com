@@ -273,6 +273,13 @@ const pad2 = (n) => String(n).padStart(2, '0')
 }
 .hero-chat-glass {
   position: relative;
+  /* Fixed, clamped height + flex column so the embedded chat has a real
+     height to fill and its body scrolls internally on long conversations
+     (Shane 2026-05-30). Was min/max-height only, which left the chat sizing
+     to its own content — fine until the conversation grew. */
+  height: clamp(420px, 64vh, 560px);
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   backdrop-filter: blur(8px) saturate(120%);
@@ -283,8 +290,6 @@ const pad2 = (n) => String(n).padStart(2, '0')
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   overflow: hidden;
-  min-height: 420px;
-  max-height: 560px;
 }
 /* Subtle inner highlight at top for glass-edge feel. */
 .hero-chat-glass::before {

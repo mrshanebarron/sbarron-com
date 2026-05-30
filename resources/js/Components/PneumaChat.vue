@@ -25,21 +25,12 @@ const sending = ref(false)
 const scroller = ref(null)
 const visitorName = ref('')
 
-const sessionKey = 'bas_chat_session_v1'
-const messagesKey = 'bas_chat_messages_v1'
-const nameKey = 'bas_chat_visitor_name_v1'
 const session = ref(null)
 
 onMounted(() => {
-  try {
-    session.value = localStorage.getItem(sessionKey) || cryptoId()
-    localStorage.setItem(sessionKey, session.value)
-    const saved = localStorage.getItem(messagesKey)
-    if (saved) messages.value = JSON.parse(saved)
-    visitorName.value = localStorage.getItem(nameKey) || ''
-  } catch (e) {
-    session.value = cryptoId()
-  }
+  // Fresh session every page load — the conversation is intentionally NOT
+  // remembered across refreshes (Shane 2026-05-30). Each visit starts clean.
+  session.value = cryptoId()
   // Notify backend when visitor closes the tab — triggers transcript email.
   // Uses sendBeacon so the request fires even as the page unloads.
   window.addEventListener('pagehide', endSession)
@@ -67,16 +58,6 @@ function cryptoId() {
   return 'sess_' + (crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2))
 }
 
-function persist() {
-  try { localStorage.setItem(messagesKey, JSON.stringify(messages.value.slice(-30))) }
-  catch (_) {}
-}
-
-function persistName() {
-  try { localStorage.setItem(nameKey, visitorName.value) }
-  catch (_) {}
-}
-
 const visitorInitial = computed(() => {
   const n = (visitorName.value || '').trim()
   return n ? n.charAt(0).toUpperCase() : 'Y'
@@ -88,7 +69,6 @@ async function send() {
   messages.value.push({ role: 'user', text })
   draft.value = ''
   sending.value = true
-  persist()
   await scrollToBottom()
 
   try {
@@ -107,7 +87,6 @@ async function send() {
     })
   } finally {
     sending.value = false
-    persist()
     await scrollToBottom()
   }
 }
@@ -203,7 +182,6 @@ const panelStyle = computed(() => ({
     <form @submit.prevent="send" class="chat-input">
       <input
         v-model="visitorName"
-        @change="persistName"
         class="name-input"
         placeholder="name?"
         maxlength="32"
@@ -283,10 +261,12 @@ const panelStyle = computed(() => ({
 .chat-embed {
   width: 100%;
   height: 100%;
-  min-height: 460px;
-  /* Square corners + no own border/shadow — the channel-frame wrapper in
-     Home.vue owns those, so the chat sits flush inside it without the
-     pill-in-a-box look. */
+  /* Fill the framed slot and let flex children bound themselves. min-height:0
+     is what lets .chat-body actually scroll instead of growing the whole box
+     when a conversation gets long (Shane 2026-05-30). */
+  min-height: 0;
+  /* Square corners + no own border/shadow — the channel-frame wrapper owns
+     those, so the chat sits flush inside it without the pill-in-a-box look. */
   border-radius: 0;
   border: none;
   font-family: var(--font-sans);
@@ -345,8 +325,10 @@ const panelStyle = computed(() => ({
 
 /* ── Body ── */
 .chat-body {
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;          /* allow the scroll area to shrink inside the flex column */
   overflow-y: auto;
+  overscroll-behavior: contain;  /* don't chain scroll to the page at the ends */
   padding: 1.2rem 1.1rem;
   display: flex; flex-direction: column; gap: 0.9rem;
 }
