@@ -116,7 +116,10 @@
     line-height: 0;
   }
   .masthead-logo img {
-    height: clamp(28px, 3vw, 38px);
+    /* Stacked Barron AI Solutions lockup (993x596, ~1.66:1) — taller cap
+       than the old wide wordmark so the B emblem + both text lines read
+       clearly in the corner. */
+    height: clamp(52px, 6vw, 72px);
     width: auto;
     display: block;
     transition: opacity 160ms ease;
