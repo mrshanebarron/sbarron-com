@@ -75,6 +75,11 @@ class WritingController extends Controller
                 'kind' => 'Technical paper',
                 'order' => 2,
             ],
+            'the-substrate-dreams.md' => [
+                'slug' => 'the-substrate-dreams',
+                'kind' => 'Essay',
+                'order' => 3,
+            ],
         ];
 
         $pieces = [];
