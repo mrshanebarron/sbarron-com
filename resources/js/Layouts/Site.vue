@@ -14,6 +14,7 @@ const nav = [
   { href: '/domains',   label: 'Domains'  },
   { href: '/portfolio', label: 'Portfolio'},
   { href: '/writing',   label: 'Writing'  },
+  { href: '/vision',    label: 'Vision'   },
   { href: '/about',     label: 'About'    },
   { href: '/contact',   label: 'Contact'  },
 ]
