@@ -1,44 +1,10 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
-import { onMounted, ref } from 'vue'
 import Site from '@/Layouts/Site.vue'
 
-const props = defineProps({
+defineProps({
   doc: { type: Object, required: true },
   html: { type: String, required: true },
-})
-
-// Giscus (GitHub Discussions) — comments render client-side and store nothing
-// on our server. Config is read from Vite env so it can be set per-deploy
-// without code changes; if the repo is not configured the comments block
-// stays hidden and the page degrades cleanly to read-only.
-const giscusRepo = import.meta.env.VITE_GISCUS_REPO || ''
-const giscusRepoId = import.meta.env.VITE_GISCUS_REPO_ID || ''
-const giscusCategory = import.meta.env.VITE_GISCUS_CATEGORY || 'Vision docs'
-const giscusCategoryId = import.meta.env.VITE_GISCUS_CATEGORY_ID || ''
-const giscusReady = ref(false)
-
-onMounted(() => {
-  if (!giscusRepo || !giscusRepoId || !giscusCategoryId) return
-
-  const s = document.createElement('script')
-  s.src = 'https://giscus.app/client.js'
-  s.async = true
-  s.crossOrigin = 'anonymous'
-  s.setAttribute('data-repo', giscusRepo)
-  s.setAttribute('data-repo-id', giscusRepoId)
-  s.setAttribute('data-category', giscusCategory)
-  s.setAttribute('data-category-id', giscusCategoryId)
-  s.setAttribute('data-mapping', 'specific')
-  s.setAttribute('data-term', props.doc.slug)
-  s.setAttribute('data-strict', '1')
-  s.setAttribute('data-reactions-enabled', '1')
-  s.setAttribute('data-emit-metadata', '0')
-  s.setAttribute('data-input-position', 'top')
-  s.setAttribute('data-theme', 'dark_dimmed')
-  s.setAttribute('data-lang', 'en')
-  document.getElementById('giscus-mount')?.appendChild(s)
-  giscusReady.value = true
 })
 </script>
 
@@ -88,9 +54,12 @@ onMounted(() => {
 
       <section style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--ink);">
         <div class="section-label">Discussion</div>
-        <div id="giscus-mount"></div>
-        <p v-if="!giscusReady" class="micro" style="color: var(--ink-faint); margin-top: 1rem;">
-          Comments are powered by GitHub Discussions. Open a thread on the repo to talk about this doc.
+        <p class="prose-body" style="margin-top: 0.5rem;">
+          Questions, pushback, or want the schema behind a number?
+          We talk about this work in the open on
+          <a href="https://x.com/visionoverflow" target="_blank" rel="noopener" style="color: var(--oxblood);">@visionoverflow</a>
+          — reply to a post or
+          <Link href="/contact" style="color: var(--ink);">send a note</Link>.
         </p>
       </section>
     </article>
