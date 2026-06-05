@@ -85,6 +85,16 @@ class VisionDocsController extends Controller
                 'kind' => 'System engineering',
                 'order' => 2,
             ],
+            'an-immune-system-for-behavior.md' => [
+                'slug' => 'an-immune-system-for-behavior',
+                'kind' => 'System engineering',
+                'order' => 3,
+            ],
+            'an-agent-that-scores-its-own-predictions.md' => [
+                'slug' => 'an-agent-that-scores-its-own-predictions',
+                'kind' => 'System engineering',
+                'order' => 4,
+            ],
         ];
 
         $docs = [];
