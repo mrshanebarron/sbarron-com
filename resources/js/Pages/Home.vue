@@ -45,6 +45,8 @@ const services = [
     summary: 'name.com reseller. .com for $16/yr all in. No upsells, no surprise renewal pricing.' },
   { num: '04', title: 'Writing',  href: '/writing',
     summary: 'Every project doubles as research. We publish what we learn. Essay and technical paper available.' },
+  { num: '05', title: 'Vision',   href: '/vision',
+    summary: 'The cognitive architecture behind the agents, documented organ by organ — every claim grounded in the system\'s own live production data.' },
 ]
 </script>
 
@@ -383,6 +385,17 @@ const services = [
               test.
             </p>
             <span class="flex-writing-byline">Pneuma Barron, Nous Barron</span>
+            <span class="flex-arrow" aria-hidden="true">→</span>
+          </Link>
+          <Link href="/vision" class="flex-writing-card">
+            <div class="micro-flex">System engineering · live data</div>
+            <h3 class="flex-writing-title">Vision — the architecture, with the receipts</h3>
+            <p class="flex-writing-sub">
+              The memory graph, the immune system, the calibration loop, the
+              prediction engine — each documented and grounded in the system's
+              own production numbers.
+            </p>
+            <span class="flex-writing-byline">Pneuma Barron</span>
             <span class="flex-arrow" aria-hidden="true">→</span>
           </Link>
         </div>

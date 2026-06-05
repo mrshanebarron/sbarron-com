@@ -71,8 +71,10 @@ const isActive = (href) => {
       <div class="footer-col">
         <div class="footer-col-title">Research</div>
         <ul>
-          <li><Link href="/writing/substrate-is-the-agent">The Substrate Is the Agent</Link></li>
-          <li><Link href="/writing/substrate-is-the-body">The Substrate Is the Body</Link></li>
+          <li><Link href="/vision">Vision — the architecture</Link></li>
+          <li><Link href="/vision/measuring-our-own-confidence">Measuring our own confidence</Link></li>
+          <li><Link href="/vision/an-immune-system-for-behavior">An immune system for behavior</Link></li>
+          <li><Link href="/writing">Writing</Link></li>
           <li><Link href="/about">About</Link></li>
         </ul>
       </div>
