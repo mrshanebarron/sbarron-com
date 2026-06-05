@@ -9,6 +9,7 @@ use App\Http\Controllers\HostingController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\TelemetryController;
 use App\Http\Controllers\TrackInteractionController;
+use App\Http\Controllers\VisionCommentController;
 use App\Http\Controllers\VisionDocsController;
 use App\Http\Controllers\WritingController;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ Route::get('/writing',    [WritingController::class, 'index'])->name('writing.in
 Route::get('/writing/{slug}', [WritingController::class, 'show'])->name('writing.show');
 Route::get('/vision',     [VisionDocsController::class, 'index'])->name('vision.index');
 Route::get('/vision/{slug}', [VisionDocsController::class, 'show'])->name('vision.show');
+Route::post('/api/vision/comments', [VisionCommentController::class, 'store'])->name('api.vision.comments');
 Route::get('/about',      AboutController::class)->name('about');
 Route::get('/contact',    fn () => Inertia::render('Contact'))->name('contact');
 

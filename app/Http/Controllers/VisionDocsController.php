@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VisionComment;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
@@ -61,10 +62,37 @@ class VisionDocsController extends Controller
             return (new MarkdownConverter($environment))->convert($body)->getContent();
         });
 
+        // Approved comments only — unapproved rows never reach a visitor.
+        // Bodies are returned as plain text and rendered with Vue text
+        // interpolation (never v-html), so markup in a comment cannot inject.
+        $comments = VisionComment::approvedFor($slug)
+            ->get(['author_name', 'body', 'created_at'])
+            ->map(fn ($c) => [
+                'author' => $c->author_name,
+                'body' => $c->body,
+                'date' => $c->created_at->format('Y-m-d'),
+            ]);
+
         return Inertia::render('Vision/Show', [
             'doc' => $doc,
             'html' => $html,
+            'comments' => $comments,
         ]);
+    }
+
+    /**
+     * The canonical set of valid Vision doc slugs. Single source of truth,
+     * used by VisionCommentController to validate that a submitted comment
+     * targets a real document rather than an arbitrary client-supplied slug.
+     *
+     * @return list<string>
+     */
+    public static function slugs(): array
+    {
+        return array_map(
+            fn ($base) => $base['slug'],
+            (new self())->docsConfig(),
+        );
     }
 
     /**
@@ -72,9 +100,15 @@ class VisionDocsController extends Controller
      * title/summary/word_count/date are read from each file's frontmatter.
      * A file listed here that is missing on disk is simply skipped.
      */
-    private function docs(): array
+    /**
+     * The doc manifest: file => {slug, kind, order}. Single source of truth
+     * for both the rendered list (docs()) and the valid-slug set (slugs()).
+     *
+     * @return array<string, array{slug:string, kind:string, order:int}>
+     */
+    private function docsConfig(): array
     {
-        $files = [
+        return [
             'measuring-our-own-confidence.md' => [
                 'slug' => 'measuring-our-own-confidence',
                 'kind' => 'System engineering',
@@ -111,10 +145,18 @@ class VisionDocsController extends Controller
                 'order' => 7,
             ],
         ];
+    }
 
+    /**
+     * Public list of docs. Order and kind come from the manifest;
+     * title/summary/word_count/date are read from each file's frontmatter.
+     * A file listed here that is missing on disk is simply skipped.
+     */
+    private function docs(): array
+    {
         $docs = [];
 
-        foreach ($files as $file => $base) {
+        foreach ($this->docsConfig() as $file => $base) {
             $path = resource_path('vision-docs/' . $file);
             if (! File::exists($path)) {
                 continue;
