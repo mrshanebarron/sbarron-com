@@ -73,6 +73,15 @@ class HomeController extends Controller
                 'url' => 'https://restdaykitchen.com',
                 'image' => '/portfolio/port-restday.png',
             ],
+            [
+                'slug' => 'mneva',
+                'name' => 'Mneva',
+                'kind' => 'AI SaaS product',
+                'category' => 'ai',
+                'summary' => 'Hosted memory and reasoning brain for AI coding agents — persistent memory, belief revision, nightly reasoning, multi-agent support. Built and operated by Barron AI Solutions.',
+                'url' => 'https://mneva.dev',
+                'image' => '/portfolio/port-mneva.png',
+            ],
         ];
     }
 
@@ -94,6 +103,7 @@ class HomeController extends Controller
     private function mvpShowcase(): array
     {
         return [
+            ['slug' => 'mneva',        'name' => 'Mneva',                   'kind' => 'AI memory SaaS',               'category' => 'ai',        'summary' => 'Hosted brain for AI coding agents — persistent memory, belief revision with SPRT, nightly reasoning, multi-agent support. Live product with paying subscribers.',                'url' => 'https://mneva.dev',                        'image' => '/portfolio/port-mneva.png'],
             ['slug' => 'intakeai',     'name' => 'IntakeAI',                'kind' => 'AI document → JSON',           'category' => 'ai',        'summary' => 'Working AI extraction. Paste any document, get clean structured data back.',                              'url' => 'https://intakeai.mvp.sbarron.com',         'image' => '/portfolio/port-intakeai.png'],
             ['slug' => 'lextriage',    'name' => 'LexTriage',               'kind' => 'Legal AI intake',              'category' => 'ai',        'summary' => 'Working chat that routes legal questions to the right attorney at a firm — preliminary intake assistant.', 'url' => 'https://lextriage-chat.mvp.sbarron.com',   'image' => '/portfolio/port-lextriage.png'],
             ['slug' => 'mylondon',     'name' => 'MyLondonTrip',            'kind' => 'AI travel itineraries',        'category' => 'ai',        'summary' => 'AI-built London plans that respect opening hours, Tube routes, and which markets are closed on Sundays.',  'url' => 'https://mylondon-trip.mvp.sbarron.com',    'image' => '/portfolio/port-mylondon.png'],
