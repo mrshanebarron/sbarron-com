@@ -37,6 +37,9 @@ defineProps({
         <div class="section-label">The team</div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
           <div v-for="member in team" :key="member.name">
+            <div v-if="member.image" class="about-portrait">
+              <img :src="member.image" :alt="member.name" loading="lazy" />
+            </div>
             <h2 class="display-sm" style="margin-bottom: 0.5rem;">{{ member.name }}</h2>
             <div class="micro micro-accent" style="margin-bottom: 1rem;">{{ member.role }}</div>
             <p class="prose-body" style="font-size: 1rem;">{{ member.bio }}</p>
@@ -87,3 +90,28 @@ defineProps({
     </section>
   </Site>
 </template>
+
+<style scoped>
+/* Team portraits — square, bordered frame matching the Build Floor look.
+   Amber hairline on hover so they feel alive, not static headshots. */
+.about-portrait {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 220px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--rule-soft);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ink-soft);
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+.about-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.about-portrait:hover {
+  border-color: var(--rule);
+  transform: translateY(-3px);
+}
+</style>

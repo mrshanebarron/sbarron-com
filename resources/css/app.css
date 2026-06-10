@@ -12,6 +12,7 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Fraunces', ui-serif, Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', 'Inter', ui-sans-serif, sans-serif;
 }
 
 :root {
@@ -21,24 +22,28 @@
      CTAs with arrow icons, sans-serif everywhere. Token names kept
      so component layer doesn't rewrite. */
 
-  /* Type colors — white headline + muted lede */
-  --bone: #ffffff;        /* headline color, pure white */
-  --bone-soft: #d4d8e2;
-  --bone-deep: #a8a8b8;   /* lede paragraph */
+  /* ── The Build Floor palette — near-black paper, molten amber accent.
+     Token NAMES preserved so the whole component layer + every interior
+     page inherits the new look without rewrites. ── */
 
-  /* Ground — deep navy, very dark with blue tilt */
-  --ink: #0e0f1e;         /* primary ground */
-  --ink-soft: #181a2c;    /* card surface, raised panel */
-  --ink-mute: #6a6d80;    /* metadata */
-  --ink-faint: #3a3d52;   /* faint rule */
+  /* Type colors — white headline + readable muted lede (WCAG AA) */
+  --bone: #f4f4f6;        /* headline */
+  --bone-soft: #d6d6de;
+  --bone-deep: #b4b4c0;   /* lede paragraph — passes AA on paper */
 
-  /* Accent — Flex-IT cyan-sky */
-  --oxblood: #0bb6ee;     /* accent — sky cyan */
-  --oxblood-deep: #0998c8; /* hover */
+  /* Ground — build-floor near-black */
+  --ink: #08080a;         /* primary ground */
+  --ink-soft: #101015;    /* card surface, raised panel */
+  --ink-mute: #8a8a98;    /* metadata — passes AA on paper */
+  --ink-faint: #2a2a32;   /* faint rule */
+
+  /* Accent — molten amber (the "shipped" color) */
+  --oxblood: #ff6a2b;     /* accent — amber */
+  --oxblood-deep: #ffa14d; /* lighter amber for gradients/hover */
 
   /* Hairline rule */
-  --rule: rgba(11, 182, 238, 0.32);
-  --rule-soft: rgba(255, 255, 255, 0.08);
+  --rule: rgba(255, 106, 43, 0.32);
+  --rule-soft: rgba(255, 255, 255, 0.07);
   --rule-faint: rgba(255, 255, 255, 0.04);
 
   /* Type scale, derived */
@@ -182,29 +187,29 @@
 
   /* ─── Type primitives — Flex-IT: sans display + sans body ─── */
   .display {
-    font-family: var(--font-sans);
-    font-weight: 800;
+    font-family: var(--font-display);
+    font-weight: 600;
     font-size: clamp(3rem, 8vw, 7rem);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
     color: var(--bone);
     text-wrap: balance;
   }
   .display-md {
-    font-family: var(--font-sans);
-    font-weight: 800;
+    font-family: var(--font-display);
+    font-weight: 600;
     font-size: clamp(2.25rem, 5vw, 4rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
     color: var(--bone);
     text-wrap: balance;
   }
   .display-sm {
-    font-family: var(--font-sans);
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-weight: 600;
     font-size: clamp(1.5rem, 2.6vw, 2.25rem);
     line-height: 1.2;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
     color: var(--bone);
   }
   .lede {
@@ -253,7 +258,7 @@
     right: -0.04em;
     bottom: -0.05em;
     height: 0.28em;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><path d='M2 12 Q 25 4, 50 12 T 100 12 T 150 12 T 198 12' fill='none' stroke='%230bb6ee' stroke-width='3' stroke-linecap='round'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><path d='M2 12 Q 25 4, 50 12 T 100 12 T 150 12 T 198 12' fill='none' stroke='%23ff6a2b' stroke-width='3' stroke-linecap='round'/></svg>");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     pointer-events: none;
@@ -353,14 +358,17 @@
   }
   .btn:hover { transform: translateY(-1px); }
   .btn:hover::after { transform: translateX(2px); background: rgba(255, 255, 255, 0.28); }
+  /* primary sits on amber with dark text — its arrow disk goes dark too */
+  .btn-primary::after { background: rgba(0, 0, 0, 0.18); }
+  .btn-primary:hover::after { background: rgba(0, 0, 0, 0.28); }
 
   .btn-primary {
     background: var(--oxblood);
-    color: var(--bone);
+    color: #160600;
   }
   .btn-primary:hover {
     background: var(--oxblood-deep);
-    color: var(--bone);
+    color: #160600;
   }
   .btn-secondary {
     background: transparent;
@@ -418,11 +426,11 @@
     color: var(--oxblood);
   }
   .ledger-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: clamp(1.5rem, 2.4vw, 2rem);
     line-height: 1.1;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.025em;
     color: var(--bone);
     transition: color 120ms ease;
   }
@@ -577,7 +585,7 @@
     text-align: left;
   }
   .telemetry-num {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: clamp(1.75rem, 2.6vw, 2.25rem);
     line-height: 1;
@@ -697,7 +705,7 @@
   .work:hover .work-shot img { filter: grayscale(0) contrast(1); }
   .work-body { padding-top: 0.85rem; }
   .work-name {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 1.125rem;
     color: var(--ink);
